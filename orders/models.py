@@ -5,7 +5,7 @@ from products.models import Product
 
 class Order(models.Model):
 
-    # customer = models.ForeignKey(Customer)
+    customer = models.ForeignKey(Customer)
     inspector_report_no = models.CharField(max_length=15, default='N/A')
     # is_pending means kung naapprove na ba yung order
     is_pending = models.BooleanField(default=True)
