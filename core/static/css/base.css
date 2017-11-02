@@ -1,0 +1,13 @@
+a:visited, a:hover, a:active, a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.logout {
+        text-decoration: none;
+        margin-left: 30px;
+    }
+
+.logout:hover {
+    text-decoration: none;
+}

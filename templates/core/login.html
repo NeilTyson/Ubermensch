@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <link rel="icon" href="{% static 'images/logo.jpg' %}">
+</head>
+<body>
+    {% include 'bootstrap.html' %}
+
+
+    <div class="container-fluid">
+        {% if error %}
+            <div class="alert alert-danger" style="text-align: center">
+                <strong>{{ error }}</strong>
+            </div>
+        {% endif %}
+        <div id="login-box">
+            <h1 id="head">übermensch</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">username</label>
+                    <input name="username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="password">password</label>
+                    <input name="password" class="form-control" type="password">
+                </div>
+                <button class="btn btn-block btn-success">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

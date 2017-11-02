@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    {% load static %}
+
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static '/js/general.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/css/home.css' %}">
+
+</head>
+<body>
+    <div class="container" style="margin-top: 100px;">
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/time.jpg' %}">
+            </div>
+
+            <div class="lower">
+                <p><a href="{% url 'schedule:index' %}">Schedules</a></p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/products.png' %}">
+            </div>
+
+            <div class="lower">
+                <p><a href="{% url 'products:index' %}">Products</a></p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/inventory.jpg' %}">
+            </div>
+
+            <div class="lower">
+                <p>Inventory</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/order.jpg' %}">
+            </div>
+
+            <div class="lower">
+                <p><a href="{% url 'orders:index' %}">Orders </a></p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/documents.jpg' %}">
+            </div>
+
+            <div class="lower">
+                <p>Documents</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/projects.jpg' %}">
+            </div>
+
+            <div class="lower">
+                <p>Projects</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/users.jpg' %}">
+            </div>
+
+            <div class="lower">
+                <p>Users</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="upper">
+                <img src="{% static 'images/customer.jpg' %}">
+            </div>
+
+            <div class="lower">
+                <p><a href="{% url 'core:customers-index' %}">Customers</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

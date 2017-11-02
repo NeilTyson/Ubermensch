@@ -1,0 +1,32 @@
+.menu {
+    border: solid 1px #cccccc;
+    height: 250px;
+    width: 300px;
+    display: inline-block;
+    margin: 10px;
+}
+
+.container {
+    text-align: center;
+}
+
+.upper {
+    height: 80%;
+    background-color: aqua;
+}
+
+.lower {
+    height: 20%;
+}
+
+.lower p {
+    font-size: 1.2rem;
+    text-align: left;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.upper img {
+    height: 100%;
+    width: 100%;
+}

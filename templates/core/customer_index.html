@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customers</title>
+
+    {% load static %}
+
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_customer.js' %}"></script>
+</head>
+<body>
+    <div class="container" style="margin-top: 100px;">
+
+        <div class="row">
+            <div class="col-sm-3">
+                <h1 class="mt3">Customers</h1>
+            </div>
+
+            <div class="col-sm-7 mt-3">
+                {% if schedules %}
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked> All
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2"> Sales
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3"> Accounting
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="option4"> Inventory
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="option5"> Technical
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox6" value="option6"> Procurement
+                  </label>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-sm-2 mt-4">
+                <button class="btn btn-primary"><a href="{% url 'core:add-customer' %}">Add a Customer</a></button>
+            </div>
+        </div>
+
+        {% if messages  %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if not customers %}
+            <p>There are no customers yet. Add a customer now</p>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="input-group mt-3 mb-3">
+                      <span class="input-group-addon" id="basic-addon1">Search</span>
+                      <input type="text" class="form-control" placeholder="search a customer" aria-label="Search" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+            <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th>Company Name</th>
+                <th>Contact First Name</th>
+                <th>Contact Last Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Contact No</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for c in customers %}
+                <tr>
+                    <td>{{ c.company_name }}</td>
+                    <td>{{ c.contact_first_name }}</td>
+                    <td>{{ c.contact_last_name }}</td>
+                    <td>{{ c.email_address }}</td>
+                    <td>{{ c.address}}</td>
+                    <td>{{ c.contact_no }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+
+        {% endif %}
+    </div>
+</body>
+</html>

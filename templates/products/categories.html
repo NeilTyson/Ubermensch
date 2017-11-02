@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Categories</title>
+
+    {% load static %}
+
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_products.js' %}"></script>
+</head>
+<body>
+    <div class="container" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-sm-7">
+                <h1 class="mt3">Categories</h1>
+            </div>
+            <div class="col-sm-5 mt-3">
+                <button class="btn btn-success"><a href="{% url 'products:add-category' %}">Add a Category</a></button>
+                <button class="btn btn-secondary"><a href="{% url 'products:suppliers' %}">Suppliers</a></button>
+                <button class="btn btn-primary"><a href="{% url 'products:index' %}">Back to Products</a></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="input-group mt-3 mb-3">
+                  <span class="input-group-addon" id="basic-addon1">Search</span>
+                  <input type="text" class="form-control" placeholder="Search for anything related to categories" aria-label="Search" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+
+        {% if messages  %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if not categories %}
+            <p>There are no categories yet.</p>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-4">
+
+                </div>
+                <div class="col-sm-8">
+
+                </div>
+            </div>
+            <table class="table table-inverse">
+            <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c in categories %}
+                <tr>
+                    <td>{{ c.name }}</td>
+                    <td>{{c.description}}</td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>
