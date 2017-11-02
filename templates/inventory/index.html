@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory</title>
+    {% load static %}
+
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_inventory.js' %}"></script>
+</head>
+<body>
+    <div class="container-fluid" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-sm-8">
+                <h1 class="mt3">Inventory</h1>
+            </div>
+            <div class="col-sm-4 mt-4">
+                <button class="btn btn-request"><a href="#">Request Inventory from Supplier</a></button>
+            </div>
+        </div>
+        {% if not products %}
+                <p>There are no products yet. Add a product now</p>
+            {% else %}
+                <div class="row">
+                <div class="col-sm-12">
+                    <div class="input-group mt-3 mb-3">
+                      <span class="input-group-addon" id="basic-addon1">Search</span>
+                      <input type="text" class="form-control" placeholder="Search for anything related to products" aria-label="Search" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+                <table class="table table-inverse">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Reorder Level</th>
+                    <th class="text-right">Selling Price</th>
+                    <th>Category</th>
+                    <th>Supplier</th>
+                    <th>Quantity</th>
+                    <th class="text-right">Unit Cost</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.reorder_level }}</td>
+                        <td class="text-right">{{ product.price }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>
+                            {% for x in product.supplier.all %}
+                                {{ x.name }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+        {% endif %}
+    </div>
+    <script>
+        $(document).ready(function() {
+            $(".navbar-mine").children("li").each(function() {
+                $(this).removeClass("active");
+            });
+
+            $("li.inventory").addClass("active");
+        });
+    </script>
+</body>
+
+</html>
