@@ -2,7 +2,7 @@
 from django.db import models
 
 # Create your models here.
-from core.models import Customer
+from core.models import Customer, Profile
 
 
 class Schedule(models.Model):
@@ -13,25 +13,4 @@ class Schedule(models.Model):
     is_completed = models.BooleanField(default=False)
     description = models.CharField(max_length=1000, default="")
     customer = models.ForeignKey(Customer)
-
-    INVENTORY = 'Inventory'
-    SALES = 'Sales'
-    PROCUREMENT = 'Procurement'
-    ACCOUNTING = 'Accounting'
-    TECHNICAL = 'Technical'
-    ADMIN = 'Admin'
-
-    DEPARTMENT_CHOICES = (
-        (INVENTORY, "Inventory"),
-        (SALES, "Sales"),
-        (PROCUREMENT, "Procurement"),
-        (ACCOUNTING, "Accounting"),
-        (TECHNICAL, "Technical"),
-        (ADMIN, "Admin")
-    )
-
-    responsible_department = models.CharField(
-        max_length=30,
-        choices=DEPARTMENT_CHOICES,
-        default=SALES
-    )
+    involved_people = models.ManyToManyField(Profile)
