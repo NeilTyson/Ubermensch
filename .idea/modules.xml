@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ubermench-git.iml" filepath="$PROJECT_DIR$/.idea/ubermench-git.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Ubermensch.iml" filepath="$PROJECT_DIR$/.idea/Ubermensch.iml" />
     </modules>
   </component>
 </project>

@@ -49,9 +49,14 @@
                 <div class="order-div">
                     <div class="row">
                         <div class="col-sm-4 customer-details">
-
+                            <h3>{{ order.customer }}</h3>
+                            <p>{{ order.customer.contact_first_name }} {{ order.customer.contact_last_name }}</p>
+                            <p class="font-italic">{{ order.customer.email_address }}</p>
+                            <p class="font-italic">{{ order.customer.contact_no }}</p>
+                            <p>{{ order.customer.address }}</p>
                         </div>
                         <div class="col-sm-4">
+
 
                         </div>
                         <div class="col-sm-4">
