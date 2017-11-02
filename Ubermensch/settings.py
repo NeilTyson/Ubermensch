@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'schedule',
     'products',
     'orders',
+    'asdas',
 ]
 
 MIDDLEWARE = [
