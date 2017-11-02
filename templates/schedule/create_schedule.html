@@ -22,7 +22,7 @@
         <script src="{% static 'js/scheduler.js' %}"></script>
         <script>
             $(document).ready(function() {
-                 $("input").each(function() {
+                 $("input[type='text']").each(function() {
                         $(this).addClass("form-control");
                  });
 
@@ -33,6 +33,9 @@
                  $("textarea").each(function(){
                      $(this).addClass("form-control");
                  });
+
+                 $("li").each(function(){ $(this).css("list-style-type", "none")});
+
             });
         </script>
     </head>
@@ -55,7 +58,7 @@
 
                             <div class="form-group">
                                 <label>Deadline Time</label>
-                                <input class="timepicker" name="deadline_time">
+                                <input class="timepicker" name="deadline_time" type="text">
                             </div>
 
                             <div align="center">

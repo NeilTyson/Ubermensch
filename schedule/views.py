@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render
 from core.models import Profile
@@ -25,6 +26,7 @@ def create_schedule(request):
     if form.is_valid():
         schedule = form.save(commit=False)
         deadline_time = request.POST['deadline_time']
+        people = request.POST.getlist('involved_people')
 
         if not deadline_time.lstrip():
             return render(request, 'schedule/create_schedule.html',
@@ -35,6 +37,9 @@ def create_schedule(request):
 
         schedule.deadline_time = deadline_time_f
         schedule.save()
+
+        for p in people:
+            schedule.involved_people.add(p)
 
         messages.success(request, "Schedule added successfully!")
         return render(request, 'schedule/index.html', {'schedules': schedules})
@@ -53,4 +58,18 @@ def display_user_type(request):
     }
 
     return JsonResponse(data)
+
+
+# ajax of viewing involved people
+def view_involved_people(request):
+    schedule = request.POST['schedule']
+    query = Schedule.objects.get(pk=schedule)
+
+    x = serializers.serialize('json', query)
+
+    data = {'people': x}
+
+    return JsonResponse(data)
+
+
 

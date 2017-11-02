@@ -10,6 +10,7 @@
     {% include 'core/navbar.html' %}
 
     <script src="{% static 'js/base_schedule.js' %}"></script>
+
 </head>
 <body>
     <div class="container-fluid" style="margin-top: 100px;">
@@ -83,7 +84,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Customer</th>
-                <th>Responsible Department</th>
+                <th>Involved People</th>
                 <th colspan="2" class="text-center">Deadline </th>
                 <th>Is Completed</th>
                 <th>Action</th>
@@ -93,10 +94,11 @@
             <tbody>
             {% for sched in schedules %}
                 <tr>
+                    <td class="sched-id" style="display: none">{{ sched.id }}</td>
                     <td>{{ sched.name }}</td>
                     <td>{{ sched.description }}</td>
                     <td>{{ sched.customer.company_name }}</td>
-                    <td>{{ sched.responsible_department }}</td>
+                    <td><button class="btn btn-primary btn-sm view-btn">View Involved People </button></td>
                     <td>{{ sched.deadline_date }}</td>
                     <td>{{ sched.deadline_time }}</td>
                     <td>
