@@ -45,4 +45,17 @@ def order_details(request, order_id):
         raise Http404("Order does not exist")
 
 
+@login_required
+def accreditation_phase(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order
+        }
+
+        return render(request, 'orders/accreditation.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
 
