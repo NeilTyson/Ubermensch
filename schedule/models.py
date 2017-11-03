@@ -14,3 +14,6 @@ class Schedule(models.Model):
     description = models.CharField(max_length=1000, default="")
     customer = models.ForeignKey(Customer)
     involved_people = models.ManyToManyField(Profile)
+
+    def __str__(self):
+        return self.name

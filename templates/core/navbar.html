@@ -35,7 +35,7 @@
                 <a class="nav-link" href="{% url 'core:customers-index' %}">Customers</a>
               </li>
     </ul>
-      <span class="navbar-text">{{ user.first_name }} {{ user.last_name }} (<span class="user-type"></span>)</span>
+      <span class="navbar-text">{{ user }} (<span class="user-type"></span>)</span>
     <a href="{% url 'core:logout' %}" class="navbar-text logout">Logout</a>
   </div>
 </nav>

@@ -34,7 +34,15 @@ def add_order(request):
 def order_details(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order
+        }
+
+        return render(request, 'orders/order_detail.html', context)
+
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
 
-    return HttpResponse("You are at order " + order_id)
+
+

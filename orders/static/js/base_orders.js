@@ -7,4 +7,8 @@ $(document).ready(function() {
 
         $("li.orders").addClass("active");
     });
+
+    $(function() {
+        $("[data-toggle='tooltip']").tooltip();
+    })
 });

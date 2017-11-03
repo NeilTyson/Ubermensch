@@ -35,8 +35,11 @@ class Profile(models.Model):
     def get_user_type(self):
         return self.user_type
 
+    # def __str__(self):
+    #     return self.first_name + " " + self.last_name + " - " + self.user_type
+
     def __str__(self):
-        return self.first_name + " " + self.last_name + " - " + self.user_type
+        return self.user.username
 
     def set_password(self, raw_password):
         self.user.set_password(raw_password)
@@ -50,6 +53,8 @@ class Customer(models.Model):
     contact_no = models.CharField(max_length=20)
     email_address = models.EmailField()
     address = models.CharField(max_length=400)
+
+    # kung tanggap nitong customer na to ang digicom
     is_accredited = models.BooleanField(default=False)
 
     def __str__(self):

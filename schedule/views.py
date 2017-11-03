@@ -13,7 +13,7 @@ from schedule.models import Schedule
 @login_required
 def index(request):
 
-    schedules = Schedule.objects.all()
+    schedules = Schedule.objects.order_by('deadline_date')
     context = {'schedules': schedules}
 
     return render(request, 'schedule/index.html', context)
@@ -22,7 +22,7 @@ def index(request):
 @login_required
 def create_schedule(request):
     form = ScheduleForm(request.POST or None)
-    schedules = Schedule.objects.all().order_by('deadline_date')
+    schedules = Schedule.objects.order_by('deadline_date')
 
     if form.is_valid():
         schedule = form.save(commit=False)
