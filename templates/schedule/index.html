@@ -98,7 +98,7 @@
                     <td>{{ sched.name }}</td>
                     <td>{{ sched.description }}</td>
                     <td>{{ sched.customer.company_name }}</td>
-                    <td><button class="btn btn-primary btn-sm view-btn">View Involved People </button></td>
+                    <td><button class="btn btn-primary btn-sm view-btn" data-toggle="modal" data-target="#exampleModalLong">View Involved People </button></td>
                     <td>{{ sched.deadline_date }}</td>
                     <td>{{ sched.deadline_time }}</td>
                     <td>
@@ -120,5 +120,25 @@
 
         {% endif %}
     </div>
-</body>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Involved People for this Schedule</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body body-involved">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </body>
 </html>

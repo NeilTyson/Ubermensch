@@ -45,6 +45,10 @@ $(document).ready(function() {
     //view involved people ajax
     $(".view-btn").click(function() {
 
+        var body = $(".body-involved");
+
+        body.empty();
+
         var id = $(this).parent().siblings(".sched-id").html();
 
         $.ajax({
@@ -54,7 +58,33 @@ $(document).ready(function() {
             },
             dataType: "json",
             success: function(data) {
-                console.log(data);
+
+                var obj = JSON.parse(data.data);
+
+                var html = "<table class='table table-striped table-people'>" +
+                    "<thead class='thead-dark'>" +
+                    "<tr>" +
+                    "<th>Last Name</th>" +
+                    "<th>First Name</th>" +
+                    "<th>Deparment</th>" +
+                    "</tr>" +
+                    "</thead>" +
+                    "</table>";
+
+                body.append(html);
+                var table = $(".table-people");
+
+                for (var x in obj) {
+                    var content = "<tr>" +
+                        "<td>"+ obj[x].fields.last_name +"</td>" +
+                        "<td>"+ obj[x].fields.first_name +"</td>" +
+                        "<td>"+ obj[x].fields.user_type +"</td>" +
+                        "</tr>";
+
+                    table.append(content);
+                }
+
+
             },
             error: function(data) {
                 console.log(data.responseText);

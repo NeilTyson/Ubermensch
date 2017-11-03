@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -63,11 +64,11 @@ def display_user_type(request):
 # ajax of viewing involved people
 def view_involved_people(request):
     schedule = request.POST['schedule']
-    query = Schedule.objects.get(pk=schedule)
+    query = Schedule.objects.get(pk=schedule).involved_people.all()
 
-    x = serializers.serialize('json', query)
+    serialized = serializers.serialize('json', query)
 
-    data = {'people': x}
+    data = {'data': serialized}
 
     return JsonResponse(data)
 
