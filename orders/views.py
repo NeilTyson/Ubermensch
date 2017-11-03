@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render
 
 from orders.forms import OrderForm
@@ -29,3 +29,12 @@ def add_order(request):
 
     return render(request, 'orders/add_order.html', {'form': form})
 
+
+@login_required
+def order_details(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+    return HttpResponse("You are at order " + order_id)
