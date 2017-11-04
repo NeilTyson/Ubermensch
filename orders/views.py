@@ -63,7 +63,7 @@ def accreditation_phase(request, order_id):
 @login_required
 def upload_documents(request, order_id):
 
-    form = AccreditationForm
+    form = AccreditationForm(request.POST or None)
     order = Order.objects.get(id=order_id)
 
     if form.is_valid():
@@ -77,7 +77,12 @@ def upload_documents(request, order_id):
         messages.success(request, "Documents uploaded successfully!")
         return render(request, 'orders/accreditation.html', context)
 
-    return render(request, 'orders/upload-accreditation.html', {'form': form})
+    context = {
+        'form': form,
+        'order': order
+    }
+
+    return render(request, 'orders/upload-accreditation.html', context)
 
 
 
