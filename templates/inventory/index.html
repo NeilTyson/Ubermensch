@@ -18,6 +18,7 @@
             </div>
             <div class="col-sm-4 mt-4">
                 <button class="btn btn-request"><a href="#">Request Inventory from Supplier</a></button>
+                <button class="btn btn-print"><a href="#">Print Inventory Report</a></button>
             </div>
         </div>
         {% if not products %}
@@ -36,12 +37,11 @@
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Reorder Level</th>
-                    <th class="text-right">Selling Price</th>
+                    <th class="text-right">Unit Cost</th>
                     <th>Category</th>
                     <th>Supplier</th>
-                    <th>Quantity</th>
-                    <th class="text-right">Unit Cost</th>
+                    <th>Quantity in stock</th>
+                    <th class="text-right">Selling Cost</th>
 
                 </tr>
                 </thead>
@@ -50,14 +50,15 @@
                     <tr>
                         <td>{{ product.name }}</td>
                         <td>{{ product.description }}</td>
-                        <td>{{ product.reorder_level }}</td>
-                        <td class="text-right">{{ product.price }}</td>
+                        <td class="text-right">{{ product.unit_cost }}</td>
                         <td>{{ product.category }}</td>
                         <td>
                             {% for x in product.supplier.all %}
                                 {{ x.name }}
                             {% endfor %}
                         </td>
+                        <td>{{ product.quantity_in_stock }}</td>
+                        <td>{{ product.selling_price }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
