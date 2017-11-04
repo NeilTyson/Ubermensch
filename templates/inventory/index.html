@@ -17,8 +17,8 @@
                 <h1 class="mt3">Inventory</h1>
             </div>
             <div class="col-sm-4 mt-4">
-                <button class="btn btn-request"><a href="#">Request Inventory from Supplier</a></button>
-                <button class="btn btn-print"><a href="#">Print Inventory Report</a></button>
+                <button class="btn btn-primary"><a href="{% url 'inventory:inventory-order' %}">Request Inventory from Supplier</a></button>
+                <button class="btn btn-secondary"><a href="#">Print Inventory Report</a></button>
             </div>
         </div>
         {% if not products %}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Inventory</title>
+    {% load static %}
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+</head>
+<body>
+    <div class="container-fluid" style="margin-top: 100px;">
+        <div class="col-md-10">
+                <h1 class="display-4">For DLSU</h1>
+        </div>
+        <div class="col-md-10">
+                <h1 class="display-10">Choose products to be requested from supplier</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="input-group mt-3 mb-3">
+                  <span class="input-group-addon" id="basic-addon1">Search</span>
+                  <input type="text" class="form-control" placeholder="Search for anything related to orders" aria-label="Search" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+
+        {% if messages  %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+                <table class="table table-inverse">
+                <thead class="thead-dark">
+                <tr>
+                    <th><div class="checkbox"><input type="checkbox" value="" name="checkall"></div></th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th class="text-right">Unit Cost</th>
+                    <th>Category</th>
+                    <th>Supplier</th>
+                    <th>Quantity in stock</th>
+                    <th>Quantity required</th>
+                    <th>Status</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th><div class="checkbox"><input type="checkbox" value="" name="check"></div></th>
+                        <td>PSP</td>
+                        <td>made by HP</td>
+                        <td class="text-right">0.00</td>
+                        <td>console</td>
+                        <td>HP</td>
+                        <td>5</td>
+                        <td>10</td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+                </tbody>
+                </table>
+        <div class="row">
+            <div class="col-sm-4 mt-4">
+                <button class="btn btn-primary"><a href="#">Request from Supplier</a></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $(".navbar-mine").children("li").each(function() {
+                $(this).removeClass("active");
+            });
+
+            $("li.inventory").addClass("active");
+        });
+    </script>
+</body>
+</html>

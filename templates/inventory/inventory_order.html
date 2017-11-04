@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders</title>
+
+    {% load static %}
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+</head>
+<body>
+
+    <div class="container-fluid" style="margin-top: 100px;">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h1 class="mt3">Request Inventory Using Orders</h1>
+            </div>
+            <div class="col-sm-12">
+                <div class="input-group mt-3 mb-3">
+                  <span class="input-group-addon" id="basic-addon1">Search</span>
+                  <input type="text" class="form-control" placeholder="Search for anything related to orders" aria-label="Search" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+
+        {% if messages  %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if not orders %}
+            <p>There are no orders yet.</p>
+        {% else %}
+            <div class="row">
+            {% for order in orders %}
+                <a href="{% url 'inventory:order-details' order.id %}">
+                    <div class="order-div">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4>{{ order.customer.company_name }}</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 customer-details">
+                            <p>{{ order.customer.contact_first_name }} {{ order.customer.contact_last_name }}</p>
+                            <p class="font-italic">{{ order.customer.email_address }}</p>
+                            <p class="font-italic">{{ order.customer.contact_no }}</p>
+                            <p>{{ order.customer.address }}</p>
+                            {% if order.is_pending %}
+                                <p class="text-danger mt-4">This order is not final yet!</p>
+                            {% endif %}
+                            <p>This order was created at <strong>{{ order.date_created }}</strong></p>
+                        </div>
+                        <div class="col-sm-4">
+
+
+                        </div>
+                        <div class="col-sm-4">
+
+                        </div>
+                    </div>
+                </div>
+                </a>
+            {% endfor %}
+            </div>
+
+        {% endif %}
+    </div>
+    <script>
+        $(document).ready(function() {
+            $(".navbar-mine").children("li").each(function() {
+                $(this).removeClass("active");
+            });
+
+            $("li.inventory").addClass("active");
+        });
+    </script>
+</body>
+</html>
