@@ -35,6 +35,14 @@ class Order(models.Model):
     is_installed = models.BooleanField(default=False)
     is_under_maintenance = models.BooleanField(default=False)
 
+    # fields for accreditation
+    vendor_application = models.ImageField(default='none')
+    bir_certificate = models.ImageField(default='none')
+    dole_certification = models.ImageField(default='none')
+    org_chart = models.ImageField(default='none')
+    sec_registration_form = models.ImageField(default='none')
+    sss_certificate = models.ImageField(default='none')
+
 
 class OrderLine(models.Model):
     order = models.ForeignKey(Order)
