@@ -27,6 +27,7 @@ def create_schedule(request):
     if form.is_valid():
         schedule = form.save(commit=False)
         deadline_time = request.POST['deadline_time']
+        deadline_date = request.POST['deadline_date']
         people = request.POST.getlist('involved_people')
 
         if not deadline_time.lstrip():
@@ -34,9 +35,11 @@ def create_schedule(request):
                           {'error': 'Please input a valid time',
                            'form': form})
 
-        deadline_time_f = datetime.strptime(deadline_time, "%H:%M").time()
+        date_string = deadline_date + " " + deadline_time
+        deadline = datetime.strptime(date_string, "%m/%d/%Y %H:%M")
 
-        schedule.deadline_time = deadline_time_f
+        schedule.deadline_date = deadline
+
         schedule.save()
 
         for p in people:
