@@ -63,7 +63,7 @@ def accreditation_phase(request, order_id):
 @login_required
 def upload_documents(request, order_id):
 
-    form = AccreditationForm(request.POST or None)
+    form = AccreditationForm(request.POST or None, request.FILES)
     order = Order.objects.get(id=order_id)
 
     if form.is_valid():

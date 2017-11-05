@@ -35,16 +35,19 @@ class Order(models.Model):
     is_installed = models.BooleanField(default=False)
     is_under_maintenance = models.BooleanField(default=False)
 
+    # TODO edit fields
     # fields for accreditation
-    vendor_application = models.ImageField()
-    bir_certificate = models.ImageField()
-    dole_certification = models.ImageField()
-    org_chart = models.ImageField()
-    sec_registration_form = models.ImageField()
-    sss_certificate = models.ImageField()
+    vendor_application = models.ImageField(blank=True)
+    bir_certificate = models.ImageField(blank=True)
+    dole_certification = models.ImageField(blank=True)
+    org_chart = models.ImageField(blank=True)
+    sec_registration_form = models.ImageField(blank=True)
+    sss_certificate = models.ImageField(blank=True)
 
 
 class OrderLine(models.Model):
     order = models.ForeignKey(Order)
     product = models.ForeignKey(Product)
     quantity = models.DecimalField(decimal_places=0, max_digits=10)
+
+
