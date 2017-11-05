@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order {{ order.id }} - Delivery</title>
+    <title>Order {{ order.id }} - Installation</title>
 
     {% load static %}
     {% include 'bootstrap.html' %}
@@ -15,7 +15,7 @@
     <div class="container" style="margin-top: 100px;">
         <div class="row">
             <div class="col-md-10">
-                <h1 class="display-4">Delivery</h1>
+                <h1 class="display-4">Installation</h1>
             </div>
             <div class="col-md-2 mt-3">
                 <a href="{% url 'orders:order-details' order.id %}"><button class="btn btn-secondary">Back to Order Details</button></a>
@@ -24,13 +24,13 @@
 
         <div class="row">
             <div class="col-md-12">
-                {% if order.is_delivered %}
+                {% if order.is_installed %}
                     <div class="alert alert-success">
-                        <strong>The products have already been delivered</strong>
+                        <strong>The products have already been installed</strong>
                     </div>
                 {% else %}
                     <div class="alert alert-warning">
-                        <strong>The products are not yet delivered</strong>
+                        <strong>The products are not yet installed</strong>
                     </div>
                 {% endif %}
             </div>
@@ -50,7 +50,31 @@
                     <!-- TODO make it dynamic -->
                     <tbody>
                     <tr>
-                        <td>Collect Payment</td>
+                        <td>Finish Project</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Generate Letter of Acceptance</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Generate Certificate of Warranty</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Collect Remaining Payment</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Generate Pull-out Slip</td>
                         <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>

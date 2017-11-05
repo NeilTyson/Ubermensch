@@ -145,4 +145,31 @@ def delivery(request, order_id):
         raise Http404("Order does not exist")
 
 
+@login_required
+def installation(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
 
+        context = {
+            'order': order
+        }
+
+        return render(request, 'orders/installation.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def maintenance(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order
+        }
+
+        return render(request, 'orders/maintenance.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")

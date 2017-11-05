@@ -32,7 +32,7 @@ class Order(models.Model):
     has_retrieved_supplies = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
     is_installed = models.BooleanField(default=False)
-    is_under_maintenance = models.BooleanField(default=False)
+    is_maintained = models.BooleanField(default=False)
 
     # TODO edit fields
     # fields for accreditation
