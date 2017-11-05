@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order {{ order.id }} - Delivery</title>
+
+    {% load static %}
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_orders.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+</head>
+<body>
+    <div class="container" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="display-4">Delivery</h1>
+            </div>
+            <div class="col-md-2 mt-3">
+                <a href="{% url 'orders:order-details' order.id %}"><button class="btn btn-secondary">Back to Order Details</button></a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% if order.has_retrieved_supplies %}
+                    <div class="alert alert-success">
+                        <strong>The products have already been retrieved from the supplier/s</strong>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <strong>The products are not yet retrieved from the supplier/s</strong>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Tasks Involved for this Phase</h4>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Task</th>
+                        <th class="text-center">Action</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                    </thead>
+                    <!-- TODO make it dynamic -->
+                    <tbody>
+                    <tr>
+                        <td>Request from Suppliers</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+                    <tr>
+                        <td>Receive Products</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+
+                    </tbody>
+                    <tr>
+                        <td colspan="3"><a><button class="btn btn-success btn-block">Done </button></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
