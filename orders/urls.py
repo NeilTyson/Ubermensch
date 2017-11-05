@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'project_requirements/(?P<order_id>[0-9]+)$', views.project_requirements_phase, name='project_requirements'),
     url(r'contract/(?P<order_id>[0-9]+)$', views.purchase_order_phase, name='contract'),
     url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
+    url(r'delivery/(?P<order_id>[0-9]+)$', views.delivery, name='delivery')
 ]

@@ -131,7 +131,7 @@ def product_retrieval_phase(request, order_id):
 
 
 @login_required
-def product_retrieval_phase(request, order_id):
+def delivery(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
 
