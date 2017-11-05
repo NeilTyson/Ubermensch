@@ -62,27 +62,12 @@
                         <td>Project Requirements</td>
                         {% if order.has_project_requirements %}
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="#"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            <td><a href="{% url 'orders:project_requirements' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                         {% else %}
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
 
                             {% if order.is_accredited %}
-                                <td><a href="#"><button class="btn btn-primary">Go to this phase</button></a></td>
-                            {% else %}
-                                <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
-                            {% endif %}
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        <td>Canvas Suppliers</td>
-                        {% if order.had_canvassed_suppliers %}
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="#"><button class="btn btn-primary">Go to this phase</button></a></td>
-                        {% else %}
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-
-                            {% if order.has_project_requirements %}
-                                <td><a href="#"><button class="btn btn-primary">Go to this phase</button></a></td>
+                                <td><a href="{% url 'orders:project_requirements' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                             {% else %}
                                 <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
                             {% endif %}
@@ -92,12 +77,12 @@
                         <td>Purchase Order / Contract</td>
                         {% if order.has_contract %}
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="#"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            <td><a href="{% url 'orders:contract' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                         {% else %}
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
 
-                            {% if order.had_canvassed_suppliers %}
-                                <td><a href="#"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            {% if order.has_project_requirements %}
+                                <td><a href="{% url 'orders:contract' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                             {% else %}
                                 <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
                             {% endif %}

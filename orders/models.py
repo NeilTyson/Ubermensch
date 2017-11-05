@@ -28,7 +28,6 @@ class Order(models.Model):
 
     is_accredited = models.BooleanField(default=False)
     has_project_requirements = models.BooleanField(default=False)
-    had_canvassed_suppliers = models.BooleanField(default=False)
     has_contract = models.BooleanField(default=False)
     has_retrieved_supplies = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
