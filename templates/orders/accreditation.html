@@ -58,7 +58,7 @@
                     <tbody>
                     <tr>
                         <td>Application for Vendor Accreditation</td>
-                        {% if order.vendor_application == 'vendor_application' %}
+                        {% if order.vendor_application == null %}
                             <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                             <td><a href="#"><button class="btn btn-primary" disabled>Print</button></a></td>
                         {% else %}
@@ -68,7 +68,7 @@
                     </tr>
                     <tr>
                         <td>BIR</td>
-                        {% if order.bir_certificate == 'bir_certificate' %}
+                        {% if order.bir_certificate == null %}
                             <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                             <td><a href="#"><button class="btn btn-primary" disabled>Print</button></a></td>
                         {% else %}
@@ -78,7 +78,7 @@
                     </tr>
                     <tr>
                         <td>DOLE Certification</td>
-                        {% if order.dole_certification == 'dole_certification' %}
+                        {% if order.dole_certification == null %}
                             <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                             <td><a href="#"><button class="btn btn-primary" disabled>Print</button></a></td>
                         {% else %}
@@ -88,7 +88,7 @@
                     </tr>
                     <tr>
                         <td>Organizational Chart</td>
-                        {% if order.org_chart == 'org_chart' %}
+                        {% if order.org_chart == null %}
                             <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                             <td><a href="#"><button class="btn btn-primary" disabled>Print</button></a></td>
                         {% else %}
@@ -98,7 +98,7 @@
                     </tr>
                     <tr>
                         <td>SEC Registration</td>
-                        {% if order.sec_registration_form == 'sec_registration_form' %}
+                        {% if order.sec_registration_form == null %}
                             <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                             <td><a href="#"><button class="btn btn-primary" disabled>Print</button></a></td>
                         {% else %}
@@ -108,7 +108,7 @@
                     </tr>
                     <tr>
                         <td>SSS</td>
-                        {% if order.sss_certificate == 'sss_certificate' %}
+                        {% if order.sss_certificate == null %}
                             <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                             <td><a href="#"><button class="btn btn-primary" disabled>Print</button></a></td>
                         {% else %}
