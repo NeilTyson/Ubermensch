@@ -12,5 +12,6 @@ urlpatterns = [
     url(r'accreditation/upload_accreditation/(?P<order_id>[0-9]+)$', views.upload_documents,
         name='upload_accreditation'),
     url(r'project_requirements/(?P<order_id>[0-9]+)$', views.project_requirements_phase, name='project_requirements'),
-    url(r'contract/(?P<order_id>[0-9]+)$', views.purchase_order_phase, name='contract')
+    url(r'contract/(?P<order_id>[0-9]+)$', views.purchase_order_phase, name='contract'),
+    url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
 ]

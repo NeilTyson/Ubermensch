@@ -115,4 +115,34 @@ def purchase_order_phase(request, order_id):
         raise Http404("Order does not exist")
 
 
+@login_required
+def product_retrieval_phase(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order
+        }
+
+        return render(request, 'orders/product_retrieval.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def product_retrieval_phase(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order
+        }
+
+        return render(request, 'orders/delivery.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
 
