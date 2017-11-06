@@ -50,3 +50,17 @@ class OrderLine(models.Model):
     quantity = models.DecimalField(decimal_places=0, max_digits=10)
 
 
+class OfficialReceipt(models.Model):
+    order = models.ForeignKey(Order)
+    date_created = models.DateField()
+    percentage = models.DecimalField(max_digits=5, decimal_places=2)
+
+
+class DeliveryReceipt(models.Model):
+    order = models.ForeignKey(Order)
+    date_created = models.DateField()
+
+
+
+
+
