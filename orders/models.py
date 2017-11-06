@@ -32,7 +32,7 @@ class Order(models.Model):
     has_retrieved_supplies = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
     is_installed = models.BooleanField(default=False)
-    is_under_maintenance = models.BooleanField(default=False)
+    is_maintained = models.BooleanField(default=False)
 
     # TODO edit fields
     # fields for accreditation
@@ -48,5 +48,19 @@ class OrderLine(models.Model):
     order = models.ForeignKey(Order)
     product = models.ForeignKey(Product)
     quantity = models.DecimalField(decimal_places=0, max_digits=10)
+
+
+class OfficialReceipt(models.Model):
+    order = models.ForeignKey(Order)
+    date_created = models.DateField()
+    percentage = models.DecimalField(max_digits=5, decimal_places=2)
+
+
+class DeliveryReceipt(models.Model):
+    order = models.ForeignKey(Order)
+    date_created = models.DateField()
+
+
+
 
 
