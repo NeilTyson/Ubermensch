@@ -173,3 +173,4 @@ def maintenance(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
+

@@ -6,7 +6,6 @@ from products.models import Product
 class Order(models.Model):
 
     customer = models.ForeignKey(Customer)
-    inspector_report_no = models.CharField(max_length=15, default='N/A')
 
     # is_pending means kung naapprove na ba yung order
     is_pending = models.BooleanField(default=True)
@@ -43,6 +42,12 @@ class Order(models.Model):
     sec_registration_form = models.ImageField(blank=True)
     sss_certificate = models.ImageField(blank=True)
 
+    # documents
+    invoice_no = models.CharField(max_length=10, default='na')
+    inspector_report_no = models.CharField(max_length=15, default='na')
+    purchase_order_no = models.CharField(max_length=15, default='na')
+    pull_out_slip_no = models.CharField(max_length=15, default='na')
+
 
 class OrderLine(models.Model):
     order = models.ForeignKey(Order)
@@ -59,6 +64,8 @@ class OfficialReceipt(models.Model):
 class DeliveryReceipt(models.Model):
     order = models.ForeignKey(Order)
     date_created = models.DateField()
+
+
 
 
 
