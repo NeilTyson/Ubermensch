@@ -25,40 +25,16 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         return Profile.objects.all()
 
 
-# class ProfileFormView(View):
-#
-#     form_class = UserForm
-#     template_name = 'templates/core/profile_form.html'
-#
-#     def get(self, request):
-#         form = self.form_class(None)
-#         return render(request, self.template_name, {'form': form})
-#
-#     def post(self, request):
-#         form = self.form_class(request.POST)
-#
-#         if form.is_valid():
-#
-#             user = form.save(commit=False)
-#
-#             username = form.cleaned_data['username']
-#             password = form.cleaned_data['password']
-#             # user.set_password(password)
-#             # user.save()
-#
-#             existing = User.objects.filter(username=username)
-#
-#             if existing:
-#                 return render(request, self.template_name, {'error': 'Username already exists'})
-#
-#             user = User.objects.create_user(username, None, password)
-#
-#             Profile.objects.create(user=user, first_name=request.POST['first_name'],
-#                                    last_name=request.POST['last_name'],
-#                                    user_type=request.POST['user_type'],
-#                                    address=request.POST["address"])
-#
-#         return redirect('core:index')
+def add_user(request):
+
+    form = UserForm(request.POST or None)
+
+    if form.is_valid():
+
+        return HttpResponse("hello")
+
+    context = {'form': form}
+    return render(request, 'core/add_user.html', context)
 
 
 def logout_view(request):

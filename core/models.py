@@ -9,6 +9,7 @@ class Profile(models.Model):
     address = models.CharField(max_length=250)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    email = models.EmailField(default='user@digicom.ph')
 
     INVENTORY = 'Inventory'
     SALES = 'Sales'
@@ -35,8 +36,6 @@ class Profile(models.Model):
     def get_user_type(self):
         return self.user_type
 
-    # def __str__(self):
-    #     return self.first_name + " " + self.last_name + " - " + self.user_type
 
     def __str__(self):
         return self.user.username
