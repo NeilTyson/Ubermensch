@@ -44,6 +44,9 @@ class Profile(models.Model):
     def set_password(self, raw_password):
         self.user.set_password(raw_password)
 
+    def __unicode__(self):
+        return self.user.first_name
+
 
 class Customer(models.Model):
 
