@@ -1,9 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.shortcuts import render
 
-from orders.forms import OrderForm, AccreditationForm
+from orders.forms import OrderForm
 from orders.models import Order
 
 
@@ -43,46 +43,6 @@ def order_details(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
-
-
-@login_required
-def accreditation_phase(request, order_id):
-    try:
-        order = Order.objects.get(id=order_id)
-
-        context = {
-            'order': order
-        }
-
-        return render(request, 'orders/accreditation.html', context)
-
-    except Order.DoesNotExist:
-        raise Http404("Order does not exist")
-
-
-@login_required
-def upload_documents(request, order_id):
-
-    form = AccreditationForm(request.POST or None, request.FILES)
-    order = Order.objects.get(id=order_id)
-
-    if form.is_valid():
-        order_accreditation = form.save(commit=False)
-        order_accreditation.save()
-
-        context = {
-            'order': order
-        }
-
-        messages.success(request, "Documents uploaded successfully!")
-        return render(request, 'orders/accreditation.html', context)
-
-    context = {
-        'form': form,
-        'order': order
-    }
-
-    return render(request, 'orders/upload-accreditation.html', context)
 
 
 @login_required

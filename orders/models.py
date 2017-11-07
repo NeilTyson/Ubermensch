@@ -25,7 +25,6 @@ class Order(models.Model):
     # fields for the order status
     # puro boolean to
 
-    is_accredited = models.BooleanField(default=False)
     has_project_requirements = models.BooleanField(default=False)
     has_contract = models.BooleanField(default=False)
     has_retrieved_supplies = models.BooleanField(default=False)
@@ -34,13 +33,6 @@ class Order(models.Model):
     is_maintained = models.BooleanField(default=False)
 
     # TODO edit fields
-    # fields for accreditation
-    vendor_application = models.ImageField(blank=True)
-    bir_certificate = models.ImageField(blank=True)
-    dole_certification = models.ImageField(blank=True)
-    org_chart = models.ImageField(blank=True)
-    sec_registration_form = models.ImageField(blank=True)
-    sss_certificate = models.ImageField(blank=True)
 
     # documents
     invoice_no = models.CharField(max_length=10, default='na')

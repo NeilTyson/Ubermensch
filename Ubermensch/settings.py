@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'inventory',
     'documents',
     'maintenance',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -128,4 +129,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = 'core:login'
+
+GRAPH_MODELS = {
+    'all_applications': True,
+    'group_models': True
+}
 
