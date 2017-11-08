@@ -7,6 +7,7 @@ from core.models import Profile, Customer
 class UserForm(ModelForm):
     username = forms.CharField(max_length=20)
     password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = Profile
