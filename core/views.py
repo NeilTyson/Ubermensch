@@ -31,12 +31,16 @@ def add_user(request):
         last_name = request.POST['last_name']
         email = request.POST['email']
         password = request.POST['password']
+        cpassword = request.POST['confirm_password']
 
         if helper.is_unique(username):
 
             User.objects.create_user(username, email, password)
 
             user = User.objects.get(username=username)
+
+            if cpassword != password:
+                return HttpResponse("passwords do not match")
 
             Profile.objects.create(
                 user=user,
