@@ -5,16 +5,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-# Create your views here.
 from django.views import View, generic
-from django.views.generic import CreateView
-
+from Ubermensch import helper
 from core.forms import UserForm, CustomerForm
 from core.models import Profile, Customer
 
-
-# def index(request):
-#     return HttpResponse("Hello world")
 
 class IndexView(LoginRequiredMixin, generic.ListView):
 
@@ -41,15 +36,22 @@ def add_user(request):
 
         user = User.objects.get(username=username)
 
-        Profile.objects.create(
-            user=user,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            address=request.POST['address'],
-            user_type=request.POST['user_type']
-        )
-        return HttpResponse('worked')
+        if helper.is_unique(username):
+
+            Profile.objects.create(
+                user=user,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                address=request.POST['address'],
+                user_type=request.POST['user_type']
+            )
+
+            return HttpResponse('worked')
+
+        else:
+
+            return HttpResponse('username is taken')
 
     context = {'form': form}
     return render(request, 'core/add_user.html', context)
