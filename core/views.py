@@ -32,11 +32,11 @@ def add_user(request):
         email = request.POST['email']
         password = request.POST['password']
 
-        User.objects.create_user(username, email, password)
-
-        user = User.objects.get(username=username)
-
         if helper.is_unique(username):
+
+            User.objects.create_user(username, email, password)
+
+            user = User.objects.get(username=username)
 
             Profile.objects.create(
                 user=user,

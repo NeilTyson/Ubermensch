@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 
 # Makes sure that the username is unique
 def is_unique(username):
-    user = User.objects.get(username=username)
+    try:
+        User.objects.get(username=username)
+        return False
+    except User.DoesNotExist:
+        return True
 
-    return user is None
