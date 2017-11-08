@@ -31,7 +31,25 @@ def add_user(request):
 
     if form.is_valid():
 
-        return HttpResponse("hello")
+        username = request.POST['username']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        User.objects.create_user(username, email, password)
+
+        user = User.objects.get(username=username)
+
+        Profile.objects.create(
+            user=user,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            address=request.POST['address'],
+            user_type=request.POST['user_type']
+        )
+        return HttpResponse('worked')
 
     context = {'form': form}
     return render(request, 'core/add_user.html', context)
@@ -102,6 +120,18 @@ def add_customer(request):
 
     context = {'form': form}
     return render(request, 'core/add_customer.html', context)
+
+
+@login_required
+def users_index(request):
+
+    profiles = Profile.objects.all()
+
+    context = {
+        'profiles': profiles
+    }
+
+    return render(request, 'core/users.html', context)
 
 
 

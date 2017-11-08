@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^login$', views.SignInView.as_view(), name='login'),
     url(r'^logout$', views.logout_view, name='logout'),
     url(r'^customers$', views.customer_index, name='customers-index'),
-    url(r'^customers/add_customer$', views.add_customer, name='add-customer')
+    url(r'^customers/add_customer$', views.add_customer, name='add-customer'),
+    url(r'^add_user/$', views.add_user, name='add_user')
 ]
