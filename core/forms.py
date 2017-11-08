@@ -10,7 +10,7 @@ class UserForm(ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('username', 'first_name', 'last_name', 'password', 'user_type', 'address', 'email')
+        fields = ['username', 'first_name', 'last_name', 'password', 'confirm_password', 'user_type', 'address', 'email']
 
 
 class CustomerForm(ModelForm):
