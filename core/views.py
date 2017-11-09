@@ -35,7 +35,7 @@ def add_user(request):
 
         if helper.is_unique(username):
 
-            User.objects.create_user(username, email, password)
+            User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
 
             user = User.objects.get(username=username)
 

@@ -7,7 +7,7 @@ $(document).ready(function() {
         dataType: "json",
         type: "get",
         success: function(data) {
-            $("span.user-type").html(data.user_type);
+            $(".user-type").html(data.user_type);
         },
         error: function(data) {
             console.log(data.responseText);
