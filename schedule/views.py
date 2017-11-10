@@ -76,4 +76,14 @@ def view_involved_people(request):
     return JsonResponse(data)
 
 
+# ajax of displaying the schedules on the calendar
+def display_events(request):
+    schedules = Schedule.objects.all()
+
+    serialized = serializers.serialize('json', schedules)
+    data = {'schedules': serialized}
+
+    return JsonResponse(data)
+
+
 

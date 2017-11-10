@@ -9,13 +9,30 @@
     {% include 'bootstrap.html' %}
     {% include 'core/navbar.html' %}
 
+    <!-- FULLCALENDAR -->
+    <link rel="stylesheet" href="{% static 'css/fullcalendar.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fullcalendar.print.min.css' %}" media="print">
+
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/fullcalendar.min.js' %}"></script>
+
+    <!-- CUSTOM JS -->
     <script src="{% static 'js/base_schedule.js' %}"></script>
+    <script src="{% static 'js/calendar.js' %}"></script>
 
 </head>
 <body>
 
-    <div class="container-fluid" style="margin-top: 100px;">
 
+    <div class="container" style="margin-top: 100px;">
+
+        <div>
+            <a href="{% url 'schedule:add-schedule' %}"><button class="btn btn-primary">Add Schedule</button></a>
+        </div>
+
+        <div id="calendar" style=" margin: 0 auto; max-height: 400px">
+
+        </div>
 
     </div>
 
