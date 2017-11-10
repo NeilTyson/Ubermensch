@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render
 from core.models import Profile
 from schedule.forms import ScheduleForm
@@ -20,26 +20,30 @@ def index(request):
 
 
 @login_required
+def details(request, pk):
+    try:
+        schedule = Schedule.objects.get(id=pk)
+
+        context = {
+            'schedule': schedule
+        }
+
+        # return render(request, 'orders/order_detail.html', context)
+        return HttpResponse("This is schedule %s" % pk)
+
+    except Schedule.DoesNotExist:
+        raise Http404("Schedule does not exist")
+
+
+@login_required
 def create_schedule(request):
     form = ScheduleForm(request.POST or None)
     schedules = Schedule.objects.order_by('deadline_date')
 
     if form.is_valid():
         schedule = form.save(commit=False)
-        deadline_time = request.POST['deadline_time']
-        deadline_date = request.POST['deadline_date']
+
         people = request.POST.getlist('involved_people')
-
-        if not deadline_time.lstrip():
-            return render(request, 'schedule/create_schedule.html',
-                          {'error': 'Please input a valid time',
-                           'form': form})
-
-        date_string = deadline_date + " " + deadline_time
-        deadline = datetime.strptime(date_string, "%m/%d/%Y %H:%M")
-
-        schedule.deadline_date = deadline
-
         schedule.save()
 
         for p in people:

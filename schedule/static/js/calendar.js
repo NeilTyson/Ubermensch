@@ -17,9 +17,13 @@ $(document).ready(function(){
             console.log(json);
 
             for (var x in json) {
-                var event = {
+                var event;
+
+                event = {
                     title: json[x].fields.name,
-                    start: json[x].fields.deadline_date,
+                    start: json[x].fields.start_date,
+                    url: "details/" + json[x].pk,
+                    end: json[x].fields.end_date,
                 };
 
                 calendar.fullCalendar('renderEvent', event);
