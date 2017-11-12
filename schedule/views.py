@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render
+
+from Ubermensch import helper
 from core.models import Profile
 from schedule.forms import ScheduleForm
 from schedule.models import Schedule
@@ -44,13 +46,37 @@ def create_schedule(request):
         schedule = form.save(commit=False)
 
         people = request.POST.getlist('involved_people')
-        schedule.save()
 
-        for p in people:
-            schedule.involved_people.add(p)
+        start_date = datetime.strptime(request.POST['start_date'], '%Y/%m/%d %H:%M')
+        end_date = datetime.strptime(request.POST['end_date'], '%Y/%m/%d %H:%M')
 
-        messages.success(request, "Schedule added successfully!")
-        return render(request, 'schedule/index.html', {'schedules': schedules})
+        if end_date < start_date:
+
+            context = {
+                'form': form,
+                'error': "End date cannot be before the start date"
+            }
+
+            return render(request, 'schedule/create_schedule.html', context)
+
+        if start_date < datetime.now() or end_date < datetime.now():
+            context = {
+                'form': form,
+                'error': "Start dates and end dates cannot be past the current date"
+            }
+
+            return render(request, 'schedule/create_schedule.html', context)
+
+        if helper.check_overlaps(people, start_date, end_date):
+            return HttpResponse('overlapping')
+        else:
+            schedule.save()
+
+            for p in people:
+                schedule.involved_people.add(p)
+
+            messages.success(request, "Schedule added successfully!")
+            return render(request, 'schedule/index.html', {'schedules': schedules})
 
     context = {'form': form}
 
