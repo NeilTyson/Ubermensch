@@ -68,7 +68,14 @@ def create_schedule(request):
             return render(request, 'schedule/create_schedule.html', context)
 
         if helper.check_overlaps(people, start_date, end_date):
-            return HttpResponse('overlapping')
+
+            context = {
+                'form': form,
+                'error': "Failed to add schedule. Overlap/s or conflict/s found"
+            }
+
+            return render(request, 'schedule/create_schedule.html', context)
+
         else:
             schedule.save()
 
