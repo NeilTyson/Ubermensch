@@ -32,8 +32,6 @@ class Order(models.Model):
     is_installed = models.BooleanField(default=False)
     is_maintained = models.BooleanField(default=False)
 
-    # TODO edit fields
-
     # documents
     invoice_no = models.CharField(max_length=10, default='na')
     inspector_report_no = models.CharField(max_length=15, default='na')

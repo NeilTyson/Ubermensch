@@ -9,6 +9,8 @@ urlpatterns = [
     url(r'^add_order$', views.add_order, name='add_order'),
     url(r'^(?P<order_id>[0-9]+)', views.order_details, name='order-details'),
     url(r'project_requirements/(?P<order_id>[0-9]+)$', views.project_requirements_phase, name='project_requirements'),
+    url(r'project_requirements/inspector_report/(?P<order_id>[0-9]+)$', views.inspector_report,
+        name='inspector_report'),
     url(r'contract/(?P<order_id>[0-9]+)$', views.purchase_order_phase, name='contract'),
     url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
     url(r'delivery/(?P<order_id>[0-9]+)$', views.delivery, name='delivery'),

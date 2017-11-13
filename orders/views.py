@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from orders.forms import OrderForm
 from orders.models import Order
+from products.models import Product
 
 
 @login_required
@@ -130,6 +131,23 @@ def maintenance(request, order_id):
         }
 
         return render(request, 'orders/maintenance.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def inspector_report(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        products = Product.objects.all()
+
+        context = {
+            'order': order,
+            'products': products
+        }
+
+        return render(request, 'orders/inspector_report.html', context)
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")

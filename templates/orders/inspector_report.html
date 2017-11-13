@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order {{ order.id }} - Project Requirements</title>
+
+    {% load static %}
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_orders.js' %}"></script>
+    <script src="{% static 'js/inspector_report.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+</head>
+<body>
+    <div class="container-fluid" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4">Generate Inspector's Report</h1>
+            </div>
+            <div class="col-md-4 mt-3">
+                <a href="{% url 'orders:project_requirements' order.id %}"><button class="btn btn-secondary">Back to Project Requirements</button></a>
+            </div>
+        </div>
+
+        <div class="row feedback-div" style="display: none;">
+            <div class="col-md-12">
+                <strong>Feedback message</strong>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="input-group mt-3 mb-3">
+                  <span class="input-group-addon" id="basic-addon1">Search</span>
+                  <input type="text" class="form-control" placeholder="Search for anything related to products" aria-label="Search" aria-describedby="basic-addon1">
+                </div>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th class="text-right">Selling Price</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.category.name }}</td>
+                            <td class="text-right">{{ product.selling_price }}</td>
+                            <td><input class="form-control quantity-input" type="number" min="0" style="width: 80px;"></td>
+                            <td><button class="btn btn-success btn-add">Add</button></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
