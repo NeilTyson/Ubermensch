@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
 </head>
 <body>
+    <!-- ORDER ID Here -->
+    <p id="order" style="display: none;">{{ order.id }}</p>
     <div class="container-fluid" style="margin-top: 100px;">
         <div class="row">
             <div class="col-md-8">
@@ -48,15 +50,25 @@
                     <tbody>
                     {% for product in products %}
                         <tr>
-                            <td>{{ product.name }}</td>
+                            <td class="product-id" style="display: none;">{{ product.id }}</td>
+                            <td class="product-name">{{ product.name }}</td>
                             <td>{{ product.category.name }}</td>
-                            <td class="text-right">{{ product.selling_price }}</td>
+                            <td class="text-right price">{{ product.selling_price }}</td>
                             <td><input class="form-control quantity-input" type="number" min="0" style="width: 80px;"></td>
                             <td><button class="btn btn-success btn-add">Add</button></td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            <div class="col-md-4">
+                <p class="mt-4"><strong>Estimates </strong>  </p>
+                <p>Estimated Requirements</p>
+                <ul class="list-group cart">
+
+                </ul>
+                <p class="mt-2">Estimated Cost: <strong class="cost"></strong></p>
+                <a href="#"><button class="btn btn-block btn-primary confirm-btn" disabled>Confirm</button></a>
             </div>
         </div>
 

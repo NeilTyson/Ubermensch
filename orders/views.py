@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
-
+import json
 from orders.forms import OrderForm
-from orders.models import Order
+from orders.models import Order, OrderLine
 from products.models import Product
 
 
@@ -151,4 +151,22 @@ def inspector_report(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
+
+
+@login_required
+def add_order_line(request):
+    order = Order.objects.get(id=request.POST['order'])
+    product = Product.objects.get(id=request.POST['product'])
+    quantity = request.POST['quantity']
+
+    OrderLine.objects.create(
+        order=order,
+        product=product,
+        quantity=quantity
+    )
+
+    order.has_project_requirements = True
+    order.save()
+
+    return HttpResponse("added")
 

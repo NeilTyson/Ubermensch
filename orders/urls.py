@@ -16,4 +16,7 @@ urlpatterns = [
     url(r'delivery/(?P<order_id>[0-9]+)$', views.delivery, name='delivery'),
     url(r'installation/(?P<order_id>[0-9]+)$', views.installation, name='installation'),
     url(r'maintenance/(?P<order_id>[0-9]+)$', views.maintenance, name='maintenance'),
+
+    # ajax add order line
+    url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line')
 ]
