@@ -81,13 +81,23 @@ $(document).ready(function(){
             );
 
             $("strong.cost").html(price.toFixed(2));
-            $(".confirm-btn").removeAttr("disabled");
         }
     });
 
+
+
     $(".confirm-btn").click(function(){
 
-        for (var x in cart) {
+        var manpower = $("input#manpower").val();
+        var duration = $("input#duration").val();
+
+        console.log(cart.length > 0);
+        console.log(duration);
+        console.log(manpower);
+
+        if (cart.length > 0 && duration > 0 && manpower > 0) {
+
+            for (var x in cart) {
 
             $.ajax({
                 url: "/orders/ajax/add_order_line",
@@ -95,7 +105,9 @@ $(document).ready(function(){
                 data: {
                     order: order,
                     product: cart[x].id,
-                    quantity: cart[x].quantity
+                    quantity: cart[x].quantity,
+                    manpower: manpower,
+                    duration: duration
                 },
                 success: function() {
                     console.log("added");
@@ -107,5 +119,15 @@ $(document).ready(function(){
                 }
             });
         }
+
+        }
+
+        else {
+
+            feedback.children().addClass('alert alert-danger');
+            feedback.children().children().html("Please complete the form");
+            feedback.css('display', 'initial');
+        }
+
     });
 });

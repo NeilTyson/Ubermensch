@@ -1,10 +1,12 @@
+import random
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
 import json
 from orders.forms import OrderForm
-from orders.models import Order, OrderLine
+from orders.models import Order, OrderLine, InspectorReport
 from products.models import Product
 
 
@@ -158,6 +160,8 @@ def add_order_line(request):
     order = Order.objects.get(id=request.POST['order'])
     product = Product.objects.get(id=request.POST['product'])
     quantity = request.POST['quantity']
+    duration = request.POST['duration']
+    manpower = request.POST['manpower']
 
     OrderLine.objects.create(
         order=order,
@@ -168,5 +172,39 @@ def add_order_line(request):
     order.has_project_requirements = True
     order.save()
 
+    number = random.randint(1, 999999)
+    inspector_no = "I-" + str(number)
+
+    InspectorReport.objects.create(
+        order=order,
+        inspector_report_no=inspector_no,
+        duration=duration,
+        manpower=manpower
+    )
+
     return HttpResponse("added")
+
+
+@login_required
+def view_inspector_report(request, order_id):
+
+    try:
+        order = Order.objects.get(id=order_id)
+        order_line = OrderLine.objects.filter(order=order_id)
+        report_inspector = InspectorReport.objects.get(order=order)
+
+        context = {
+            'order': order,
+            'order_line': order_line,
+            'inspector_report': report_inspector
+        }
+
+        return render(request, 'orders/inspector_report_R.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+
+
 

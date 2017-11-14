@@ -62,13 +62,21 @@
                 </table>
             </div>
             <div class="col-md-4">
-                <p class="mt-4"><strong>Estimates </strong>  </p>
+                <p class="mt-4"><strong>Estimates</strong></p>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Estimated Manpower</label>
+                    <input type="number" min="1" class="form-control" id="manpower" aria-describedby="emailHelp" placeholder="Enter number of manpower">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Estimated Duration</label>
+                    <input type="number" min="0" class="form-control" id="duration" aria-describedby="emailHelp" placeholder="Enter estimated duration of installation (in weeks)">
+                </div>
                 <p>Estimated Requirements</p>
                 <ul class="list-group cart">
 
                 </ul>
                 <p class="mt-2">Estimated Cost: <strong class="cost"></strong></p>
-                <a href="#"><button class="btn btn-block btn-primary confirm-btn" disabled>Confirm</button></a>
+                <a href="#"><button class="btn btn-block btn-primary confirm-btn">Confirm</button></a>
             </div>
         </div>
 

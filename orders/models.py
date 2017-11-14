@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from core.models import Customer
 from products.models import Product
@@ -34,9 +36,16 @@ class Order(models.Model):
 
     # documents
     invoice_no = models.CharField(max_length=10, default='na')
-    inspector_report_no = models.CharField(max_length=15, default='na')
     purchase_order_no = models.CharField(max_length=15, default='na')
     pull_out_slip_no = models.CharField(max_length=15, default='na')
+
+
+class InspectorReport(models.Model):
+    order = models.OneToOneField(Order)
+    inspector_report_no = models.CharField(max_length=15, default='na')
+    duration = models.DecimalField(decimal_places=0, max_digits=5, default='0')
+    manpower = models.DecimalField(decimal_places=0, max_digits=5, default='0')
+    date_created = models.DateTimeField(default=datetime.now)
 
 
 class OrderLine(models.Model):
