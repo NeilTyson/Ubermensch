@@ -51,6 +51,7 @@
                 <tbody>
                     {% for orderline in orderlines %}
                         <tr>
+                            <th><div class="checkbox"><input type="checkbox" value="{{ orderline.product.id }}" name="{{ orderline.product.id }}"></div></th>
                             <td>{{ orderline.product.name }}</td>
                             <td>{{ orderline.product.description }}</td>
                             <td>{{ orderline.product.category }}</td>
@@ -65,8 +66,7 @@
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                         </tr>
                     {% endfor %}
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                </tbody>
+                    </tbody>
                 </table>
         <div class="row">
             <div class="col-sm-4 mt-4">

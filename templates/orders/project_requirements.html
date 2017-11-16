@@ -53,7 +53,7 @@
                         <td>Generate Inspector's Report</td>
 
                         {% if order.has_project_requirements %}
-                            <td><a href="{% url 'orders:view-inspector-report' order.id %}"><button class="btn btn-primary btn-block">View Inspector's Report</button></a></td>
+                            <td><a href="{% url 'orders:view-inspector-report' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Inspector's Report</button></a></td>
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                         {% else %}
                             <td><a href="{% url 'orders:inspector_report' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>

@@ -21,7 +21,7 @@ def index(request):
 def order_details_inventory(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
-        orderline = OrderLine.objects.get(id=order_id)
+        orderline = OrderLine.objects.filter(order=order)
 
         context = {
             'order': order,
