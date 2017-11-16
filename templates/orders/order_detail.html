@@ -47,18 +47,6 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td data-toggle="tooltip" data-placement="bottom" title="This includes uploading and printing the
-                        different accreditation documents of DIGICOM. A schedule for sending the documents to the
-                        client will also be set. ">Accreditation</td>
-                        {% if order.is_accredited %}
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="{% url 'orders:accreditation' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
-                        {% else %}
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                            <td><a href="{% url 'orders:accreditation' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
-                        {% endif %}
-                    </tr>
-                    <tr>
                         <td>Project Requirements</td>
                         {% if order.has_project_requirements %}
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
@@ -66,11 +54,7 @@
                         {% else %}
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
 
-                            {% if order.is_accredited %}
-                                <td><a href="{% url 'orders:project_requirements' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
-                            {% else %}
-                                <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
-                            {% endif %}
+                        <td><a href="{% url 'orders:project_requirements' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                         {% endif %}
                     </tr>
                     <tr>

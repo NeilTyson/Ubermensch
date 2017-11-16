@@ -5,12 +5,13 @@ from core.models import Profile, Customer
 
 
 class UserForm(ModelForm):
-    username = forms.CharField(max_length=10)
+    username = forms.CharField(max_length=20)
     password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = Profile
-        fields = ('username', 'first_name', 'last_name', 'password', 'user_type', 'address')
+        fields = ['username', 'first_name', 'last_name', 'password', 'confirm_password', 'user_type', 'address', 'email']
 
 
 class CustomerForm(ModelForm):

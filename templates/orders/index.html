@@ -44,35 +44,28 @@
         {% if not orders %}
             <p>There are no orders yet.</p>
         {% else %}
-            <div class="row">
+            <div class="row x">
             {% for order in orders %}
                 <a href="{% url 'orders:order-details' order.id %}">
                     <div class="order-div">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <h4>{{ order.customer.company_name }}</h4>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4>{{ order.customer.company_name }}</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 customer-details">
+                                <p>{{ order.customer.contact_first_name }} {{ order.customer.contact_last_name }}</p>
+                                <p class="font-italic">{{ order.customer.email_address }}</p>
+                                <p class="font-italic">{{ order.customer.contact_no }}</p>
+                                <p>{{ order.customer.address }}</p>
+                                {% if order.is_pending %}
+                                    <p class="text-danger mt-4">This order is not final yet!</p>
+                                {% endif %}
+                                <p>This order was created at <strong>{{ order.date_created }}</strong></p>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12 customer-details">
-                            <p>{{ order.customer.contact_first_name }} {{ order.customer.contact_last_name }}</p>
-                            <p class="font-italic">{{ order.customer.email_address }}</p>
-                            <p class="font-italic">{{ order.customer.contact_no }}</p>
-                            <p>{{ order.customer.address }}</p>
-                            {% if order.is_pending %}
-                                <p class="text-danger mt-4">This order is not final yet!</p>
-                            {% endif %}
-                            <p>This order was created at <strong>{{ order.date_created }}</strong></p>
-                        </div>
-                        <div class="col-sm-4">
-
-
-                        </div>
-                        <div class="col-sm-4">
-
-                        </div>
-                    </div>
-                </div>
                 </a>
             {% endfor %}
             </div>

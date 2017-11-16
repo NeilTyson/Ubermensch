@@ -1,32 +1,21 @@
-.menu {
-    border: solid 1px #cccccc;
-    height: 250px;
-    width: 300px;
+.main-menu {
+    height: 200px;
+    width: 250px;
     display: inline-block;
     margin: 10px;
+    background-color: #ffe066;
+    box-shadow: 5px 5px 5px #888888;
 }
 
 .container {
     text-align: center;
 }
 
-.upper {
-    height: 80%;
-    background-color: aqua;
+.main-menu p {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
 }
 
-.lower {
-    height: 20%;
-}
 
-.lower p {
-    font-size: 1.2rem;
-    text-align: left;
-    margin: 10px;
-    font-weight: bold;
-}
-
-.upper img {
-    height: 100%;
-    width: 100%;
-}

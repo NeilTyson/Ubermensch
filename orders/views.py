@@ -1,10 +1,13 @@
+import random
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
-
-from orders.forms import OrderForm, AccreditationForm
-from orders.models import Order
+import json
+from orders.forms import OrderForm
+from orders.models import Order, OrderLine, InspectorReport
+from products.models import Product
 
 
 @login_required
@@ -43,46 +46,6 @@ def order_details(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
-
-
-@login_required
-def accreditation_phase(request, order_id):
-    try:
-        order = Order.objects.get(id=order_id)
-
-        context = {
-            'order': order
-        }
-
-        return render(request, 'orders/accreditation.html', context)
-
-    except Order.DoesNotExist:
-        raise Http404("Order does not exist")
-
-
-@login_required
-def upload_documents(request, order_id):
-
-    form = AccreditationForm(request.POST or None, request.FILES)
-    order = Order.objects.get(id=order_id)
-
-    if form.is_valid():
-        order_accreditation = form.save(commit=False)
-        order_accreditation.save()
-
-        context = {
-            'order': order
-        }
-
-        messages.success(request, "Documents uploaded successfully!")
-        return render(request, 'orders/accreditation.html', context)
-
-    context = {
-        'form': form,
-        'order': order
-    }
-
-    return render(request, 'orders/upload-accreditation.html', context)
 
 
 @login_required
@@ -173,3 +136,75 @@ def maintenance(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
+
+
+@login_required
+def inspector_report(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        products = Product.objects.all()
+
+        context = {
+            'order': order,
+            'products': products
+        }
+
+        return render(request, 'orders/inspector_report.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def add_order_line(request):
+    order = Order.objects.get(id=request.POST['order'])
+    product = Product.objects.get(id=request.POST['product'])
+    quantity = request.POST['quantity']
+    duration = request.POST['duration']
+    manpower = request.POST['manpower']
+
+    OrderLine.objects.create(
+        order=order,
+        product=product,
+        quantity=quantity
+    )
+
+    order.has_project_requirements = True
+    order.save()
+
+    number = random.randint(1, 999999)
+    inspector_no = "I-" + str(number)
+
+    InspectorReport.objects.create(
+        order=order,
+        inspector_report_no=inspector_no,
+        duration=duration,
+        manpower=manpower
+    )
+
+    return HttpResponse("added")
+
+
+@login_required
+def view_inspector_report(request, order_id):
+
+    try:
+        order = Order.objects.get(id=order_id)
+        order_line = OrderLine.objects.filter(order=order_id)
+        report_inspector = InspectorReport.objects.get(order=order)
+
+        context = {
+            'order': order,
+            'order_line': order_line,
+            'inspector_report': report_inspector
+        }
+
+        return render(request, 'orders/inspector_report_R.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+
+
+

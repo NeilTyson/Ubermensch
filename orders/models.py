@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from core.models import Customer
 from products.models import Product
@@ -6,7 +8,6 @@ from products.models import Product
 class Order(models.Model):
 
     customer = models.ForeignKey(Customer)
-    inspector_report_no = models.CharField(max_length=15, default='N/A')
 
     # is_pending means kung naapprove na ba yung order
     is_pending = models.BooleanField(default=True)
@@ -26,7 +27,6 @@ class Order(models.Model):
     # fields for the order status
     # puro boolean to
 
-    is_accredited = models.BooleanField(default=False)
     has_project_requirements = models.BooleanField(default=False)
     has_contract = models.BooleanField(default=False)
     has_retrieved_supplies = models.BooleanField(default=False)
@@ -34,14 +34,18 @@ class Order(models.Model):
     is_installed = models.BooleanField(default=False)
     is_maintained = models.BooleanField(default=False)
 
-    # TODO edit fields
-    # fields for accreditation
-    vendor_application = models.ImageField(blank=True)
-    bir_certificate = models.ImageField(blank=True)
-    dole_certification = models.ImageField(blank=True)
-    org_chart = models.ImageField(blank=True)
-    sec_registration_form = models.ImageField(blank=True)
-    sss_certificate = models.ImageField(blank=True)
+    # documents
+    invoice_no = models.CharField(max_length=10, default='na')
+    purchase_order_no = models.CharField(max_length=15, default='na')
+    pull_out_slip_no = models.CharField(max_length=15, default='na')
+
+
+class InspectorReport(models.Model):
+    order = models.OneToOneField(Order)
+    inspector_report_no = models.CharField(max_length=15, default='na')
+    duration = models.DecimalField(decimal_places=0, max_digits=5, default='0')
+    manpower = models.DecimalField(decimal_places=0, max_digits=5, default='0')
+    date_created = models.DateTimeField(default=datetime.now)
 
 
 class OrderLine(models.Model):
@@ -59,6 +63,8 @@ class OfficialReceipt(models.Model):
 class DeliveryReceipt(models.Model):
     order = models.ForeignKey(Order)
     date_created = models.DateField()
+
+
 
 
 

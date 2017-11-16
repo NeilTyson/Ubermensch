@@ -5,16 +5,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-# Create your views here.
 from django.views import View, generic
-from django.views.generic import CreateView
-
+from Ubermensch import helper
 from core.forms import UserForm, CustomerForm
 from core.models import Profile, Customer
 
-
-# def index(request):
-#     return HttpResponse("Hello world")
 
 class IndexView(LoginRequiredMixin, generic.ListView):
 
@@ -25,40 +20,45 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         return Profile.objects.all()
 
 
-# class ProfileFormView(View):
-#
-#     form_class = UserForm
-#     template_name = 'templates/core/profile_form.html'
-#
-#     def get(self, request):
-#         form = self.form_class(None)
-#         return render(request, self.template_name, {'form': form})
-#
-#     def post(self, request):
-#         form = self.form_class(request.POST)
-#
-#         if form.is_valid():
-#
-#             user = form.save(commit=False)
-#
-#             username = form.cleaned_data['username']
-#             password = form.cleaned_data['password']
-#             # user.set_password(password)
-#             # user.save()
-#
-#             existing = User.objects.filter(username=username)
-#
-#             if existing:
-#                 return render(request, self.template_name, {'error': 'Username already exists'})
-#
-#             user = User.objects.create_user(username, None, password)
-#
-#             Profile.objects.create(user=user, first_name=request.POST['first_name'],
-#                                    last_name=request.POST['last_name'],
-#                                    user_type=request.POST['user_type'],
-#                                    address=request.POST["address"])
-#
-#         return redirect('core:index')
+def add_user(request):
+
+    form = UserForm(request.POST or None)
+
+    if form.is_valid():
+
+        username = request.POST['username']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        password = request.POST['password']
+        cpassword = request.POST['confirm_password']
+
+        if helper.is_unique(username):
+
+            User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
+
+            user = User.objects.get(username=username)
+
+            if cpassword != password:
+                return HttpResponse("passwords do not match")
+
+            Profile.objects.create(
+                user=user,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                address=request.POST['address'],
+                user_type=request.POST['user_type']
+            )
+
+            return HttpResponse('worked')
+
+        else:
+
+            return HttpResponse('username is taken')
+
+    context = {'form': form}
+    return render(request, 'core/add_user.html', context)
 
 
 def logout_view(request):
@@ -126,6 +126,18 @@ def add_customer(request):
 
     context = {'form': form}
     return render(request, 'core/add_customer.html', context)
+
+
+@login_required
+def users_index(request):
+
+    profiles = Profile.objects.all()
+
+    context = {
+        'profiles': profiles
+    }
+
+    return render(request, 'core/users.html', context)
 
 
 

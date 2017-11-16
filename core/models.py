@@ -9,6 +9,8 @@ class Profile(models.Model):
     address = models.CharField(max_length=250)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    confirm_password = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
 
     INVENTORY = 'Inventory'
     SALES = 'Sales'
@@ -35,14 +37,14 @@ class Profile(models.Model):
     def get_user_type(self):
         return self.user_type
 
-    # def __str__(self):
-    #     return self.first_name + " " + self.last_name + " - " + self.user_type
-
     def __str__(self):
         return self.user.username
 
     def set_password(self, raw_password):
         self.user.set_password(raw_password)
+
+    def __unicode__(self):
+        return self.user.first_name
 
 
 class Customer(models.Model):

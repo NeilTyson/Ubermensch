@@ -15,85 +15,16 @@
 </head>
 <body>
     <div class="container" style="margin-top: 100px;">
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/time.jpg' %}">
+        <a href="{% url 'orders:index' %}">
+            <div class="main-menu">
+                <p>Orders</p>
             </div>
-
-            <div class="lower">
-                <p><a href="{% url 'schedule:index' %}">Schedules</a></p>
-            </div>
-        </div>
-
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/products.png' %}">
-            </div>
-
-            <div class="lower">
-                <p><a href="{% url 'products:index' %}">Products</a></p>
-            </div>
-        </div>
-
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/inventory.jpg' %}">
-            </div>
-
-            <div class="lower">
-                <p><a href="{% url 'inventory:index' %}">Inventory</a></p>
-            </div>
-        </div>
-
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/order.jpg' %}">
-            </div>
-
-            <div class="lower">
-                <p><a href="{% url 'orders:index' %}">Orders </a></p>
-            </div>
-        </div>
-
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/documents.jpg' %}">
-            </div>
-
-            <div class="lower">
-                <p><a href="{% url 'documents:index' %}">Documents</a>s</p>
-            </div>
-        </div>
-
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/projects.jpg' %}">
-            </div>
-
-            <div class="lower">
-                <p>Projects</p>
-            </div>
-        </div>
-
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/users.jpg' %}">
-            </div>
-
-            <div class="lower">
+        </a>
+        <a href="{% url 'core:add_user' %}">
+            <div class="main-menu">
                 <p>Users</p>
             </div>
-        </div>
-
-        <div class="menu">
-            <div class="upper">
-                <img src="{% static 'images/customer.jpg' %}">
-            </div>
-
-            <div class="lower">
-                <p><a href="{% url 'core:customers-index' %}">Customers</a></p>
-            </div>
-        </div>
+        </a>
     </div>
 </body>
 </html>

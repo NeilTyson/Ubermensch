@@ -1,22 +1,32 @@
 #login-box {
-    background-color: #2f2f2f;
     width: 400px;
-    margin: 70px auto 0;
+    margin: auto;
+    height: 320px;
     padding: 20px;
+    border-radius: 10px;
+    border: solid 3px #a90609;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
 }
 
-label, h1 {
-    color: white;
-}
-
-* {
-    outline: none;
-}
-
-body {
-    background-color: rgb(215, 244, 215);
+label {
+    color: black;
 }
 
 #head {
     color: white;
+}
+
+.btn-login {
+    background-color: #00004d;
+    color: white;
+}
+
+img {
+    margin: 0 auto;
+    display: block;
 }

@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import DateTimeField
 
 from core.models import Profile
 from schedule.models import Schedule
@@ -6,14 +7,20 @@ from schedule.models import Schedule
 
 class ScheduleForm(forms.ModelForm):
 
+    start_date = DateTimeField(input_formats=["%Y/%m/%d %H:%M"], widget=
+                               forms.DateTimeInput(attrs={
+                                   'class': 'datetimepicker'
+                               }))
+
+    end_date = DateTimeField(input_formats=["%Y/%m/%d %H:%M"], widget=
+                             forms.DateTimeInput(attrs={
+                                 'class': 'datetimepicker'
+                             }))
+
     class Meta:
         model = Schedule
-        fields = ['name', 'description', 'customer', 'involved_people', 'deadline_date',]
+        fields = ['name', 'description', 'customer', 'involved_people', 'start_date', 'end_date']
         widgets = {
-            'deadline_date': forms.DateInput(attrs={
-                'class': 'datepicker'
-            }),
-
             'description': forms.Textarea,
             'involved_people': forms.CheckboxSelectMultiple()
         }
