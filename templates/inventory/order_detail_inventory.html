@@ -10,7 +10,7 @@
 <body>
     <div class="container-fluid" style="margin-top: 100px;">
         <div class="col-md-10">
-                <h1 class="display-4">For DLSU</h1>
+                <h1 class="display-4">{{ order.customer.company_name }}</h1>
         </div>
         <div class="col-md-10">
                 <h1 class="display-10">Choose products to be requested from supplier</h1>
@@ -49,50 +49,23 @@
                 </thead>
                 <!-- TODO GENERATE LIST OF PRODUCTS OF AN ORDER -->
                 <tbody>
-                    <tr>
-                        <th><div class="checkbox"><input type="checkbox" value="" name="check"></div></th>
-                        <td class="text-center">CCTV Cover</td>
-                        <td class="text-center">for cctv</td>
-                        <td class="text-center">supplies</td>
-                        <td class="text-center">Digicom</td>
-                        <td class="text-center">5</td>
-                        <td class="text-center">10</td>
-                        <td class="text-right">100.00</td>
+                    {% for orderline in orderlines %}
+                        <tr>
+                            <td>{{ orderline.product.name }}</td>
+                            <td>{{ orderline.product.description }}</td>
+                            <td>{{ orderline.product.category }}</td>
+                            <td>
+                                {% for x in orderline.product.supplier.all %}
+                                    {{ x.name }}
+                                {% endfor %}
+                            </td>
+                            <td class="text-center" id="qty_in_stock">{{ orderline.product.quantity_in_stock }}</td>
+                            <td class="center" id="qty_required">{{ orderline.quantity }}</td>
+                            <td class="center">{{ orderline.product.unit_cost }}</td>
+                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        </tr>
+                    {% endfor %}
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
-                    <tr>
-                        <th><div class="checkbox"><input type="checkbox" value="" name="check"></div></th>
-                        <td class="text-center">Clam</td>
-                        <td class="text-center">for cables</td>
-                        <td class="text-center">supplies</td>
-                        <td class="text-center">Digicom</td>
-                        <td class="text-center">1000</td>
-                        <td class="text-center">2000</td>
-                        <td class="text-right">2000.00</td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
-                    <tr>
-                        <th><div class="checkbox"><input type="checkbox" value="" name="check"></div></th>
-                        <td class="text-center">Fiber Optics Cable 10m</td>
-                        <td class="text-center">Cable for cctv</td>
-                        <td class="text-center">Cable</td>
-                        <td class="text-center">Rukus</td>
-                        <td class="text-center">50</td>
-                        <td class="text-center">100</td>
-                        <td class="text-right">500.00</td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
-                    <tr>
-                        <th><div class="checkbox"><input type="checkbox" value="" name="check"></div></th>
-                        <td class="text-center">CCTV HD</td>
-                        <td class="text-center">30 Megapixel</td>
-                        <td class="text-center">Camera</td>
-                        <td class="text-center">Rukus</td>
-                        <td class="text-center">5</td>
-                        <td class="text-center">10</td>
-                        <td class="text-right">3000.00</td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
                 </tbody>
                 </table>
         <div class="row">

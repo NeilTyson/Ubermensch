@@ -21,9 +21,11 @@ def index(request):
 def order_details_inventory(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
+        orderline = OrderLine.objects.get(id=order_id)
 
         context = {
-            'order': order
+            'order': order,
+            'orderlines': orderline,
         }
 
         return render(request, 'inventory/order_detail_inventory.html', context)
