@@ -69,11 +69,11 @@ def project_requirements_phase(request, order_id):
 def purchase_order_phase(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
-        contract = Contract.objects.get(order=order)
+        has_contract = hasattr(order, 'contract')
 
         context = {
             'order': order,
-            'contract': contract
+            'has_contract': has_contract
         }
 
         return render(request, 'orders/purchase_order_phase.html', context)
@@ -242,6 +242,7 @@ def contract_form(request, order_id):
 
             context = {
                 'order': order,
+                'orders': orders
             }
 
             return render(request, 'orders/index.html', context)
@@ -251,7 +252,6 @@ def contract_form(request, order_id):
             'form': form,
             'order_line': order_line,
             'total_price': helper.get_total_price(order),
-            'orders': orders
         }
 
         return render(request, 'orders/contract_form.html', context)
@@ -267,12 +267,21 @@ def view_contract(request, order_id):
         order = Order.objects.get(id=order_id)
         contract = Contract.objects.get(order=order)
         order_line = OrderLine.objects.filter(order=order)
+        installation = contract.installation_fee / 100
+        engineering = contract.engineering_fee / 100
+        consumables = contract.consumables_fee / 100
+        sub_total = helper.get_total_price(order)
 
         context = {
             'order': order,
             'contract': contract,
             'order_line': order_line,
-            'sub_total': helper.get_total_price(order)
+            'sub_total': sub_total,
+            'installation': round(installation * sub_total, 2),
+            'engineering': round(engineering * sub_total, 2),
+            'consumables': round(consumables * sub_total, 2),
+            'grand_total': round((installation * sub_total) + (engineering * sub_total) +
+                                 (consumables * sub_total) + sub_total, 2)
         }
 
         return render(request, 'orders/contract.html', context)
