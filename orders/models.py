@@ -66,9 +66,19 @@ class Contract(models.Model):
     delivery_terms = models.CharField(max_length=1000)
     warranty = models.DecimalField(decimal_places=0, max_digits=5)
     completion = models.DecimalField(decimal_places=0, max_digits=5)
-    consumables_fee = models.DecimalField(decimal_places=2, max_digits=5)
-    engineering_fee = models.DecimalField(decimal_places=2, max_digits=5)
-    installation_fee = models.DecimalField(decimal_places=2, max_digits=5)
+    consumables_fee = models.DecimalField(decimal_places=0, max_digits=5)
+    engineering_fee = models.DecimalField(decimal_places=0, max_digits=5)
+    installation_fee = models.DecimalField(decimal_places=0, max_digits=5)
+
+
+class BillingStatement(models.Model):
+
+    order = models.ForeignKey(Order)
+    number = models.CharField(max_length=15)
+    date_created = models.DateTimeField(default=datetime.now)
+    percentage = models.DecimalField(max_digits=5, decimal_places=0)
+    item = models.CharField(max_length=1000)
+
 
 
 

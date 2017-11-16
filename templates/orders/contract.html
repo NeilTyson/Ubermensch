@@ -113,24 +113,24 @@
                     <thead class="thead-dark">
                     <tr>
                         <th>Fee</th>
-                        <th>Percentage</th>
-                        <th>Amount</th>
+                        <th class="text-right">Percentage</th>
+                        <th class="text-right">Amount</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td>Engineering Fee</td>
-                        <td class="text-right">{{ contract.engineering_fee }}</td>
+                        <td class="text-right">{{ contract.engineering_fee }}%</td>
                         <td class="text-right">{{ engineering }}</td>
                     </tr>
                     <tr>
                         <td>Consumables Fee</td>
-                        <td class="text-right">{{ contract.consumables_fee }}</td>
+                        <td class="text-right">{{ contract.consumables_fee }}%</td>
                         <td class="text-right">{{ consumables }}</td>
                     </tr>
                     <tr>
                         <td>Installation Fee</td>
-                        <td class="text-right">{{ contract.installation_fee }}</td>
+                        <td class="text-right">{{ contract.installation_fee }}%</td>
                         <td class="text-right">{{ installation }}</td>
                     </tr>
                     </tbody>
@@ -168,6 +168,12 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <div class="text-center mt-5 mb-5">
+        <h4>_______________________________________</h4>
+        <h4>Client's Signature</h4>
+
     </div>
 
     <h3 class="text-center mt-5">** END OF REPORT **</h3>

@@ -8,7 +8,7 @@ import json
 
 from Ubermensch import helper
 from orders.forms import OrderForm, ContractForm
-from orders.models import Order, OrderLine, InspectorReport, Contract
+from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement
 from products.models import Product
 
 
@@ -288,6 +288,65 @@ def view_contract(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
+
+
+@login_required
+def generate_billing_statement_1(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        has_contract = hasattr(order, 'contract')
+        percentage = 0
+
+        number = random.randint(1, 999999)
+        bs_no = "BS-" + str(number)
+
+        while helper.check_duplicate_numbers(bs_no, 'billing'):
+            number = random.randint(1, 999999)
+            bs_no = "BS-" + str(number)
+
+        if order.contract.payment_terms == "50-40-10":
+            percentage = 50
+        elif order.contract.payment_terms == "50-30-20":
+            percentage = 50
+
+        item = str(percentage) + "% DOWN PAYMENT FOR PROJECT"
+
+        BillingStatement.objects.create(
+            order=order,
+            number=bs_no,
+            percentage=percentage,
+            item=item
+        )
+
+        context = {
+            'order': order,
+            'has_contract': has_contract
+        }
+
+        messages.success(request, "Billing statement generated!")
+
+        return render(request, 'orders/purchase_order_phase.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+
+@login_required
+def view_billing_statement_1(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        billing_statement = BillingStatement.objects.filter(order=order).latest('id')
+
+        context = {
+            'order': order,
+            'billing_statement': billing_statement,
+            'price': round(helper.get_grand_total_price(order) * (billing_statement.percentage / 100), 2)
+        }
+
+        return render(request, 'orders/billing_statement.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
 
 
 

@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'contract/(?P<order_id>[0-9]+)$', views.purchase_order_phase, name='contract'),
     url(r'contract/generate/(?P<order_id>[0-9]+)$', views.contract_form, name='contract-form'),
     url(r'contract/view/(?P<order_id>[0-9]+)$', views.view_contract, name='view-contract'),
+    url(r'billing_statement/first-down/(?P<order_id>[0-9]+)$', views.generate_billing_statement_1, name='bill-1'),
+    url(r'billing_statement/view-1/(?P<order_id>[0-9]+)$', views.view_billing_statement_1, name='view_bill-1'),
 
     url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
     url(r'delivery/(?P<order_id>[0-9]+)$', views.delivery, name='delivery'),

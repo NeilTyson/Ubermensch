@@ -23,15 +23,23 @@
             </div>
         </div>
 
+        {% if messages  %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="row">
             <div class="col-md-12">
                 {% if order.has_contract %}
                     <div class="alert alert-success">
-                        <strong>This customer has already signed the contract for the order</strong>
+                        <strong>This customer has already paid the down payment</strong>
                     </div>
                 {% else %}
                     <div class="alert alert-warning">
-                        <strong>This customer has not yet signed the contract for the order</strong>
+                        <strong>This customer has not yet paid the down payment</strong>
                     </div>
                 {% endif %}
             </div>
@@ -63,8 +71,24 @@
 
                     </tr>
                     <tr>
-                        <td>Receive Downpayment</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+
+                        <td>Generate Billing Statement for Downpayment</td>
+                        {% if order.billingstatement_set.count == 0 %}
+                            <td><a href="{% url 'orders:bill-1' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% else %}
+                            <td><a href="{% url 'orders:view_bill-1' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Billing Statement</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
+
+                    </tr>
+                    <tr>
+                        <td>Generate Official Receipt for Downpayment</td>
+                        {% if has_contract %}
+                            <td><a><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                        {% else %}
+                            <td><a><button class="btn btn-primary btn-block disabled" disabled>Accomplish this Task</button></a></td>
+                        {% endif %}
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>
                     <tr>

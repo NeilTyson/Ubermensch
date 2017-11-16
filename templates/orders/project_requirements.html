@@ -22,6 +22,14 @@
             </div>
         </div>
 
+        {% if messages  %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="row">
             <div class="col-md-12">
                 {% if order.has_project_requirements %}
