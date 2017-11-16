@@ -50,28 +50,17 @@
                     <!-- TODO make it dynamic -->
                     <tbody>
                     <tr>
-                        <td>Schedule Contract Negotiation</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
-                    <tr>
                         <td>Generate Contract</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
-                    <tr>
-                        <td>Is Contract Signed?</td>
-                        <td class="text-center"><a><button class="btn btn-success" style="width: 49%">Yes</button></a>
-                            <a><button class="btn btn-danger" style="width: 49%">No</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
-                    <tr>
-                        <td>Schedule Engineers</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td><a href="{% url 'orders:contract-form' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>
                     <tr>
                         <td>Receive Downpayment</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+                    <tr>
+                        <td>Schedule Engineers</td>
                         <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>

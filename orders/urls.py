@@ -13,11 +13,13 @@ urlpatterns = [
     url(r'project_requirements/(?P<order_id>[0-9]+)$', views.project_requirements_phase, name='project_requirements'),
     url(r'project_requirements/inspector_report/(?P<order_id>[0-9]+)$', views.inspector_report,
         name='inspector_report'),
-    url(r'project_requirements/view_inspector_report/(?P<order_id>[0-9]+)$', views.view_inspector_report
-        , name='view-inspector-report'),
+    url(r'project_requirements/view_inspector_report/(?P<order_id>[0-9]+)$', views.view_inspector_report,
+        name='view-inspector-report'),
 
-
+    # contract
     url(r'contract/(?P<order_id>[0-9]+)$', views.purchase_order_phase, name='contract'),
+    url(r'contract/generate/(?P<order_id>[0-9]+)$', views.contract_form, name='contract-form'),
+
     url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
     url(r'delivery/(?P<order_id>[0-9]+)$', views.delivery, name='delivery'),
     url(r'installation/(?P<order_id>[0-9]+)$', views.installation, name='installation'),

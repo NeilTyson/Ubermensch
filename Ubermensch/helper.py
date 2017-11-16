@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from collections import namedtuple
 from core.models import Profile
+from orders.models import OrderLine
 from schedule.models import Schedule
 
 
@@ -51,6 +52,18 @@ def check_overlaps(involved_people, start, end):
                         return True
 
     return False
+
+
+# gets the total price of an order
+def get_total_price(order):
+
+    order_line = OrderLine.objects.filter(order=order)
+    total = 0
+
+    for line in order_line:
+        total += (line.quantity * line.product.selling_price)
+
+    return total
 
 
 

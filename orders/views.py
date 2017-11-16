@@ -5,7 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
 import json
-from orders.forms import OrderForm
+
+from Ubermensch import helper
+from orders.forms import OrderForm, ContractForm
 from orders.models import Order, OrderLine, InspectorReport
 from products.models import Product
 
@@ -204,6 +206,42 @@ def view_inspector_report(request, order_id):
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
 
+
+@login_required
+def contract_form(request, order_id):
+
+    try:
+        orders = Order.objects.all()
+        order = Order.objects.get(id=order_id)
+        order_line = OrderLine.objects.filter(order=order)
+
+        form = ContractForm(request.POST or None)
+
+        if form.is_valid():
+            contract = form.save(commit=False)
+            contract.order = order
+            contract.save()
+
+            messages.success(request, "Contract generated!")
+
+            context = {
+                'order': order,
+            }
+
+            return render(request, 'orders/index.html', context)
+
+        context = {
+            'order': order,
+            'form': form,
+            'order_line': order_line,
+            'total_price': helper.get_total_price(order),
+            'orders': orders
+        }
+
+        return render(request, 'orders/contract_form.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
 
 
 
