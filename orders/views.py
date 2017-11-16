@@ -8,7 +8,7 @@ import json
 
 from Ubermensch import helper
 from orders.forms import OrderForm, ContractForm
-from orders.models import Order, OrderLine, InspectorReport
+from orders.models import Order, OrderLine, InspectorReport, Contract
 from products.models import Product
 
 
@@ -69,9 +69,11 @@ def project_requirements_phase(request, order_id):
 def purchase_order_phase(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
+        contract = Contract.objects.get(order=order)
 
         context = {
-            'order': order
+            'order': order,
+            'contract': contract
         }
 
         return render(request, 'orders/purchase_order_phase.html', context)
@@ -177,6 +179,10 @@ def add_order_line(request):
     number = random.randint(1, 999999)
     inspector_no = "I-" + str(number)
 
+    while helper.check_duplicate_numbers(inspector_no, "inspector"):
+        number = random.randint(1, 999999)
+        inspector_no = "I-" + str(number)
+
     InspectorReport.objects.create(
         order=order,
         inspector_report_no=inspector_no,
@@ -220,6 +226,16 @@ def contract_form(request, order_id):
         if form.is_valid():
             contract = form.save(commit=False)
             contract.order = order
+
+            # contract no
+            number = random.randint(1, 999999)
+            contract_no = "PO-" + str(number)
+
+            while helper.check_duplicate_numbers(contract_no, 'contract'):
+                number = random.randint(1, 999999)
+                contract_no = "I-" + str(number)
+
+            contract.number = contract_no
             contract.save()
 
             messages.success(request, "Contract generated!")
@@ -239,6 +255,27 @@ def contract_form(request, order_id):
         }
 
         return render(request, 'orders/contract_form.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def view_contract(request, order_id):
+
+    try:
+        order = Order.objects.get(id=order_id)
+        contract = Contract.objects.get(order=order)
+        order_line = OrderLine.objects.filter(order=order)
+
+        context = {
+            'order': order,
+            'contract': contract,
+            'order_line': order_line,
+            'sub_total': helper.get_total_price(order)
+        }
+
+        return render(request, 'orders/contract.html', context)
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")

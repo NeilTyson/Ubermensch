@@ -53,6 +53,7 @@ class DeliveryReceipt(models.Model):
 
 class Contract(models.Model):
     order = models.OneToOneField(Order)
+    number = models.CharField(max_length=15)
     date_created = models.DateTimeField(default=datetime.now)
 
     PAYMENT_OPTIONS = (

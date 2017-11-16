@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from collections import namedtuple
 from core.models import Profile
-from orders.models import OrderLine
+from orders.models import OrderLine, InspectorReport, Contract
 from schedule.models import Schedule
 
 
@@ -64,6 +64,40 @@ def get_total_price(order):
         total += (line.quantity * line.product.selling_price)
 
     return total
+
+
+# check documents numbers
+# methods for them
+# returns True if there are duplicates
+def check_duplicate_numbers(number, report):
+
+    if report == "inspector":
+
+        dup = 0
+        reports = InspectorReport.objects.all()
+
+        for x in reports:
+            if number == x.inspector_report_no:
+                dup = 1
+
+        if dup > 0:
+            return True
+
+    elif report == "contract":
+
+        dup = 0
+        reports = Contract.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
+    return False
+
+
 
 
 

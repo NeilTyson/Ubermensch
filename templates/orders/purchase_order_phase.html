@@ -10,6 +10,7 @@
 
     <script src="{% static 'js/base_orders.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+
 </head>
 <body>
     <div class="container" style="margin-top: 100px;">
@@ -50,9 +51,16 @@
                     <!-- TODO make it dynamic -->
                     <tbody>
                     <tr>
-                        <td>Generate Contract</td>
-                        <td><a href="{% url 'orders:contract-form' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if contract is None %}
+                            <td>Generate Contract</td>
+                            <td><a href="{% url 'orders:contract-form' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% else %}
+                            <td>View Contract</td>
+                            <td><a href="{% url 'orders:view-contract' order.id %}"><button class="btn btn-primary btn-block">View Contract</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
+
                     </tr>
                     <tr>
                         <td>Receive Downpayment</td>
