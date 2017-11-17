@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core import serializers
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render
@@ -19,6 +20,18 @@ def index(request):
     context = {'schedules': schedules}
 
     return render(request, 'schedule/index.html', context)
+
+
+@login_required
+def my_schedule(request):
+
+    profile = Profile.objects.get(user=request.user)
+
+    context = {
+        'profile': profile.user.username
+    }
+
+    return render(request, 'schedule/my_schedule.html', context)
 
 
 @login_required
@@ -119,6 +132,19 @@ def display_events(request):
 
     serialized = serializers.serialize('json', schedules)
     data = {'schedules': serialized}
+
+    return JsonResponse(data)
+
+
+# ajax of displaying own events on the calendar
+def display_own_events(request):
+
+    user = User.objects.get(username=request.POST['username'])
+    profile = Profile.objects.get(user=user)
+
+    my_schedules = Schedule.objects.filter(involved_people=profile)
+    serialized = serializers.serialize('json', my_schedules)
+    data = {'my_schedules': serialized}
 
     return JsonResponse(data)
 
