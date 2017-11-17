@@ -2,7 +2,8 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from collections import namedtuple
 from core.models import Profile
-from orders.models import OrderLine, InspectorReport, Contract, BillingStatement
+from inventory.models import RequestedSupplies
+from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order
 from schedule.models import Schedule
 
 
@@ -122,6 +123,27 @@ def check_duplicate_numbers(number, report):
             return True
 
     return False
+
+
+# request products per supplier
+# will add to requested supplies
+# check inventory models
+def add_to_requested_products():
+
+    orders = Order.objects.all()
+    for order in orders:
+
+        line = order.orderline_set.all()
+        for x in line:
+
+            supplier = x.product.supplier
+
+            RequestedSupplies.objects.create(
+                supplier=supplier,
+                product=x.product,
+                quantity=x.quantity
+            )
+
 
 
 

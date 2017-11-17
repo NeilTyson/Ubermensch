@@ -349,5 +349,15 @@ def view_billing_statement_1(request, order_id):
         raise Http404('Order does not exist')
 
 
+def generate_official_receipt_1(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        has_contract = hasattr(order, 'contract')
+        percentage = 0
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
 
 
