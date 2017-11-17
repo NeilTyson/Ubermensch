@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^inventory-order', views.inventory_order, name='inventory-order'),
     url(r'^order/(?P<order_id>[0-9]+)', views.order_details_inventory, name='order-details'),
+    url(r'^request-inventory', views.request_inventory, name='request-inventory'),
 ]

@@ -37,3 +37,9 @@ def order_details_inventory(request, order_id):
 def inventory_order(request):
     orders = Order.objects.all()
     return render(request, 'inventory/inventory_order.html', {'orders': orders})
+
+
+def request_inventory(request):
+    products = Product.objects.all()
+    return render(request, 'inventory/request_inventory.html', {'products': products})
+
