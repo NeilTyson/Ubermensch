@@ -84,12 +84,13 @@
                     </tr>
                     <tr>
                         <td>Generate Official Receipt for Downpayment</td>
-                        {% if has_contract %}
-                            <td><a><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                        {% if order.officialreceipt_set.count == 0 %}
+                            <td><a href="{% url 'orders:official-receipt-1' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                         {% else %}
-                            <td><a><button class="btn btn-primary btn-block disabled" disabled>Accomplish this Task</button></a></td>
+                            <td><a href="{% url 'orders:view_or-1' order.id %}"><button class="btn btn-primary btn-block">View Official Receipt</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                         {% endif %}
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>
                     <tr>
                         <td>Schedule Engineers</td>

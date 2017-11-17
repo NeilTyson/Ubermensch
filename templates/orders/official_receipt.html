@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Official Receipt {{ order.id }}</title>
+
+        {% load static %}
+        {% include 'bootstrap.html' %}
+
+        <style>
+        p {
+            margin: -5px;
+            font-size: 0.8rem;
+        }
+
+        div.or-main p, .x p {
+            font-size: 1.3rem;
+            margin: 5px;
+        }
+
+        div.or-main {
+            border: 1px solid black;
+            padding: 5px;
+            margin: 10px;
+        }
+    </style>
+    </head>
+    <body>
+        <div class='container'>
+        <div class='row'>
+            <div class='col-md-12 text-center'>
+                <img src='{% static 'images/header_logo.png' %}' height="80px" class="m-2">
+                <p>Digital Network Communication & Computers Inc. </p>
+                <p>Main Office</p>
+                <p>30/F Antel Global Corporate Center, Julia Vargas Ave., and Jade Drive</p>
+                <p>Ortigas Center, Brgy. San Antonio, Pasig City</p>
+                <p>Tel. Nos: 12346789</p>
+                <p>TIN: 123-456-789</p>
+            </div>
+        </div>
+        <div class='row m-5'>
+            <div class='col-md-12'>
+                <h1 class='text-center'>OFFICIAL RECEIPT</h1>
+                <h1 class="text-center text-danger">{{ official_receipt.number }}</h1>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-6'>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th colspan="2">In Settlement of the Following:</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Purchase Order #</td>
+                        <td class="detail text-right">{{ order.contract.number }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Sales (VAT Inclusive)</td>
+                        <td class="detail text-right">{{ amount }}</td>
+                    </tr>
+                    <tr>
+                        <td>Less: VAT</td>
+                        <td class="detail text-right">{{ vat }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td class="detail text-right">{{ total }}</td>
+                    </tr>
+                    <tr>
+                        <td>Less: SC/PWD Discount</td>
+                        <td class="detail text-right">N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td class="detail text-right">{{ total }}</td>
+                    </tr>
+                    <tr>
+                        <td>Less: W;Holding</td>
+                        <td class="detail text-right">N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Total Amount Due</td>
+                        <td class="detail text-right">{{ total }}</td>
+                    </tr>
+                    <tr>
+                        <td>VATable</td>
+                        <td class="detail text-right">N/A</td>
+                    </tr>
+                    <tr>
+                        <td>VAT-Exempt</td>
+                        <td class="detail text-right">N/A</td>
+                    </tr>
+                    <tr>
+                        <td>VAT-Zero Rated Scale</td>
+                        <td class="detail text-right">N/A</td>
+                    </tr>
+                    <tr>
+                        <td>VAT Amount</td>
+                        <td class="detail text-right">N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Total Sales</td>
+                        <td class="detail text-right">{{ total }}</td>
+                    </tr>
+                    <tr>
+                        <td>Form of Payment:</td>
+                        <td class="detail text-right">{{ order.contract.form_of_payment }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <table class='table table-striped'>
+                    <thead class="thead-dark">
+                    <tr>
+                        <th colspan="2">Report Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th> Report No</th>
+                        <td>{{ official_receipt.number }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date Created</th>
+                        <td>{{ official_receipt.date_created }}</td>
+                    </tr>
+                    <tr>
+                        <th>Generated by</th>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="or-main">
+                    <p>Received from: <strong>{{ order.customer.contact_first_name }} {{ order.customer.contact_last_name }} </strong></p>
+                    <p>of <strong>{{ order.customer.company_name }}</strong></p>
+                    <p>with TIN:</p>
+                    <p>with address at: <strong>{{ order.customer.address }}</strong></p>
+                    <p>the sum of <strong>{{ pesos }} pesos and {{ centavos }} centavos</strong></p>
+                    <p>in partial partial/full payment of <strong>P {{ amount }}</strong></p>
+                </div>
+                <div class="or-main">
+                    <p>Sr. Citizen TIN:</p>
+                    <p>OSCA/PWD ID No:</p>
+                    <p>Signature:</p>
+                </div>
+                <div class="x mt-4">
+                    <p>_____________________________________________________________</p>
+                    <p class="text-center">Cashier's Signature</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    </body>
+</html>

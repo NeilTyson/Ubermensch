@@ -42,7 +42,7 @@ class OrderLine(models.Model):
 
 class OfficialReceipt(models.Model):
     order = models.ForeignKey(Order)
-    date_created = models.DateField()
+    date_created = models.DateField(default=datetime.now)
     percentage = models.DecimalField(max_digits=5, decimal_places=2)
     number = models.CharField(max_length=15)
 
@@ -63,6 +63,11 @@ class Contract(models.Model):
         ('Full Payment', 'Full Payment')
     )
 
+    FORM_OF_PAYMENT = (
+        ('Check', 'Check'),
+        ('Cash', 'Cash')
+    )
+
     payment_terms = models.CharField(max_length=40, choices=PAYMENT_OPTIONS)
     delivery_terms = models.CharField(max_length=1000)
     warranty = models.DecimalField(decimal_places=0, max_digits=5)
@@ -70,6 +75,7 @@ class Contract(models.Model):
     consumables_fee = models.DecimalField(decimal_places=0, max_digits=5)
     engineering_fee = models.DecimalField(decimal_places=0, max_digits=5)
     installation_fee = models.DecimalField(decimal_places=0, max_digits=5)
+    form_of_payment = models.CharField(max_length=30, choices=FORM_OF_PAYMENT, default='Check')
 
 
 class BillingStatement(models.Model):

@@ -1,14 +1,16 @@
 import random
+import math
+import decimal
 
+import inflect as inflect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
-import json
 
 from Ubermensch import helper
 from orders.forms import OrderForm, ContractForm
-from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement
+from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt
 from products.models import Product
 
 
@@ -355,9 +357,67 @@ def generate_official_receipt_1(request, order_id):
         has_contract = hasattr(order, 'contract')
         percentage = 0
 
+        number = random.randint(1, 999999)
+        or_no = "OR-" + str(number)
+
+        while helper.check_duplicate_numbers(or_no, 'billing'):
+            number = random.randint(1, 999999)
+            or_no = "OR-" + str(number)
+
+        if order.contract.payment_terms == "50-40-10":
+            percentage = 50
+        elif order.contract.payment_terms == "50-30-20":
+            percentage = 50
+
+        OfficialReceipt.objects.create(
+            order=order,
+            number=or_no,
+            percentage=percentage
+        )
+
+        context = {
+            'order': order,
+            'has_contract': has_contract
+        }
+
+        messages.success(request, "Official receipt generated!")
+
+        return render(request, 'orders/purchase_order_phase.html', context)
+
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
 
+
+def view_official_receipt(request, order_id):
+
+    try:
+        order = Order.objects.get(id=order_id)
+        official_receipt = OfficialReceipt.objects.filter(order=order).latest('id')
+        percentage = official_receipt.percentage
+        total = percentage / 100 * helper.get_grand_total_price(order)
+        vat = total * decimal.Decimal(0.12)
+
+        fraction, whole = math.modf(round(total, 2))
+        fraction = fraction * 100
+
+        i = inflect.engine()
+        whole_number = i.number_to_words(int(whole))
+        decimal_part = i.number_to_words(int(fraction))
+
+        context = {
+            'amount': round(total, 2),
+            'order': order,
+            'official_receipt': official_receipt,
+            'vat': round(vat, 2),
+            'total': round(total - vat, 2),
+            'pesos': whole_number,
+            'centavos': decimal_part
+        }
+
+        return render(request, 'orders/official_receipt.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
 
 
 
