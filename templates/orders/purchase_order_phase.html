@@ -74,10 +74,10 @@
 
                         <td>Generate Billing Statement for Downpayment</td>
                         {% if order.billingstatement_set.count == 0 %}
-                            <td><a href="{% url 'orders:bill-1' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                            <td><a href="{% url 'orders:bill-1' order.id 1 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                         {% else %}
-                            <td><a href="{% url 'orders:view_bill-1' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Billing Statement</button></a></td>
+                            <td><a href="{% url 'orders:view_bill-1' order.id 1 %}" target="_blank"><button class="btn btn-primary btn-block">View Billing Statement</button></a></td>
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                         {% endif %}
 
@@ -85,10 +85,10 @@
                     <tr>
                         <td>Generate Official Receipt for Downpayment</td>
                         {% if order.officialreceipt_set.count == 0 %}
-                            <td><a href="{% url 'orders:official-receipt-1' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                            <td><a href="{% url 'orders:official-receipt-1' order.id 1 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                         {% else %}
-                            <td><a href="{% url 'orders:view_or-1' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Official Receipt</button></a></td>
+                            <td><a href="{% url 'orders:view_or-1' order.id 1 %}" target="_blank"><button class="btn btn-primary btn-block">View Official Receipt</button></a></td>
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                         {% endif %}
                     </tr>

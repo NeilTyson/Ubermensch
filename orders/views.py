@@ -295,7 +295,7 @@ def view_contract(request, order_id):
 
 
 @login_required
-def generate_billing_statement_1(request, order_id):
+def generate_billing_statement_1(request, order_id, phase):
     try:
         order = Order.objects.get(id=order_id)
         has_contract = hasattr(order, 'contract')
@@ -319,7 +319,8 @@ def generate_billing_statement_1(request, order_id):
             order=order,
             number=bs_no,
             percentage=percentage,
-            item=item
+            item=item,
+            phase=phase
         )
 
         context = {
@@ -336,10 +337,10 @@ def generate_billing_statement_1(request, order_id):
 
 
 @login_required
-def view_billing_statement_1(request, order_id):
+def view_billing_statement_1(request, order_id, phase):
     try:
         order = Order.objects.get(id=order_id)
-        billing_statement = BillingStatement.objects.filter(order=order).latest('id')
+        billing_statement = BillingStatement.objects.filter(order=order).filter(phase=phase)[0]
 
         context = {
             'order': order,
@@ -354,7 +355,7 @@ def view_billing_statement_1(request, order_id):
 
 
 @login_required
-def generate_official_receipt_1(request, order_id):
+def generate_official_receipt_1(request, order_id, phase):
     try:
         order = Order.objects.get(id=order_id)
         has_contract = hasattr(order, 'contract')
@@ -375,7 +376,8 @@ def generate_official_receipt_1(request, order_id):
         OfficialReceipt.objects.create(
             order=order,
             number=or_no,
-            percentage=percentage
+            percentage=percentage,
+            phase=phase
         )
 
         context = {
@@ -392,11 +394,11 @@ def generate_official_receipt_1(request, order_id):
 
 
 @login_required
-def view_official_receipt(request, order_id):
+def view_official_receipt(request, order_id, phase):
 
     try:
         order = Order.objects.get(id=order_id)
-        official_receipt = OfficialReceipt.objects.filter(order=order).latest('id')
+        official_receipt = OfficialReceipt.objects.filter(order=order).filter(phase=phase)[0]
         percentage = official_receipt.percentage
         total = percentage / 100 * helper.get_grand_total_price(order)
         vat = total * decimal.Decimal(0.12)
@@ -470,7 +472,9 @@ def schedule_engineers(request, order_id):
 
             else:
                 order.has_scheduled_engineers = True
+                order.has_contract = True
                 order.save()
+                schedule.customer = order.customer
                 schedule.save()
 
                 for p in engineers:
