@@ -470,9 +470,7 @@ def schedule_engineers(request, order_id):
 
             else:
                 order.has_scheduled_engineers = True
-                order.has_contract = True
                 order.save()
-                schedule.customer = order.customer
                 schedule.save()
 
                 for p in engineers:
