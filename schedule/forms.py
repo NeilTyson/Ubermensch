@@ -48,7 +48,7 @@ class ScheduleEngineerForm(forms.ModelForm):
 
     class Meta:
         model = Schedule
-        fields = ['name', 'description', 'customer', 'involved_people', 'start_date', 'end_date']
+        fields = ['name', 'description', 'involved_people', 'start_date', 'end_date']
         widgets = {
             'description': forms.Textarea,
             'involved_people': forms.CheckboxSelectMultiple()
