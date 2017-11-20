@@ -25,6 +25,9 @@ urlpatterns = [
     url(r'official_receipt/first-down/(?P<order_id>[0-9]+)$', views.generate_official_receipt_1,
         name='official-receipt-1'),
     url(r'official_receipt/view-1/(?P<order_id>[0-9]+)$', views.view_official_receipt, name='view_or-1'),
+    url(r'schedule_engineers/(?P<order_id>[0-9]+)$', views.schedule_engineers, name='schedule_engineers'),
+
+
 
     url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
     url(r'delivery/(?P<order_id>[0-9]+)$', views.delivery, name='delivery'),

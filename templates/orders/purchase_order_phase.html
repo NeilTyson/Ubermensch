@@ -94,8 +94,13 @@
                     </tr>
                     <tr>
                         <td>Schedule Engineers</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if not order.has_scheduled_engineers %}
+                            <td><a href="{% url 'orders:schedule_engineers' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% else %}
+                            <td><a><button class="btn btn-primary btn-block">View Engineers Scheduled</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
                     </tbody>
                     <tr>

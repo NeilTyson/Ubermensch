@@ -1,6 +1,7 @@
 import random
 import math
 import decimal
+from datetime import datetime
 
 import inflect as inflect
 from django.contrib import messages
@@ -12,6 +13,7 @@ from Ubermensch import helper
 from orders.forms import OrderForm, ContractForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt
 from products.models import Product
+from schedule.forms import ScheduleForm, ScheduleEngineerForm
 
 
 @login_required
@@ -351,6 +353,7 @@ def view_billing_statement_1(request, order_id):
         raise Http404('Order does not exist')
 
 
+@login_required
 def generate_official_receipt_1(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
@@ -388,6 +391,7 @@ def generate_official_receipt_1(request, order_id):
         raise Http404("Order does not exist")
 
 
+@login_required
 def view_official_receipt(request, order_id):
 
     try:
@@ -419,5 +423,73 @@ def view_official_receipt(request, order_id):
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
 
+
+@login_required
+def schedule_engineers(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        has_contract = hasattr(order, 'contract')
+
+        form = ScheduleEngineerForm(request.POST or None, initial={
+            'name': "Installation for " + str(order.customer),
+            'customer': order.customer
+        })
+        engineers = request.POST.getlist('involved_people')
+
+        if form.is_valid():
+            schedule = form.save(commit=False)
+
+            start_date = datetime.strptime(request.POST['start_date'], '%Y/%m/%d %H:%M')
+            end_date = datetime.strptime(request.POST['end_date'], '%Y/%m/%d %H:%M')
+
+            if end_date < start_date:
+
+                context = {
+                    'form': form,
+                    'error': "End date cannot be before the start date"
+                }
+
+                return render(request, 'schedule/create_schedule.html', context)
+
+            if start_date < datetime.now() or end_date < datetime.now():
+                context = {
+                    'form': form,
+                    'error': "Start dates and end dates cannot be past the current date"
+                }
+
+                return render(request, 'schedule/create_schedule.html', context)
+
+            if helper.check_overlaps(engineers, start_date, end_date):
+
+                context = {
+                    'form': form,
+                    'error': "Failed to add schedule. Overlap/s or conflict/s found"
+                }
+
+                return render(request, 'schedule/create_schedule.html', context)
+
+            else:
+                order.has_scheduled_engineers = True
+                order.save()
+                schedule.save()
+
+                for p in engineers:
+                    schedule.involved_people.add(p)
+
+                messages.success(request, "Schedule added successfully!")
+
+                context = {
+                    'order': order,
+                    'has_contract': has_contract
+                }
+
+                return render(request, 'orders/purchase_order_phase.html', context)
+
+        context = {'form': form}
+
+        return render(request, 'schedule/create_schedule.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
 
 

@@ -18,6 +18,7 @@ class Profile(models.Model):
     ACCOUNTING = 'Accounting'
     TECHNICAL = 'Technical'
     ADMIN = 'Admin'
+    ENGINEER = 'Engineer'
 
     USER_TYPE_CHOICES = (
         (INVENTORY, "Inventory"),
@@ -25,7 +26,8 @@ class Profile(models.Model):
         (PROCUREMENT, "Procurement"),
         (ACCOUNTING, "Accounting"),
         (TECHNICAL, "Technical"),
-        (ADMIN, "Admin")
+        (ADMIN, "Admin"),
+        (ENGINEER, "Engineer")
     )
 
     user_type = models.CharField(

@@ -19,6 +19,7 @@ class Order(models.Model):
     is_delivered = models.BooleanField(default=False)
     is_installed = models.BooleanField(default=False)
     is_maintained = models.BooleanField(default=False)
+    has_scheduled_engineers = models.BooleanField(default=False)
 
     # documents
     invoice_no = models.CharField(max_length=10, default='na')
@@ -83,7 +84,7 @@ class BillingStatement(models.Model):
     order = models.ForeignKey(Order)
     number = models.CharField(max_length=15)
     date_created = models.DateTimeField(default=datetime.now)
-    percentage = models.DecimalField(max_digits=5, decimal_places=0)
+    percentage = models.DecimalField(max_digits=5, decimal_places=0, help_text="In percent")
     item = models.CharField(max_length=1000)
 
 
