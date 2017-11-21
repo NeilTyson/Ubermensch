@@ -26,6 +26,9 @@ class Order(models.Model):
     purchase_order_no = models.CharField(max_length=15, default='na')
     pull_out_slip_no = models.CharField(max_length=15, default='na')
 
+    def __str__(self):
+        return str(self.customer)
+
 
 class InspectorReport(models.Model):
     order = models.OneToOneField(Order)

@@ -474,7 +474,7 @@ def schedule_engineers(request, order_id):
                 order.has_scheduled_engineers = True
                 order.has_contract = True
                 order.save()
-                schedule.customer = order.customer
+                schedule.order = order
                 schedule.save()
 
                 for p in engineers:
