@@ -35,5 +35,6 @@ urlpatterns = [
     url(r'maintenance/(?P<order_id>[0-9]+)$', views.maintenance, name='maintenance'),
 
     # ajax add order line
-    url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line')
+    url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line'),
+    url(r'ajax/view_engineers$', views.view_engineers, name='view-engineers')
 ]

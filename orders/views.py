@@ -6,7 +6,8 @@ from datetime import datetime
 import inflect as inflect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse
+from django.core import serializers
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from Ubermensch import helper
@@ -14,6 +15,7 @@ from orders.forms import OrderForm, ContractForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt
 from products.models import Product
 from schedule.forms import ScheduleForm, ScheduleEngineerForm
+from schedule.models import Schedule
 
 
 @login_required
@@ -495,5 +497,22 @@ def schedule_engineers(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
+
+
+# ajax
+def view_engineers(request):
+
+    order_id = request.POST['order']
+    order = Order.objects.get(id=order_id)
+    schedule = Schedule.objects.filter(
+        involved_people__user_type="Engineer",
+        order=order
+    )
+
+    engineers = schedule[0].involved_people.all()
+
+    serialize = serializers.serialize('json', engineers)
+
+    return JsonResponse(serialize, safe=False)
 
 
