@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Schedule</title>
+
+        {% load static %}
+        {% include 'bootstrap.html' %}
+        {% include 'core/navbar.html' %}
+
+         <!-- FULLCALENDAR -->
+        <link rel="stylesheet" href="{% static 'css/fullcalendar.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fullcalendar.print.min.css' %}" media="print">
+
+        <script src="{% static 'js/moment.min.js' %}"></script>
+        <script src="{% static 'js/fullcalendar.min.js' %}"></script>
+
+        <!-- CUSTOM JS -->
+{#        <script src="{% static 'js/base_schedule.js' %}"></script>#}
+{#        <script src="{% static 'js/calendar.js' %}"></script>#}
+
+    </head>
+    <body>
+
+    <div class="container" style="margin-top: 100px;">
+
+
+        {% if messages  %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-10">
+                <h2>Schedule</h2>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'schedule:index' %}"><button class="btn btn-secondary mt-3">Go Back</button></a>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="row">
+            <div class="col-md-12">
+                {% if schedule.is_completed %}
+                    <div class="alert alert-success">
+                        <strong>This schedule has already been completed</strong>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <strong>This schedule has not yet been completed</strong>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Schedule Details</h6>
+                <ul class="list-group">
+                    <li class="list-group-item">{{ schedule.name }}</li>
+                    <li class="list-group-item">{{ schedule.description }}</li>
+                    <li class="list-group-item">This will start at {{ schedule.start_date }}</li>
+                    <li class="list-group-item">This will end at {{ schedule.end_date }}</li>
+                    <li class="list-group-item">{{ schedule.order.customer.company_name }}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6>Involved People</h6>
+                <ul class="list-group">
+                    {% for peep in schedule.involved_people.all %}
+                        <li class="list-group-item">{{ peep.first_name }} {{ peep.last_name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    </body>
+</html>

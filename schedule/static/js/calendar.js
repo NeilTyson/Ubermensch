@@ -6,15 +6,23 @@ $(document).ready(function(){
 
     });
 
+    // display events on document load
+    display_events();
+
+    $(".fc-right").click(function() {
+        display_events();
+    });
+
     // get the schedules
-    $.ajax({
+    function display_events() {
+        $.ajax({
         url: "ajax/display_events",
         type: "get",
         dataType: "json",
         success: function(data) {
             var json = JSON.parse(data.schedules);
 
-            console.log(json);
+            // console.log(json);
 
             for (var x in json) {
                 var event;
@@ -23,7 +31,7 @@ $(document).ready(function(){
                     title: json[x].fields.name,
                     start: json[x].fields.start_date,
                     url: "details/" + json[x].pk,
-                    end: json[x].fields.end_date,
+                    end: json[x].fields.end_date
                 };
 
                 calendar.fullCalendar('renderEvent', event);
@@ -33,5 +41,6 @@ $(document).ready(function(){
             console.log(data.responseText);
         }
     });
+    }
 
 });

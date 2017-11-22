@@ -39,11 +39,10 @@ def details(request, pk):
         schedule = Schedule.objects.get(id=pk)
 
         context = {
-            'schedule': schedule
+            'schedule': schedule,
         }
 
-        # return render(request, 'orders/order_detail.html', context)
-        return HttpResponse("This is schedule %s" % pk)
+        return render(request, 'schedule/schedule_detail.html', context)
 
     except Schedule.DoesNotExist:
         raise Http404("Schedule does not exist")
