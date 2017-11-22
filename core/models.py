@@ -13,7 +13,6 @@ class Profile(models.Model):
     email = models.EmailField(unique=True)
 
     INVENTORY = 'Inventory'
-    SALES = 'Sales'
     PROCUREMENT = 'Procurement'
     ACCOUNTING = 'Accounting'
     TECHNICAL = 'Technical'
@@ -22,7 +21,6 @@ class Profile(models.Model):
 
     USER_TYPE_CHOICES = (
         (INVENTORY, "Inventory"),
-        (SALES, "Sales"),
         (PROCUREMENT, "Procurement"),
         (ACCOUNTING, "Accounting"),
         (TECHNICAL, "Technical"),
@@ -57,9 +55,6 @@ class Customer(models.Model):
     contact_no = models.CharField(max_length=20)
     email_address = models.EmailField()
     address = models.CharField(max_length=400)
-
-    # kung tanggap nitong customer na to ang digicom
-    is_accredited = models.BooleanField(default=False)
 
     def __str__(self):
         return self.company_name
