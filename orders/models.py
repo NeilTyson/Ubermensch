@@ -21,10 +21,7 @@ class Order(models.Model):
     is_maintained = models.BooleanField(default=False)
     has_scheduled_engineers = models.BooleanField(default=False)
 
-    # documents
-    invoice_no = models.CharField(max_length=10, default='na')
-    purchase_order_no = models.CharField(max_length=15, default='na')
-    pull_out_slip_no = models.CharField(max_length=15, default='na')
+    status = models.CharField(max_length=100, default="Project Requirements")
 
     def __str__(self):
         return str(self.customer)

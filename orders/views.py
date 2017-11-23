@@ -35,7 +35,7 @@ def add_order(request):
         order = form.save(commit=False)
         order.save()
 
-        messages.success(request, "Pending order placed")
+        messages.success(request, "Order placed")
         return render(request, 'orders/index.html', {'orders': orders})
 
     return render(request, 'orders/add_order.html', {'form': form})
@@ -180,6 +180,7 @@ def add_order_line(request):
     )
 
     order.has_project_requirements = True
+    order.status = "Contract"
     order.save()
 
     number = random.randint(1, 999999)
@@ -475,6 +476,7 @@ def schedule_engineers(request, order_id):
             else:
                 order.has_scheduled_engineers = True
                 order.has_contract = True
+                order.status = "Product Retrieval"
                 order.save()
                 schedule.order = order
                 schedule.save()

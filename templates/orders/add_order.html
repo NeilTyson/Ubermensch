@@ -28,8 +28,10 @@
             <div class="row">
                 <div class="col-sm-12">
                     <button class="btn btn-secondary mt-5"><a href="{% url 'orders:index' %}">Go Back</a></button>
+                    {% include 'core/success_message.html' %}
                     <h1 class="mt-3">Add Order</h1>
 
+                    <a href="{% url 'core:add-customer' %}"><p><em>Click this to add a new customer</em></p></a>
                         <form method="post">
                             {% csrf_token %}
 

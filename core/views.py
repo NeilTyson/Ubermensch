@@ -9,6 +9,7 @@ from django.views import View, generic
 from Ubermensch import helper
 from core.forms import UserForm, CustomerForm
 from core.models import Profile, Customer
+from orders.forms import OrderForm
 
 
 class IndexView(LoginRequiredMixin, generic.ListView):
@@ -121,8 +122,12 @@ def add_customer(request):
         customer = form.save(commit=False)
         customer.save()
 
+        context = {
+            'form': OrderForm()
+        }
+
         messages.success(request, "Customer added successfully!")
-        return render(request, 'core/customer_index.html', {'customers': customers})
+        return render(request, 'orders/add_order.html', context)
 
     context = {'form': form}
     return render(request, 'core/add_customer.html', context)

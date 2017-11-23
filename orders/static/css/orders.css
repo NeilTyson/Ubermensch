@@ -1,16 +1,11 @@
-.order-div {
-    background-color: #e6e6e6;
-    margin: 20px;
-    padding: 10px;
+div.shape {
+    height: 15px;
+    width: 15px;
+    background-color: red;
     display: inline-block;
-    box-shadow: 5px 5px 5px #888888;
 }
 
-.customer-details p {
-    margin: 0;
-}
-
-.x {
-    text-align: center;
-    margin: 0 auto;
+div.legend {
+    display: inline;
+    margin: 10px;
 }
