@@ -3,7 +3,6 @@
     margin: auto;
     height: 320px;
     padding: 20px;
-    border-radius: 10px;
     border: solid 3px #a90609;
     position: absolute;
     top: 0;
@@ -29,4 +28,8 @@ label {
 img {
     margin: 0 auto;
     display: block;
+}
+
+body {
+    background-image: url('./images/ph.jpg');
 }
