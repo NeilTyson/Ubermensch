@@ -1,87 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Order {{ order.id }} - Project Requirements</title>
-
-    {% load static %}
-    {% include 'bootstrap.html' %}
-    {% include 'core/navbar.html' %}
-
-    <script src="{% static 'js/base_orders.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
-</head>
-<body>
-    <div class="container" style="margin-top: 100px;">
-        <div class="row">
-            <div class="col-md-10">
-                <h1 class="display-4">Project Requirements</h1>
-            </div>
-            <div class="col-md-2 mt-3">
-                <a href="{% url 'orders:order-details' order.id %}"><button class="btn btn-secondary">Back to Order Details</button></a>
-            </div>
-        </div>
-
-        {% if messages  %}
-            <div class="alert alert-success">
-                {% for message in messages %}
-                    <strong>{{ message }}</strong>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <div class="row">
-            <div class="col-md-12">
-                {% if order.has_project_requirements %}
-                    <div class="alert alert-success">
-                        <strong>The inspector's report has already been generated</strong>
-                    </div>
-                {% else %}
-                    <div class="alert alert-warning">
-                        <strong>The inspector's report is not yet generated</strong>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Tasks Involved for this Phase</h4>
-                <table class="table table-striped">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th>Task</th>
-                        <th class="text-center">Action</th>
-                        <th class="text-center">Status</th>
-                    </tr>
-                    </thead>
-                    <!-- TODO make it dynamic -->
-                    <tbody>
-                    <tr>
-                        <td>Generate Inspector's Report</td>
-
-                        {% if order.has_project_requirements %}
-                            <td><a href="{% url 'orders:view-inspector-report' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Inspector's Report</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                        {% else %}
-                            <td><a href="{% url 'orders:inspector_report' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                        {% endif %}
-
-                    </tr>
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Order {{ order.id }} - Project Requirements</title>#}
+{##}
+{#    {% load static %}#}
+{#    {% include 'bootstrap.html' %}#}
+{#    {% include 'core/navbar.html' %}#}
+{##}
+{#    <script src="{% static 'js/base_orders.js' %}"></script>#}
+{#    <link rel="stylesheet" href="{% static 'css/orders.css' %}">#}
+{#</head>#}
+{#<body>#}
+{#    <div class="container" style="margin-top: 100px;">#}
+{#        <div class="row">#}
+{#            <div class="col-md-10">#}
+{#                <h1 class="display-4">Project Requirements</h1>#}
+{#            </div>#}
+{#            <div class="col-md-2 mt-3">#}
+{#                <a href="{% url 'orders:order-details' order.id %}"><button class="btn btn-secondary">Back to Order Details</button></a>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#        {% if messages  %}#}
+{#            <div class="alert alert-success">#}
+{#                {% for message in messages %}#}
+{#                    <strong>{{ message }}</strong>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        {% endif %}#}
+{##}
+{#        <div class="row">#}
+{#            <div class="col-md-12">#}
+{#                {% if order.has_project_requirements %}#}
+{#                    <div class="alert alert-success">#}
+{#                        <strong>The inspector's report has already been generated</strong>#}
+{#                    </div>#}
+{#                {% else %}#}
+{#                    <div class="alert alert-warning">#}
+{#                        <strong>The inspector's report is not yet generated</strong>#}
+{#                    </div>#}
+{#                {% endif %}#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#        <div class="row">#}
+{#            <div class="col-md-12">#}
+{#                <h4>Tasks Involved for this Phase</h4>#}
+{#                <table class="table table-striped">#}
+{#                    <thead class="thead-dark">#}
+{#                    <tr>#}
+{#                        <th>Task</th>#}
+{#                        <th class="text-center">Action</th>#}
+{#                        <th class="text-center">Status</th>#}
+{#                    </tr>#}
+{#                    </thead>#}
+{#                    <!-- TODO make it dynamic -->#}
+{#                    <tbody>#}
+{#                    <tr>#}
+{#                        <td>Generate Inspector's Report</td>#}
+{##}
+{#                        {% if order.has_project_requirements %}#}
+{#                            <td><a href="{% url 'orders:view-inspector-report' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Inspector's Report</button></a></td>#}
+{#                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>#}
+{#                        {% else %}#}
+{#                            <td><a href="{% url 'orders:inspector_report' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>#}
+{#                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>#}
+{#                        {% endif %}#}
+{##}
+{#                    </tr>#}
 {#                    <tr>#}
 {#                        <td>Schedule RFQ Acquisition</td>#}
 {#                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>#}
 {#                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>#}
 {#                    </tr>#}
-                    </tbody>
-                    <tr>
-                        <td colspan="3"><a href="{% url 'orders:order-details' order.id %}"><button class="btn btn-success btn-block">Done </button></a></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-    </div>
-</body>
-</html>
+{#                    </tbody>#}
+{#                    <tr>#}
+{#                        <td colspan="3"><a href="{% url 'orders:order-details' order.id %}"><button class="btn btn-success btn-block">Done </button></a></td>#}
+{#                    </tr>#}
+{#                </table>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#    </div>#}
+{#</body>#}
+{#</html>#}

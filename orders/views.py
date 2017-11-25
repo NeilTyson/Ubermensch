@@ -11,6 +11,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from Ubermensch import helper
+from core.models import Profile
 from orders.forms import OrderForm, ContractForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt
 from products.models import Product
@@ -51,21 +52,6 @@ def order_details(request, order_id):
         }
 
         return render(request, 'orders/order_detail.html', context)
-
-    except Order.DoesNotExist:
-        raise Http404("Order does not exist")
-
-
-@login_required
-def project_requirements_phase(request, order_id):
-    try:
-        order = Order.objects.get(id=order_id)
-
-        context = {
-            'order': order
-        }
-
-        return render(request, 'orders/project_requirements.html', context)
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
@@ -180,11 +166,11 @@ def add_order_line(request):
     )
 
     order.has_project_requirements = True
-    order.status = "Contract"
     order.save()
 
     number = random.randint(1, 999999)
     inspector_no = "I-" + str(number)
+    profile = Profile.objects.get(user=request.user)
 
     while helper.check_duplicate_numbers(inspector_no, "inspector"):
         number = random.randint(1, 999999)
@@ -194,7 +180,8 @@ def add_order_line(request):
         order=order,
         inspector_report_no=inspector_no,
         duration=duration,
-        manpower=manpower
+        manpower=manpower,
+        generated_by=profile
     )
 
     return HttpResponse("added")
@@ -252,7 +239,7 @@ def contract_form(request, order_id):
                 'orders': orders
             }
 
-            return render(request, 'orders/index.html', context)
+            return render(request, 'orders/purchase_order_phase.html', context)
 
         context = {
             'order': order,

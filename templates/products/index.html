@@ -52,6 +52,7 @@
                 <th>Description</th>
                 <th class="text-right">Unit Cost</th>
                 <th class="text-right">Selling Price</th>
+                <th>Units</th>
                 <th>Category</th>
                 <th>Supplier</th>
             </tr>
@@ -63,12 +64,14 @@
                     <td>{{ product.description }}</td>
                     <td class="text-right">{{ product.unit_cost }}</td>
                     <td class="text-right">{{ product.selling_price }}</td>
+                    <td>{{ product.unit }}</td>
                     <td>{{ product.category }}</td>
                     <td>
                         {% for x in product.supplier.all %}
                             {{ x.name }}
                         {% endfor %}
                     </td>
+
                 </tr>
             {% endfor %}
             </tbody>

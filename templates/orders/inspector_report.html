@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order {{ order.id }} - Project Requirements</title>
+    <title>Order {{ order.id }} - Finalize Products</title>
 
     {% load static %}
     {% include 'bootstrap.html' %}
@@ -18,10 +18,10 @@
     <div class="container-fluid" style="margin-top: 100px;">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="display-4">Generate Inspector's Report</h1>
+                <h1 class="display-4">Finalize Project Requirements</h1>
             </div>
             <div class="col-md-4 mt-3">
-                <a href="{% url 'orders:project_requirements' order.id %}"><button class="btn btn-secondary">Back to Project Requirements</button></a>
+                <a href="{% url 'orders:contract' order.id %}"><button class="btn btn-secondary">Back</button></a>
             </div>
         </div>
 
@@ -42,6 +42,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Category</th>
+                        <th>Units</th>
                         <th class="text-right">Selling Price</th>
                         <th>Quantity</th>
                         <th>Action</th>
@@ -53,6 +54,7 @@
                             <td class="product-id" style="display: none;">{{ product.id }}</td>
                             <td class="product-name">{{ product.name }}</td>
                             <td>{{ product.category.name }}</td>
+                            <td>{{ product.unit }}</td>
                             <td class="text-right price">{{ product.selling_price }}</td>
                             <td><input class="form-control quantity-input" type="number" min="0" style="width: 80px;"></td>
                             <td><button class="btn btn-success btn-add">Add</button></td>
@@ -62,21 +64,20 @@
                 </table>
             </div>
             <div class="col-md-4">
-                <p class="mt-4"><strong>Estimates</strong></p>
+                <p class="mt-4"><strong>Details</strong></p>
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Estimated Manpower</label>
+                    <label for="exampleInputEmail1">Manpower</label>
                     <input type="number" min="1" class="form-control" id="manpower" aria-describedby="emailHelp" placeholder="Enter number of manpower">
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Estimated Duration</label>
-                    <input type="number" min="0" class="form-control" id="duration" aria-describedby="emailHelp" placeholder="Enter estimated duration of installation (in weeks)">
+                    <label for="exampleInputEmail1">Duration</label>
+                    <input type="number" min="0" class="form-control" id="duration" aria-describedby="emailHelp" placeholder="Enter duration of installation (in weeks)">
                 </div>
                 <p>Estimated Requirements</p>
                 <ul class="list-group cart">
 
                 </ul>
-                <p class="mt-2">Estimated Cost: <strong class="cost"></strong></p>
-                <a href="#"><button class="btn btn-block btn-primary confirm-btn">Confirm</button></a>
+                <button class="btn btn-block btn-primary confirm-btn">Confirm</button>
             </div>
         </div>
 

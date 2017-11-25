@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    console.log("we");
+
     var feedback = $(".feedback-div");
     var order = $("p#order").html();
 
@@ -66,10 +68,6 @@ $(document).ready(function(){
                 quantity: quantity
             });
 
-            price = price + parseFloat(sellingPrice) * quantity;
-            var fees = price * .2;
-            price = price + fees;
-
             feedback.css('display', 'none');
             button.replaceWith("<p class='text-success'>Added</p>");
             field.attr("disabled", "true");
@@ -77,10 +75,8 @@ $(document).ready(function(){
             listGroup.append(
                 "<li class='list-group-item'>" +
                 " <strong>"+quantity+"</strong> " + name
-                + "</li>"
+                +"</li>"
             );
-
-            $("strong.cost").html(price.toFixed(2));
         }
     });
 
@@ -99,25 +95,35 @@ $(document).ready(function(){
 
             for (var x in cart) {
 
-            $.ajax({
-                url: "/orders/ajax/add_order_line",
-                type: "post",
-                data: {
-                    order: order,
-                    product: cart[x].id,
-                    quantity: cart[x].quantity,
-                    manpower: manpower,
-                    duration: duration
-                },
-                success: function() {
-                    console.log("added");
-
-                    window.location = "/orders/project_requirements/" + order;
-                },
-                error: function(data) {
-                    console.log(data.responseText);
-                }
+                $.ajax({
+                    url: "/orders/ajax/add_order_line",
+                    type: "post",
+                    data: {
+                        order: order,
+                        product: cart[x].id,
+                        quantity: cart[x].quantity,
+                        manpower: manpower,
+                        duration: duration
+                    },
+                    success: function() {
+                        console.log("added");
+                        // window.location = "/";
+                    },
+                    error: function(data) {
+                        console.log(data.responseText);
+                    }
             });
+
+            setInterval(function() {
+                feedback.children().addClass('alert alert-success');
+                feedback.children().children().html("Products finalized!");
+                feedback.css('display', 'initial');
+
+                setInterval(function(){
+                    window.location = "/orders/contract/" + order;
+                }, 2000);
+            }, 0);
+
         }
 
         }

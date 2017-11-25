@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.db import models
-from core.models import Customer
+from core.models import Customer, Profile
 from products.models import Product
 
 
@@ -21,7 +21,7 @@ class Order(models.Model):
     is_maintained = models.BooleanField(default=False)
     has_scheduled_engineers = models.BooleanField(default=False)
 
-    status = models.CharField(max_length=100, default="Project Requirements")
+    status = models.CharField(max_length=100, default="Contract")
 
     def __str__(self):
         return str(self.customer)
@@ -33,6 +33,7 @@ class InspectorReport(models.Model):
     duration = models.DecimalField(decimal_places=0, max_digits=5, default='0')
     manpower = models.DecimalField(decimal_places=0, max_digits=5, default='0')
     date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.OneToOneField(Profile)
 
 
 class OrderLine(models.Model):
