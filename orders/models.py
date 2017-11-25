@@ -59,6 +59,7 @@ class Contract(models.Model):
     order = models.OneToOneField(Order)
     number = models.CharField(max_length=15)
     date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
 
     PAYMENT_OPTIONS = (
         ('50-40-10', '50-40-10'),

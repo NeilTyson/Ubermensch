@@ -32,6 +32,11 @@ $(document).ready(function(){
         return cookieValue;
     }
 
+    function setClass(newClass, element) {
+        element.removeClass();
+        element.addClass(newClass);
+    }
+
     var csrftoken = getCookie('csrftoken');
 
     function csrfSafeMethod(method) {
@@ -58,7 +63,7 @@ $(document).ready(function(){
         var sellingPrice = button.parent().siblings(".price").html();
 
         if (!quantity || quantity <= 0) {
-            feedback.children().addClass('alert alert-danger');
+            setClass("alert alert-danger", feedback);
             feedback.children().children().html("Invalid quantity entered");
             feedback.css('display', 'initial');
         }
@@ -115,7 +120,7 @@ $(document).ready(function(){
             });
 
             setInterval(function() {
-                feedback.children().addClass('alert alert-success');
+                setClass("alert alert-success", feedback);
                 feedback.children().children().html("Products finalized!");
                 feedback.css('display', 'initial');
 
@@ -130,7 +135,7 @@ $(document).ready(function(){
 
         else {
 
-            feedback.children().addClass('alert alert-danger');
+            setClass("alert alert-danger", feedback);
             feedback.children().children().html("Please complete the form");
             feedback.css('display', 'initial');
         }

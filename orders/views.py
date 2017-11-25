@@ -210,6 +210,8 @@ def view_inspector_report(request, order_id):
 @login_required
 def contract_form(request, order_id):
 
+    profile = Profile.objects.get(user=request.user)
+
     try:
         orders = Order.objects.all()
         order = Order.objects.get(id=order_id)
@@ -230,13 +232,15 @@ def contract_form(request, order_id):
                 contract_no = "I-" + str(number)
 
             contract.number = contract_no
+            contract.generated_by = profile
             contract.save()
 
             messages.success(request, "Contract generated!")
 
             context = {
                 'order': order,
-                'orders': orders
+                'orders': orders,
+                'has_contract': hasattr(order, "contract")
             }
 
             return render(request, 'orders/purchase_order_phase.html', context)
