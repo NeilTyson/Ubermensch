@@ -336,7 +336,7 @@ def generate_billing_statement(request, order_id, percentage, code, template_no)
         }
 
         messages.success(request, "Billing statement generated!")
-        template = helper.get_billing_statement(template_no)
+        template = helper.get_payment_template(template_no)
 
         return render(request, template, context)
 
@@ -345,130 +345,91 @@ def generate_billing_statement(request, order_id, percentage, code, template_no)
 
 
 @login_required
-def view_billing_statement(request, order_id, number):
+def billing_statement_lists(request, order_id):
     try:
-        number = int(number)
         order = Order.objects.get(id=order_id)
-        billing_statement = BillingStatement.objects.order_by("id").filter(order=order)[number]
 
         context = {
             'order': order,
-            'billing_statement': billing_statement,
-            'price': round(helper.get_grand_total_price(order) * (billing_statement.percentage / 100), 2)
+            'billing_statements': order.billingstatement_set.order_by("-date_created")
         }
 
-        return render(request, 'orders/billing_statement.html', context)
-
-    except Order.DoesNotExist:
-        raise Http404('Order does not exist')
-
-
-
-@login_required
-def generate_billing_statement_1(request, order_id, phase):
-    try:
-        order = Order.objects.get(id=order_id)
-        has_contract = hasattr(order, 'contract')
-        percentage = 0
-
-        number = random.randint(1, 999999)
-        bs_no = "BS-" + str(number)
-
-        while helper.check_duplicate_numbers(bs_no, 'billing'):
-            number = random.randint(1, 999999)
-            bs_no = "BS-" + str(number)
-
-        if order.contract.payment_terms == "50-40-10":
-            percentage = 50
-        elif order.contract.payment_terms == "50-30-20":
-            percentage = 50
-
-        item = str(percentage) + "% DOWN PAYMENT FOR PROJECT"
-
-        BillingStatement.objects.create(
-            order=order,
-            number=bs_no,
-            percentage=percentage,
-            item=item,
-            phase=phase
-        )
-
-        context = {
-            'order': order,
-            'has_contract': has_contract
-        }
-
-        messages.success(request, "Billing statement generated!")
-
-        return render(request, 'orders/purchase_order_phase.html', context)
-
-    except Order.DoesNotExist:
-        raise Http404('Order does not exist')
-
-
-@login_required
-def view_billing_statement_1(request, order_id, phase):
-    try:
-        order = Order.objects.get(id=order_id)
-        billing_statement = BillingStatement.objects.filter(order=order).filter(phase=phase)[0]
-
-        context = {
-            'order': order,
-            'billing_statement': billing_statement,
-            'price': round(helper.get_grand_total_price(order) * (billing_statement.percentage / 100), 2)
-        }
-
-        return render(request, 'orders/billing_statement.html', context)
-
-    except Order.DoesNotExist:
-        raise Http404('Order does not exist')
-
-
-@login_required
-def generate_official_receipt_1(request, order_id, phase):
-    try:
-        order = Order.objects.get(id=order_id)
-        has_contract = hasattr(order, 'contract')
-        percentage = 0
-
-        number = random.randint(1, 999999)
-        or_no = "OR-" + str(number)
-
-        while helper.check_duplicate_numbers(or_no, 'billing'):
-            number = random.randint(1, 999999)
-            or_no = "OR-" + str(number)
-
-        if order.contract.payment_terms == "50-40-10":
-            percentage = 50
-        elif order.contract.payment_terms == "50-30-20":
-            percentage = 50
-
-        OfficialReceipt.objects.create(
-            order=order,
-            number=or_no,
-            percentage=percentage,
-            phase=phase
-        )
-
-        context = {
-            'order': order,
-            'has_contract': has_contract
-        }
-
-        messages.success(request, "Official receipt generated!")
-
-        return render(request, 'orders/purchase_order_phase.html', context)
-
+        return render(request, "orders/billing_statement_list.html", context)
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
 
 
 @login_required
-def view_official_receipt(request, order_id, phase):
+def view_billing_statement(request, id):
+    try:
+        billing_statement = BillingStatement.objects.get(id=id)
+        order = Order.objects.filter(billingstatement=billing_statement)[0]
 
+        context = {
+            "billing_statement": billing_statement,
+            "order": order,
+            "price": round(helper.get_grand_total_price(order) * (billing_statement.percentage/ 100), 2)
+        }
+
+        return render(request, "orders/billing_statement.html", context)
+    except BillingStatement.DoesNotExist:
+        raise Http404("Billing statement does not exist")
+
+
+@login_required
+def generate_official_receipt(request, order_id, percentage, template_no):
     try:
         order = Order.objects.get(id=order_id)
-        official_receipt = OfficialReceipt.objects.filter(order=order).filter(phase=phase)[0]
+
+        number = random.randint(1, 999999)
+        or_no = "OR-" + str(number)
+
+        while helper.check_duplicate_numbers(or_no, 'official'):
+            number = random.randint(1, 999999)
+            or_no = "OR-" + str(number)
+
+        user = Profile.objects.get(user=request.user)
+
+        OfficialReceipt.objects.create(
+            order=order,
+            number=or_no,
+            percentage=int(percentage),
+            generated_by=user
+        )
+
+        context = {
+            'order': order
+        }
+
+        messages.success(request, "Official receipt generated!")
+        template = helper.get_payment_template(template_no)
+
+        return render(request, template, context)
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+
+@login_required
+def official_receipt_list(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'official_receipts': order.officialreceipt_set.order_by("-date_created")
+        }
+
+        return render(request, "orders/official_receipt_list.html", context)
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+@login_required
+def view_official_receipt(request, id):
+
+    try:
+        official_receipt = OfficialReceipt.objects.get(id=id)
+        order = Order.objects.filter(officialreceipt=official_receipt)[0]
         percentage = official_receipt.percentage
         total = percentage / 100 * helper.get_grand_total_price(order)
         vat = total * decimal.Decimal(0.12)
@@ -542,7 +503,7 @@ def schedule_engineers(request, order_id):
 
             else:
                 order.has_scheduled_engineers = True
-                order.has_contract = True
+                order.has_contract_done = True
                 order.status = "Product Retrieval"
                 order.save()
                 schedule.order = order

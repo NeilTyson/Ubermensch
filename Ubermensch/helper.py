@@ -3,7 +3,7 @@ from datetime import datetime
 from collections import namedtuple
 from core.models import Profile
 from inventory.models import RequestedSupplies
-from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order
+from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt
 from schedule.models import Schedule
 
 
@@ -122,6 +122,18 @@ def check_duplicate_numbers(number, report):
         if dup > 0:
             return True
 
+    elif report == "official":
+
+        dup = 0
+        reports = OfficialReceipt.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
     return False
 
 
@@ -145,8 +157,8 @@ def add_to_requested_products():
             )
 
 
-# check billing statement template
-def get_billing_statement(number):
+# template to return
+def get_payment_template(number):
 
     if number == "1":
         return "orders/purchase_order_phase.html"

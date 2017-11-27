@@ -18,18 +18,19 @@ urlpatterns = [
     url(r'contract/generate/(?P<order_id>[0-9]+)$', views.contract_form, name='contract-form'),
     url(r'contract/view/(?P<order_id>[0-9]+)$', views.view_contract, name='view-contract'),
 
+    # billing statements
     url(r'billing_statement/(?P<order_id>[0-9]+)/(?P<percentage>[0-9]+)/(?P<code>[0-9])/(?P<template_no>[0-9])$',
         views.generate_billing_statement, name='generate-bs'),
-    url(r'view_billing_statement/(?P<order_id>[0-9]+)/(?P<number>[0-9])$', views.view_billing_statement,
-        name='view_bs'),
+    url(r'view_billing_statements/(?P<order_id>[0-9]+)$', views.billing_statement_lists, name='bs-list'),
+    url(r'view_billing_statement/(?P<id>[0-9]+)$', views.view_billing_statement, name='view-bs'),
+
+    # official receipts
+    url(r'official_receipt/(?P<order_id>[0-9]+)/(?P<percentage>[0-9]+)/(?P<template_no>[0-9]+)$',
+        views.generate_official_receipt, name='generate-or'),
+    url(r'view_official_receipts/(?P<order_id>[0-9]+)$', views.official_receipt_list, name='or-list'),
+    url(r'view_official_receipt/(?P<id>[0-9]+)$', views.view_official_receipt, name='view-or'),
 
 
-    url(r'billing_statement/(?P<order_id>[0-9]+)/(?P<phase>[0-9]+)$', views.generate_billing_statement_1, name='bill-1'),
-    url(r'billing_statement/view/(?P<order_id>[0-9]+)/(?P<phase>[0-9]+)$', views.view_billing_statement_1,
-        name='view_bill-1'),
-    url(r'official_receipt/(?P<order_id>[0-9]+)/(?P<phase>[0-9]+)$', views.generate_official_receipt_1,
-        name='official-receipt-1'),
-    url(r'official_receipt/view/(?P<order_id>[0-9]+)/(?P<phase>[0-9]+)$', views.view_official_receipt, name='view_or-1'),
     url(r'schedule_engineers/(?P<order_id>[0-9]+)$', views.schedule_engineers, name='schedule_engineers'),
 
 

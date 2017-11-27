@@ -48,7 +48,7 @@ class OfficialReceipt(models.Model):
     date_created = models.DateField(default=datetime.now)
     percentage = models.DecimalField(max_digits=5, decimal_places=2)
     number = models.CharField(max_length=15)
-    phase = models.DecimalField(max_digits=2, decimal_places=0)
+    generated_by = models.ForeignKey(Profile)
 
 class DeliveryReceipt(models.Model):
     order = models.ForeignKey(Order)
