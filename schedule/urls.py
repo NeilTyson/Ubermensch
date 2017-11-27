@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^add_schedule$', views.create_schedule, name='add-schedule'),
     url(r'^details/(?P<pk>[0-9]+)$', views.details, name='details'),
     url(r'my_schedule$', views.my_schedule, name='my-schedule'),
+    url(r'mark_complete/(?P<schedule_id>[0-9]+)$', views.mark_as_complete, name='complete'),
 ]
