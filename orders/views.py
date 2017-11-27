@@ -231,6 +231,26 @@ def contract_form(request, order_id):
                 number = random.randint(1, 999999)
                 contract_no = "I-" + str(number)
 
+            order.has_contract = True
+            order.save()
+
+            # TODO revise continue
+            if contract.payment_terms == "50-40-10":
+                term = contract.payment_terms.split("-")
+                contract.first_percentage = term[0]
+                contract.second_percentage = term[1]
+                contract.third_percentage = term[2]
+
+            elif contract.payment_terms == "50-30-20":
+                term = contract.payment_terms.split("-")
+                contract.first_percentage = term[0]
+                contract.second_percentage = term[1]
+                contract.third_percentage = term[2]
+
+            elif contract.payment_terms == "Full Payment":
+                pass
+
+
             contract.number = contract_no
             contract.generated_by = profile
             contract.save()
@@ -286,6 +306,62 @@ def view_contract(request, order_id):
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
+
+
+@login_required
+def generate_billing_statement(request, order_id, percentage, code, template_no):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        number = random.randint(1, 999999)
+        bs_no = "BS-" + str(number)
+
+        while helper.check_duplicate_numbers(bs_no, 'billing'):
+            number = random.randint(1, 999999)
+            bs_no = "BS-" + str(number)
+
+        item = helper.get_item_description(code, order.id)
+        user = Profile.objects.get(user=request.user)
+
+        BillingStatement.objects.create(
+            order=order,
+            number=bs_no,
+            item=item,
+            percentage=int(percentage),
+            generated_by=user
+        )
+
+        context = {
+            'order': order
+        }
+
+        messages.success(request, "Billing statement generated!")
+        template = helper.get_billing_statement(template_no)
+
+        return render(request, template, context)
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+
+@login_required
+def view_billing_statement(request, order_id, number):
+    try:
+        number = int(number)
+        order = Order.objects.get(id=order_id)
+        billing_statement = BillingStatement.objects.order_by("id").filter(order=order)[number]
+
+        context = {
+            'order': order,
+            'billing_statement': billing_statement,
+            'price': round(helper.get_grand_total_price(order) * (billing_statement.percentage / 100), 2)
+        }
+
+        return render(request, 'orders/billing_statement.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
 
 
 @login_required

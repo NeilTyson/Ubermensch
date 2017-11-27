@@ -15,6 +15,7 @@ class Order(models.Model):
 
     has_project_requirements = models.BooleanField(default=False)
     has_contract = models.BooleanField(default=False)
+    has_contract_done = models.BooleanField(default=False)
     has_retrieved_supplies = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
     is_installed = models.BooleanField(default=False)
@@ -72,6 +73,10 @@ class Contract(models.Model):
         ('Cash', 'Cash')
     )
 
+    first_percentage = models.DecimalField(default=0, decimal_places=0, max_digits=4, null=True)
+    second_percentage = models.DecimalField(default=0, decimal_places=0, max_digits=4, null=True)
+    third_percentage = models.DecimalField(default=0, decimal_places=0, max_digits=4, null=True)
+
     payment_terms = models.CharField(max_length=40, choices=PAYMENT_OPTIONS)
     delivery_terms = models.CharField(max_length=1000)
     warranty = models.DecimalField(decimal_places=0, max_digits=5)
@@ -89,7 +94,7 @@ class BillingStatement(models.Model):
     date_created = models.DateTimeField(default=datetime.now)
     percentage = models.DecimalField(max_digits=5, decimal_places=0, help_text="In percent")
     item = models.CharField(max_length=1000)
-    phase = models.DecimalField(max_digits=2, decimal_places=0)
+    generated_by = models.ForeignKey(Profile)
 
 
 

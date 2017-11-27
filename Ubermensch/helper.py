@@ -145,6 +145,21 @@ def add_to_requested_products():
             )
 
 
+# check billing statement template
+def get_billing_statement(number):
+
+    if number == "1":
+        return "orders/purchase_order_phase.html"
+
+
+# get billing statement item
+def get_item_description(number, order_id):
+
+    order = Order.objects.get(id=order_id)
+
+    if number == "1":
+        return str(order.contract.first_percentage) + "% DOWN PAYMENT FOR PROJECT"
+
 
 
 

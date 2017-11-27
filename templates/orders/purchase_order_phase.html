@@ -35,7 +35,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                {% if order.has_contract %}
+                {% if order.has_contract_done %}
                     <div class="alert alert-success">
                         <strong>This customer has already paid the down payment</strong>
                     </div>
@@ -72,10 +72,16 @@
                         {% endif %}
                     </tr>
                     <tr>
-                        {% if not has_contract %}
-                            <td>Generate Contract</td>
-                            <td><a href="{% url 'orders:contract-form' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if not order.has_contract %}
+                            {% if order.has_project_requirements %}
+                                <td>Generate Contract</td>
+                                <td><a href="{% url 'orders:contract-form' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td>Generate Contract</td>
+                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
                         {% else %}
                             <td>View Contract</td>
                             <td><a href="{% url 'orders:view-contract' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Contract</button></a></td>
@@ -87,10 +93,15 @@
 
                         <td>Generate Billing Statement for Downpayment</td>
                         {% if order.billingstatement_set.count == 0 %}
-                            <td><a href="{% url 'orders:bill-1' order.id 1 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% if order.has_contract %}
+                                <td><a href="{% url 'orders:generate-bs' order.id order.contract.first_percentage 1 1 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
                         {% else %}
-                            <td><a href="{% url 'orders:view_bill-1' order.id 1 %}" target="_blank"><button class="btn btn-primary btn-block">View Billing Statement</button></a></td>
+                            <td><a href="{% url 'orders:view_bs' order.id 0 %}" target="_blank"><button class="btn btn-primary btn-block">View Billing Statement</button></a></td>
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                         {% endif %}
 
@@ -98,8 +109,13 @@
                     <tr>
                         <td>Generate Official Receipt for Downpayment</td>
                         {% if order.officialreceipt_set.count == 0 %}
-                            <td><a href="{% url 'orders:official-receipt-1' order.id 1 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% if order.billingstatement_set.count > 0 %}
+                                <td><a href="{% url 'orders:official-receipt-1' order.id 1 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
                         {% else %}
                             <td><a href="{% url 'orders:view_or-1' order.id 1 %}" target="_blank"><button class="btn btn-primary btn-block">View Official Receipt</button></a></td>
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
@@ -108,8 +124,13 @@
                     <tr>
                         <td>Schedule Engineers</td>
                         {% if not order.has_scheduled_engineers %}
-                            <td><a href="{% url 'orders:schedule_engineers' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% if order.officialreceipt_set.count > 0 %}
+                                <td><a href="{% url 'orders:schedule_engineers' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
                         {% else %}
                             <td><a><button class="btn btn-primary btn-block" id="view-engineers" data-toggle="modal" data-target="#exampleModal">View Engineers Scheduled</button></a></td>
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>

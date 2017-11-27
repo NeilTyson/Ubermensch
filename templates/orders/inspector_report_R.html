@@ -85,6 +85,7 @@
                 <thead class="thead-dark">
                 <tr>
                     <th>Quantity</th>
+                    <th>Unit</th>
                     <th>Product</th>
                 </tr>
                 </thead>
@@ -92,6 +93,7 @@
                 {% for detail in order_line %}
                     <tr>
                         <td>{{ detail.quantity }}</td>
+                        <td>{{ detail.product.unit }}</td>
                         <td>{{ detail.product.name }}</td>
                     </tr>
                 {% endfor %}
