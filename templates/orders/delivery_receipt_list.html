@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order {{ order.id }} - Official Receipts</title>
+    <title>Order {{ order.id }} - Delivery Receipts</title>
 
     {% load static %}
     {% include 'bootstrap.html' %}
@@ -18,7 +18,7 @@
     <div class="container" style="margin-top: 100px;">
         <div class="row">
             <div class="col-md-10">
-                <h1 class="display-4">Official Receipts</h1>
+                <h1 class="display-4">Delivery Receipts</h1>
             </div>
             <div class="col-md-2 mt-3">
                 <a href="#"><button class="btn btn-secondary" onclick="window.history.back()">Back</button></a>
@@ -30,17 +30,17 @@
         <table class="table table-striped">
             <thead class="thead-dark">
             <tr>
-                <th>Official Receipt No</th>
+                <th>Delivery Receipt No</th>
                 <th>Date Generated</th>
                 <th>Action</th>
             </tr>
             </thead>
             <tbody>
-            {% for receipt in official_receipts %}
+            {% for dr in delivery_receipts %}
                 <tr>
-                    <td>{{ receipt.number }}</td>
-                    <td>{{ receipt.date_created }}</td>
-                    <td><a href="{% url 'orders:view-or' receipt.id %}" target="_blank"><button class="btn btn-primary">View</button></a></td>
+                    <td>{{ dr.number }}</td>
+                    <td>{{ dr.date_created }}</td>
+                    <td><a href="{% url 'orders:view-dr' dr.id %}" target="_blank"><button class="btn btn-primary">View</button></a></td>
                 </tr>
             {% endfor %}
             </tbody>

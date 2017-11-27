@@ -13,9 +13,10 @@ from django.shortcuts import render
 from Ubermensch import helper
 from core.models import Profile
 from orders.forms import OrderForm, ContractForm
-from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt
+from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt, \
+    DeliveryReceipt
 from products.models import Product
-from schedule.forms import ScheduleForm, ScheduleEngineerForm
+from schedule.forms import ScheduleForm, ScheduleEngineerForm, ScheduleDeliveryForm
 from schedule.models import Schedule
 
 
@@ -404,6 +405,12 @@ def generate_official_receipt(request, order_id, percentage, template_no):
         messages.success(request, "Official receipt generated!")
         template = helper.get_payment_template(template_no)
 
+        # if delivery
+        if template_no == "2":
+            order.is_delivered = True
+            order.status = "Installation"
+            order.save()
+
         return render(request, template, context)
 
     except Order.DoesNotExist:
@@ -465,7 +472,6 @@ def schedule_engineers(request, order_id):
 
         form = ScheduleEngineerForm(request.POST or None, initial={
             'name': "Installation for " + str(order.customer),
-            'customer': order.customer
         })
         engineers = request.POST.getlist('involved_people')
 
@@ -529,6 +535,139 @@ def schedule_engineers(request, order_id):
         raise Http404("Order does not exist")
 
 
+@login_required
+def schedule_delivery(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        form = ScheduleDeliveryForm(request.POST or None, initial={
+            'name': "Delivery for " + str(order.customer),
+        })
+        people = request.POST.getlist('involved_people')
+
+        if form.is_valid():
+            schedule = form.save(commit=False)
+
+            start_date = datetime.strptime(request.POST['start_date'], '%Y/%m/%d %H:%M')
+            end_date = datetime.strptime(request.POST['end_date'], '%Y/%m/%d %H:%M')
+
+            if end_date < start_date:
+                context = {
+                    'form': form,
+                    'error': "End date cannot be before the start date"
+                }
+
+                return render(request, 'schedule/create_schedule.html', context)
+
+            if start_date < datetime.now() or end_date < datetime.now():
+                context = {
+                    'form': form,
+                    'error': "Start dates and end dates cannot be past the current date"
+                }
+
+                return render(request, 'schedule/create_schedule.html', context)
+
+            if helper.check_overlaps(people, start_date, end_date):
+
+                context = {
+                    'form': form,
+                    'error': "Failed to add schedule. Overlap/s or conflict/s found"
+                }
+
+                return render(request, 'schedule/create_schedule.html', context)
+
+            else:
+                order.has_scheduled_delivery = True
+                order.save()
+                schedule.order = order
+                schedule.save()
+
+                for p in people:
+                    schedule.involved_people.add(p)
+
+                messages.success(request, "Schedule added successfully!")
+
+                context = {
+                    'order': order,
+                }
+
+                return render(request, 'orders/delivery.html', context)
+
+        context = {'form': form}
+
+        return render(request, 'schedule/create_schedule.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def generate_delivery_receipt(request, order_id, template_no):
+    try:
+        order = Order.objects.get(id=order_id)
+        user = Profile.objects.get(user=request.user)
+
+        number = random.randint(1, 999999)
+        dr_no = "DR-" + str(number)
+
+        while helper.check_duplicate_numbers(dr_no, 'deliver'):
+            number = random.randint(1, 999999)
+            dr_no = "DR-" + str(number)
+
+        DeliveryReceipt.objects.create(
+            order=order,
+            number=dr_no,
+            generated_by=user
+        )
+
+        context = {
+            'order': order
+        }
+        template = helper.get_payment_template(template_no)
+        messages.success(request, "Delivery Receipt generated!")
+
+        return render(request, template, context)
+
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def delivery_receipt_list(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'delivery_receipts': order.deliveryreceipt_set.order_by("-date_created")
+        }
+
+        return render(request, "orders/delivery_receipt_list.html", context)
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
+@login_required
+def view_delivery_receipt(request, id):
+    try:
+        delivery_receipt = DeliveryReceipt.objects.get(id=id)
+        order = Order.objects.filter(deliveryreceipt=delivery_receipt)[0]
+        order_line = OrderLine.objects.filter(order=order)
+
+        context = {
+            'order': order,
+            'delivery_receipt': delivery_receipt,
+            'order_line': order_line
+        }
+
+        return render(request, "orders/delivery_receipt.html", context)
+
+    except DeliveryReceipt.DoesNotExist:
+        raise Http404('Delivery Receipt does not exist')
+
+
+
 # ajax
 def view_engineers(request):
 
@@ -542,6 +681,23 @@ def view_engineers(request):
     engineers = schedule[0].involved_people.all()
 
     serialize = serializers.serialize('json', engineers)
+
+    return JsonResponse(serialize, safe=False)
+
+
+# ajax
+def view_delivery_people(request):
+
+    order_id = request.POST['order']
+    order = Order.objects.get(id=order_id)
+    schedule = Schedule.objects.filter(
+        involved_people__user_type="Inventory",
+        order=order
+    )
+
+    people = schedule[0].involved_people.all()
+
+    serialize = serializers.serialize('json', people)
 
     return JsonResponse(serialize, safe=False)
 

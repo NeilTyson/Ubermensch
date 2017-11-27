@@ -20,7 +20,10 @@ class Order(models.Model):
     is_delivered = models.BooleanField(default=False)
     is_installed = models.BooleanField(default=False)
     is_maintained = models.BooleanField(default=False)
+
+    # schedules
     has_scheduled_engineers = models.BooleanField(default=False)
+    has_scheduled_delivery = models.BooleanField(default=False)
 
     status = models.CharField(max_length=100, default="Contract")
 
@@ -52,8 +55,9 @@ class OfficialReceipt(models.Model):
 
 class DeliveryReceipt(models.Model):
     order = models.ForeignKey(Order)
-    date_created = models.DateField()
-    phase = models.DecimalField(max_digits=2, decimal_places=0)
+    date_created = models.DateField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
+    number = models.CharField(max_length=15)
 
 
 class Contract(models.Model):

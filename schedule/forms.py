@@ -61,3 +61,33 @@ class ScheduleEngineerForm(forms.ModelForm):
         queryset = Profile.objects.filter(user_type="Engineer")
         involved_people.queryset = queryset
 
+
+class ScheduleDeliveryForm(forms.ModelForm):
+    start_date = DateTimeField(input_formats=["%Y/%m/%d %H:%M"], widget=
+    forms.DateTimeInput(attrs={
+        'class': 'datetimepicker'
+    }))
+
+    end_date = DateTimeField(input_formats=["%Y/%m/%d %H:%M"], widget=
+    forms.DateTimeInput(attrs={
+        'class': 'datetimepicker'
+    }))
+
+    name = forms.CharField(disabled=True)
+
+    class Meta:
+        model = Schedule
+        fields = '__all__'
+        exclude = ('is_completed', 'order')
+        widgets = {
+            'description': forms.Textarea,
+            'involved_people': forms.CheckboxSelectMultiple()
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ScheduleDeliveryForm, self).__init__(*args, **kwargs)
+
+        involved_people = self.fields['involved_people']
+        queryset = Profile.objects.filter(user_type="Inventory")
+        involved_people.queryset = queryset
+
