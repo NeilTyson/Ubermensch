@@ -41,5 +41,17 @@ def inventory_order(request):
 
 def request_inventory(request):
     products = Product.objects.all()
-    return render(request, 'inventory/request_inventory.html', {'products': products})
+    suppliers = Supplier.objects.all()
+    return render(request, 'inventory/request_inventory.html', {'products': products, 'suppliers': suppliers})
+
+
+#TODO need palitan below cuz ajax gamit
+def get_products_using_supplier(request, supplier_name):
+    try:
+        supplier = Supplier.objects.get(name=supplier_name)
+        products = Product.objects.filter(supplier=supplier)
+        return render(request, '', {'products':products})
+
+    except Product.DoesNotExist:
+        raise Http404("Invalid Supplier")
 
