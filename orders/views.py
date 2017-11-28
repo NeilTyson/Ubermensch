@@ -667,6 +667,19 @@ def view_delivery_receipt(request, id):
         raise Http404('Delivery Receipt does not exist')
 
 
+@login_required
+def view_project(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order
+        }
+
+        return render(request, 'orders/project.html', context)
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
 
 # ajax
 def view_engineers(request):

@@ -51,7 +51,7 @@
                     <tbody>
                     <tr>
                         <td>Finish Project</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td><a href="{% url 'orders:view-project' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>
 

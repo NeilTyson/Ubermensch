@@ -46,6 +46,10 @@ urlpatterns = [
     url(r'installation/(?P<order_id>[0-9]+)$', views.installation, name='installation'),
     url(r'maintenance/(?P<order_id>[0-9]+)$', views.maintenance, name='maintenance'),
 
+
+    # project
+    url(r'installation/project/(?P<order_id>[0-9]+)$', views.view_project, name='view-project'),
+
     # ajax add order line
     url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line'),
     url(r'ajax/view_engineers$', views.view_engineers, name='view-engineers'),
