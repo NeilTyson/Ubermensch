@@ -4,6 +4,7 @@ import decimal
 from datetime import datetime
 
 import inflect as inflect
+from dateutil import rrule
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
@@ -671,9 +672,19 @@ def view_delivery_receipt(request, id):
 def view_project(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
+        project = Schedule.objects.filter(order=order).get(name__contains="Installation")
+
+        start_date = project.start_date
+        end_date = project.end_date
+
+        duration = []
+        for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
+            duration.append(dt.date())
 
         context = {
-            'order': order
+            'order': order,
+            'project': project,
+            'duration': duration
         }
 
         return render(request, 'orders/project.html', context)
@@ -715,3 +726,13 @@ def view_delivery_people(request):
     return JsonResponse(serialize, safe=False)
 
 
+# ajax
+def view_project_event(request):
+
+    order_id = request.POST['order']
+    order = Order.objects.get(id=order_id)
+    project = Schedule.objects.filter(order=order).filter(name__contains="Installation")
+
+    serialize = serializers.serialize('json', project)
+
+    return JsonResponse(serialize, safe=False)

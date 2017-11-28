@@ -16,31 +16,31 @@ $(document).ready(function(){
     // get the schedules
     function display_events() {
         $.ajax({
-        url: "ajax/display_events",
-        type: "get",
-        dataType: "json",
-        success: function(data) {
-            var json = JSON.parse(data.schedules);
+            url: "ajax/display_events",
+            type: "get",
+            dataType: "json",
+            success: function(data) {
+                var json = JSON.parse(data.schedules);
 
-            // console.log(json);
+                // console.log(json);
 
-            for (var x in json) {
-                var event;
+                for (var x in json) {
+                    var event;
 
-                event = {
-                    title: json[x].fields.name,
-                    start: json[x].fields.start_date,
-                    url: "details/" + json[x].pk,
-                    end: json[x].fields.end_date
-                };
+                    event = {
+                        title: json[x].fields.name,
+                        start: json[x].fields.start_date,
+                        url: "details/" + json[x].pk,
+                        end: json[x].fields.end_date
+                    };
 
-                calendar.fullCalendar('renderEvent', event);
+                    calendar.fullCalendar('renderEvent', event);
+                }
+            },
+            error: function(data) {
+                console.log(data.responseText);
             }
-        },
-        error: function(data) {
-            console.log(data.responseText);
-        }
-    });
+        });
     }
 
 });

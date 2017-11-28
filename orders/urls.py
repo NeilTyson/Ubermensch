@@ -54,4 +54,5 @@ urlpatterns = [
     url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line'),
     url(r'ajax/view_engineers$', views.view_engineers, name='view-engineers'),
     url(r'ajax/view_delivery_people$', views.view_delivery_people, name='view-delivery-people'),
+    url(r'ajax/view_project_event$', views.view_project_event, name='view-project-event'),
 ]
