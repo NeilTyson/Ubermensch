@@ -6,7 +6,8 @@
     {% load static %}
     {% include 'bootstrap.html' %}
     {% include 'core/navbar.html' %}
-    <script src="{% static 'js/base_orders.js' %}"></script>
+     <script src="{% static 'js/base_inventory.js' %}"></script>
+    <script src="{% static 'js/request_inventory.js' %}"></script>
 </head>
 <body>
         <div class="container-fluid" style="margin-top: 100px;">
@@ -23,10 +24,10 @@
             </div>
             <div class="form-group">
                 <label for="selectBox">Select Supplier:</label>
-                <select class="form-control" id="selectBox" onchange="changeFunc();">
+                <select class="form-control" id="selectBox" onchange="changeFunc()">
                     {% for supplier in suppliers %}
-                        <option value='{{% supplier.name %}}'>{% supplier.name %}</option>
-                    {% end for %}
+                        <option value='{{ supplier.name }}'>{{ supplier.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
 
@@ -109,6 +110,5 @@
       </div>
     </div>
     <!-- TODO IMPLEMENT AJAX HERE TO SHOW LIST OF PRODUCTS OF A SPECIFIC SUPPLIER -->
-
 </body>
 </html>
