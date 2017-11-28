@@ -34,9 +34,14 @@
         {% endif %}
 
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-7">
                 <h2>Schedule</h2>
             </div>
+            {% if not schedule.is_completed %}
+            <div class="col-md-3">
+                <a href="{% url 'schedule:complete' schedule.id %}"><button class="btn btn-success mt-3 btn-block">Mark as Done</button></a>
+            </div>
+            {% endif %}
             <div class="col-md-2">
                 <a href="{% url 'schedule:index' %}"><button class="btn btn-secondary mt-3">Go Back</button></a>
             </div>

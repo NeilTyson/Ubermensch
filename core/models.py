@@ -25,7 +25,8 @@ class Profile(models.Model):
         (ACCOUNTING, "Accounting"),
         (TECHNICAL, "Technical"),
         (ADMIN, "Admin"),
-        (ENGINEER, "Engineer")
+        (ENGINEER, "Engineer"),
+        ("SALES", "Sales")
     )
 
     user_type = models.CharField(

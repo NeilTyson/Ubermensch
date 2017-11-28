@@ -101,6 +101,23 @@ def create_schedule(request):
     return render(request, 'schedule/create_schedule.html', context)
 
 
+@login_required
+def mark_as_complete(request, schedule_id):
+    try:
+
+        schedule = Schedule.objects.get(id=schedule_id)
+        schedule.is_completed = True
+        schedule.save()
+
+        context = {
+            'schedule': schedule,
+        }
+
+        return render(request, 'schedule/schedule_detail.html', context)
+    except Schedule.DoesNotExist:
+        raise Http404("Schedule does not exist")
+
+
 # ajax
 def display_user_type(request):
     user = Profile.objects.get(user=request.user)
@@ -126,7 +143,7 @@ def view_involved_people(request):
 
 # ajax of displaying the schedules on the calendar
 def display_events(request):
-    schedules = Schedule.objects.all()
+    schedules = Schedule.objects.filter(is_completed=False)
 
     serialized = serializers.serialize('json', schedules)
     data = {'schedules': serialized}
@@ -140,7 +157,7 @@ def display_own_events(request):
     user = User.objects.get(username=request.POST['username'])
     profile = Profile.objects.get(user=user)
 
-    my_schedules = Schedule.objects.filter(involved_people=profile)
+    my_schedules = Schedule.objects.filter(involved_people=profile, is_completed=False)
     serialized = serializers.serialize('json', my_schedules)
     data = {'my_schedules': serialized}
 

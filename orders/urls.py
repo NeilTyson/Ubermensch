@@ -30,9 +30,15 @@ urlpatterns = [
     url(r'view_official_receipts/(?P<order_id>[0-9]+)$', views.official_receipt_list, name='or-list'),
     url(r'view_official_receipt/(?P<id>[0-9]+)$', views.view_official_receipt, name='view-or'),
 
-
+    # all schedules
     url(r'schedule_engineers/(?P<order_id>[0-9]+)$', views.schedule_engineers, name='schedule_engineers'),
+    url(r'schedule_delivery/(?P<order_id>[0-9]+)$', views.schedule_delivery, name='schedule-delivery'),
 
+    # delivery receipts
+    url(r'delivery_receipt/(?P<order_id>[0-9]+)/(?P<template_no>[0-9]+)$',
+        views.generate_delivery_receipt, name='generate-dr'),
+    url(r'view_delivery_receipts/(?P<order_id>[0-9]+)$', views.delivery_receipt_list, name='dr-list'),
+    url(r'view_delivery_receipt/(?P<id>[0-9]+)$', views.view_delivery_receipt, name='view-dr'),
 
 
     url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
@@ -42,5 +48,6 @@ urlpatterns = [
 
     # ajax add order line
     url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line'),
-    url(r'ajax/view_engineers$', views.view_engineers, name='view-engineers')
+    url(r'ajax/view_engineers$', views.view_engineers, name='view-engineers'),
+    url(r'ajax/view_delivery_people$', views.view_delivery_people, name='view-delivery-people'),
 ]
