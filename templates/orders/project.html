@@ -65,9 +65,20 @@
                 </table>
             </div>
             <div class="col-md-5">
-                <div id="calendar">
+                <div id="calendar" class="mb-4">
 
                 </div>
+
+                <button class="btn btn-block btn-success mt-5">View Progress Reports</button>
+                <div class="mt-5">
+                    <h3>Involved People</h3>
+                    <ul class="list-item">
+                        {% for p in people %}
+                            <li class="list-group-item">{{ p.first_name }} {{ p.last_name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
             </div>
         </div>
     </div>

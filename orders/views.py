@@ -684,7 +684,8 @@ def view_project(request, order_id):
         context = {
             'order': order,
             'project': project,
-            'duration': duration
+            'duration': duration,
+            'people': project.involved_people.all()
         }
 
         return render(request, 'orders/project.html', context)
