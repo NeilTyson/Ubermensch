@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.http import Http404
 from django.shortcuts import render
 from inventory.models import Product, Supplier, Category, Order, OrderLine
+from django.core import serializers
+from django.http import JsonResponse, Http404, HttpResponse
 
 
 @login_required
@@ -46,12 +48,18 @@ def request_inventory(request):
 
 
 #TODO need palitan below cuz ajax gamit
-def get_products_using_supplier(request, supplier_name):
-    try:
-        supplier = Supplier.objects.get(name=supplier_name)
-        products = Product.objects.filter(supplier=supplier)
-        return render(request, '', {'products':products})
 
-    except Product.DoesNotExist:
-        raise Http404("Invalid Supplier")
+def get_products_using_supplier(request):
+
+    supplier_name = request.POST['supplier_name']
+    supplier = Supplier.objects.get(name=supplier_name)
+    products = Product.objects.filter(supplier=supplier)
+    serialized = serializers.serialize('json', products)
+    data = {'products': serialized}
+
+    return JsonResponse(data)
+
+
+
+
 
