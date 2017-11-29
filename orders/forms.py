@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from orders.models import Order, Contract
+from orders.models import Order, Contract, ProgressReport
 
 
 class OrderForm(ModelForm):
@@ -25,5 +25,13 @@ class ContractForm(ModelForm):
         }
 
 
+class ProgressReportForm(ModelForm):
+
+    class Meta:
+        model = ProgressReport
+        fields = ['title', 'report_progress']
+        widgets = {
+            'report_progress': forms.Textarea(attrs={'class': 'form-control'})
+        }
 
 

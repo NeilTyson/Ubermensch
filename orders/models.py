@@ -101,6 +101,14 @@ class BillingStatement(models.Model):
     generated_by = models.ForeignKey(Profile)
 
 
+class ProgressReport(models.Model):
+
+    order = models.ForeignKey(Order)
+    number = models.CharField(max_length=15)
+    date_created = models.DateTimeField(default=datetime.now)
+    title = models.CharField(max_length=256)
+    generated_by = models.ForeignKey(Profile)
+    report_progress = models.TextField()
 
 
 

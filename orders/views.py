@@ -2,7 +2,6 @@ import random
 import math
 import decimal
 from datetime import datetime
-
 import inflect as inflect
 from dateutil import rrule
 from django.contrib import messages
@@ -10,12 +9,11 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
-
 from Ubermensch import helper
 from core.models import Profile
-from orders.forms import OrderForm, ContractForm
+from orders.forms import OrderForm, ContractForm, ProgressReportForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt, \
-    DeliveryReceipt
+    DeliveryReceipt, ProgressReport
 from products.models import Product
 from schedule.forms import ScheduleForm, ScheduleEngineerForm, ScheduleDeliveryForm
 from schedule.models import Schedule
@@ -697,9 +695,50 @@ def view_project(request, order_id):
 def generate_progress_report(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
-        date = request.POST['date']
+        form = ProgressReportForm(request.POST or None)
+        profile = Profile.objects.get(user=request.user)
 
-        return HttpResponse(date)
+        if form.is_valid():
+
+            progress = form.save(commit=False)
+
+            number = random.randint(1, 999999)
+            pr_no = "PR-" + str(number)
+
+            while helper.check_duplicate_numbers(pr_no, 'deliver'):
+                number = random.randint(1, 999999)
+                pr_no = "PR-" + str(number)
+
+            progress.order = order
+            progress.number = pr_no
+            progress.generated_by = profile
+            progress.save()
+
+            project = Schedule.objects.filter(order=order).get(name__contains="Installation")
+
+            start_date = project.start_date
+            end_date = project.end_date
+
+            duration = []
+            for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
+                duration.append(dt.date())
+
+            context = {
+                'order': order,
+                'duration': duration,
+                'project': project,
+                'people': project.involved_people.all()
+            }
+
+            messages.success(request, 'Progress Report generated!')
+            return render(request, 'orders/project.html', context)
+
+        context = {
+            'form': form
+        }
+
+        return render(request, 'orders/progress_report_form.html', context)
+
     except Order.DoesNotExist:
         raise Http404("Order Does Not Exist")
 

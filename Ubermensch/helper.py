@@ -3,7 +3,7 @@ from datetime import datetime
 from collections import namedtuple
 from core.models import Profile
 from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt, \
-    DeliveryReceipt
+    DeliveryReceipt, ProgressReport
 from schedule.models import Schedule
 
 
@@ -138,6 +138,18 @@ def check_duplicate_numbers(number, report):
 
         dup = 0
         reports = DeliveryReceipt.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
+    elif report == "progress":
+
+        dup = 0
+        reports = ProgressReport.objects.all()
 
         for x in reports:
             if number == x.number:
