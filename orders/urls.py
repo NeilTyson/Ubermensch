@@ -49,6 +49,7 @@ urlpatterns = [
 
     # project
     url(r'installation/project/(?P<order_id>[0-9]+)$', views.view_project, name='view-project'),
+    url(r'installation/project/progress_report/(?P<order_id>[0-9]+)$', views.generate_progress_report, name='generate-progress'),
 
     # ajax add order line
     url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line'),

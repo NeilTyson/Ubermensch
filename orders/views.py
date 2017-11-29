@@ -693,6 +693,17 @@ def view_project(request, order_id):
         raise Http404("Order does not exist")
 
 
+@login_required
+def generate_progress_report(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        date = request.POST['date']
+
+        return HttpResponse(date)
+    except Order.DoesNotExist:
+        raise Http404("Order Does Not Exist")
+
+
 # ajax
 def view_engineers(request):
 
