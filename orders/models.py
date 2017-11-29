@@ -110,6 +110,8 @@ class ProgressReport(models.Model):
     generated_by = models.ForeignKey(Profile)
     report_progress = models.TextField()
 
+    def __str__(self):
+        return str(self.date_created.date())
 
 
 

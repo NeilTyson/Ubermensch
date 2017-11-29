@@ -50,6 +50,8 @@ urlpatterns = [
     # project
     url(r'installation/project/(?P<order_id>[0-9]+)$', views.view_project, name='view-project'),
     url(r'installation/project/progress_report/(?P<order_id>[0-9]+)$', views.generate_progress_report, name='generate-progress'),
+    url(r'view_progress_reports/(?P<order_id>[0-9]+)$', views.view_progress_reports, name='pr-list'),
+    url(r'view_progress_report/(?P<id>[0-9]+)$', views.view_progress_report, name='view-progress'),
 
     # ajax add order line
     url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line'),

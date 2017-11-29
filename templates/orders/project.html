@@ -55,15 +55,23 @@
                             </tr>
                         {% else %}
                             <tr>
-                                <td>{{ day }}</td>
-                                <td>
-                                    <form method="post" action="{% url 'orders:generate-progress' order.id %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" value="{{ day }}" name="date">
-                                        <button class="btn btn-primary" type="submit">Generate Progress Report</button>
-                                    </form>
-                                </td>
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% if day in dates %}
+                                    <td>{{ day }}</td>
+                                    <td>
+                                        <p class="text-success">Progress Report Generated</p>
+                                    </td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% else %}
+                                    <td>{{ day }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'orders:generate-progress' order.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{ day }}" name="date">
+                                            <button class="btn btn-primary" type="submit">Generate Progress Report</button>
+                                        </form>
+                                    </td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% endif %}
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -75,7 +83,9 @@
 
                 </div>
 
-                <button class="btn btn-block btn-success mt-5">View Progress Reports</button>
+                <a href="{% url 'orders:pr-list' order.id %}">
+                    <button class="btn btn-block btn-success mt-5">View Progress Reports</button>
+                </a>
                 <div class="mt-5">
                     <h3>Involved People</h3>
                     <ul class="list-item">

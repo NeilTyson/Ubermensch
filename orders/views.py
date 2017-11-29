@@ -671,6 +671,7 @@ def view_project(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
         project = Schedule.objects.filter(order=order).get(name__contains="Installation")
+        progress_reports = ProgressReport.objects.filter(order=order)
 
         start_date = project.start_date
         end_date = project.end_date
@@ -679,11 +680,17 @@ def view_project(request, order_id):
         for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
             duration.append(dt.date())
 
+        report_dates = []
+
+        for r in progress_reports:
+            report_dates.append(r.date_created.date())
+
         context = {
             'order': order,
             'project': project,
             'duration': duration,
-            'people': project.involved_people.all()
+            'people': project.involved_people.all(),
+            'dates': report_dates,
         }
 
         return render(request, 'orders/project.html', context)
@@ -695,17 +702,18 @@ def view_project(request, order_id):
 def generate_progress_report(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
-        form = ProgressReportForm(request.POST or None)
         profile = Profile.objects.get(user=request.user)
 
-        if form.is_valid():
 
+        form = ProgressReportForm(request.POST or None)
+
+        if form.is_valid():
             progress = form.save(commit=False)
 
             number = random.randint(1, 999999)
             pr_no = "PR-" + str(number)
 
-            while helper.check_duplicate_numbers(pr_no, 'deliver'):
+            while helper.check_duplicate_numbers(pr_no, "progress"):
                 number = random.randint(1, 999999)
                 pr_no = "PR-" + str(number)
 
@@ -714,33 +722,50 @@ def generate_progress_report(request, order_id):
             progress.generated_by = profile
             progress.save()
 
-            project = Schedule.objects.filter(order=order).get(name__contains="Installation")
-
-            start_date = project.start_date
-            end_date = project.end_date
-
-            duration = []
-            for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
-                duration.append(dt.date())
-
             context = {
-                'order': order,
-                'duration': duration,
-                'project': project,
-                'people': project.involved_people.all()
+                'order': order
             }
 
-            messages.success(request, 'Progress Report generated!')
+            messages.success(request, "Progress report generated!")
             return render(request, 'orders/project.html', context)
 
-        context = {
-            'form': form
-        }
-
-        return render(request, 'orders/progress_report_form.html', context)
+        return render(request, 'orders/progress_report_form.html', {'form': form})
 
     except Order.DoesNotExist:
         raise Http404("Order Does Not Exist")
+
+
+@login_required
+def view_progress_reports(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        progress_reports = ProgressReport.objects.filter(order=order).order_by("-date_created")
+
+        context = {
+            'reports': progress_reports
+        }
+
+        return render(request, 'orders/progress_report_list.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+
+@login_required
+def view_progress_report(request, id):
+    try:
+        report = ProgressReport.objects.get(id=id)
+        order = report.order
+
+        context = {
+            'report': report,
+            'order': order,
+            'date': report.date_created.date()
+        }
+
+        return render(request, 'orders/progress_report.html', context)
+    except ProgressReport.DoesNotExist:
+        raise Http404('Progress report does not exist')
 
 
 # ajax

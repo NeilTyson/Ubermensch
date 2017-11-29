@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order {{ order.id }} - Progress Reports</title>
+
+    {% load static %}
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_orders.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+    <script src="{% static 'js/purchase_order_phase.js' %}"></script>
+
+</head>
+<body>
+    <p id="order-id" style="display: none">{{ order.id }}</p>
+    <div class="container" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="display-4">Progress Reports</h1>
+            </div>
+            <div class="col-md-2 mt-3">
+                <a href="{% url 'orders:view-project' order.id %}"><button class="btn btn-secondary">Back</button></a>
+            </div>
+        </div>
+
+        {% include 'core/success_message.html' %}
+
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th>Progress Report No</th>
+                <th>Date Generated</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for receipt in reports %}
+                <tr>
+                    <td>{{ receipt.number }}</td>
+                    <td>{{ receipt.date_created }}</td>
+                    <td><a href="{% url 'orders:view-progress' receipt.id %}" target="_blank"><button class="btn btn-primary">View</button></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
