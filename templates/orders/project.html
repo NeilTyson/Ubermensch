@@ -32,6 +32,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                {% include 'core/success_message.html' %}
                 {% if order.has_finished_project and order.has_finished_advance %}
                     <div class="alert alert-success">
                         <p class="text-success">This project has been finished before the expected end date</p>
@@ -51,6 +52,10 @@
         <div class="row">
             <div class="col-md-7">
                 <h3>Progress Reports</h3>
+                {% if order.has_finished_project %}
+                    <p>This project has already been finished. You can view the progress reports by clicking
+                        <a href="{% url 'orders:pr-list' order.id %}"><u>this</u></a></p>
+                {% else %}
                 <table class="table table-striped">
                     <thead class="thead-dark">
                     <tr>
@@ -94,6 +99,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </div>
             <div class="col-md-5">
                 <div id="calendar" class="mb-4">
@@ -114,7 +120,11 @@
                         </form>
                     </a>
                     <a href="#">
-                        <button class="btn btn-block btn-warning mb-2 mt-2">Extend Project</button>
+                        <form method="post" action="{% url 'orders:extend-project' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ order.id }}">
+                            <button class="btn btn-block btn-warning mb-2 mt-2">Extend Project</button>
+                        </form>
                     </a>
                     <a href="#">
                         <form method="post" action="{% url 'orders:finish-project' %}">

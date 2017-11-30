@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from orders.models import Order, Contract, ProgressReport
+from schedule.models import Schedule
 
 
 class OrderForm(ModelForm):
@@ -35,3 +36,8 @@ class ProgressReportForm(ModelForm):
         }
 
 
+class ExtendProjectForm(ModelForm):
+
+    class Meta:
+        model = Schedule
+        fields = ['end_date']

@@ -11,7 +11,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 from Ubermensch import helper
 from core.models import Profile
-from orders.forms import OrderForm, ContractForm, ProgressReportForm
+from orders.forms import OrderForm, ContractForm, ProgressReportForm, ExtendProjectForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt, \
     DeliveryReceipt, ProgressReport
 from products.models import Product
@@ -668,10 +668,41 @@ def view_delivery_receipt(request, id):
 
 @login_required
 def view_project(request, order_id):
+
+    order = Order.objects.get(id=order_id)
+    project = Schedule.objects.filter(order=order).get(name__contains="Installation")
+    progress_reports = ProgressReport.objects.filter(order=order)
+
+    start_date = project.start_date
+    end_date = project.end_date
+
+    duration = []
+    for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
+        duration.append(dt.date())
+
+    report_dates = []
+
+    for r in progress_reports:
+        report_dates.append(r.date_created.date())
+
+    context = {
+        'order': order,
+        'project': project,
+        'duration': duration,
+        'people': project.involved_people.all(),
+        'dates': report_dates,
+    }
+
+    return render(request, 'orders/project.html', context)
+
+
+@login_required
+def generate_progress_report(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
+        profile = Profile.objects.get(user=request.user)
+
         project = Schedule.objects.filter(order=order).get(name__contains="Installation")
-        progress_reports = ProgressReport.objects.filter(order=order)
 
         start_date = project.start_date
         end_date = project.end_date
@@ -682,30 +713,7 @@ def view_project(request, order_id):
 
         report_dates = []
 
-        for r in progress_reports:
-            report_dates.append(r.date_created.date())
-
-        context = {
-            'order': order,
-            'project': project,
-            'duration': duration,
-            'people': project.involved_people.all(),
-            'dates': report_dates,
-        }
-
-        return render(request, 'orders/project.html', context)
-    except Order.DoesNotExist:
-        raise Http404("Order does not exist")
-
-
-@login_required
-def generate_progress_report(request, order_id):
-    try:
-        order = Order.objects.get(id=order_id)
-        profile = Profile.objects.get(user=request.user)
-
-
-        form = ProgressReportForm(request.POST or None)
+        form = ProgressReportForm(request.POST  )
 
         if form.is_valid():
             progress = form.save(commit=False)
@@ -722,8 +730,16 @@ def generate_progress_report(request, order_id):
             progress.generated_by = profile
             progress.save()
 
+            progress_reports = ProgressReport.objects.filter(order=order)
+            for r in progress_reports:
+                report_dates.append(r.date_created.date())
+
             context = {
-                'order': order
+                'order': order,
+                'project': project,
+                'duration': duration,
+                'people': project.involved_people.all(),
+                'dates': report_dates,
             }
 
             messages.success(request, "Progress report generated!")
@@ -742,7 +758,8 @@ def view_progress_reports(request, order_id):
         progress_reports = ProgressReport.objects.filter(order=order).order_by("-date_created")
 
         context = {
-            'reports': progress_reports
+            'reports': progress_reports,
+            'order': order
         }
 
         return render(request, 'orders/progress_report_list.html', context)
@@ -802,10 +819,33 @@ def finish_project(request):
             'dates': report_dates,
         }
 
-        render(request, 'orders/project.html', context)
+        return render(request, 'orders/project.html', context)
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
+
+
+# @login_required
+# def extend_project(request):
+#     order = Order.objects.get(id=request.POST['id'])
+#     schedule = order.schedule_set.get(name__contains='Installation')
+#
+#     form = ExtendProjectForm(request.POST or None, instance=schedule)
+#
+#     if form.is_valid():
+#         extended = form.save(commit=False)
+#         form.save()
+#
+#         context = {
+#             'order': order
+#         }
+#         return render(request, 'orders/project.html', context)
+#
+#     context = {
+#         'form': form
+#     }
+#
+#     return render(request, 'orders/extend_project.html', context)
 
 
 # ajax
