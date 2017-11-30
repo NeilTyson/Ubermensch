@@ -832,7 +832,7 @@ def extend_project(request):
             'order': order
         }
         return render(request, 'orders/project.html', context)
-
+    
     context = {
         'form': form
     }
