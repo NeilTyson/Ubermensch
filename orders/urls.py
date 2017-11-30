@@ -49,11 +49,30 @@ urlpatterns = [
 
     # project
     url(r'installation/project/(?P<order_id>[0-9]+)$', views.view_project, name='view-project'),
-    url(r'installation/project/progress_report/(?P<order_id>[0-9]+)$', views.generate_progress_report, name='generate-progress'),
+    url(r'installation/project/progress_report/(?P<order_id>[0-9]+)$', views.generate_progress_report,
+        name='generate-progress'),
     url(r'view_progress_reports/(?P<order_id>[0-9]+)$', views.view_progress_reports, name='pr-list'),
     url(r'view_progress_report/(?P<id>[0-9]+)$', views.view_progress_report, name='view-progress'),
     url(r'finish_project$', views.finish_project, name='finish-project'),
     url(r'extend_project/(?P<order_id>[0-9]+)$', views.extend_project, name='extend-project'),
+
+    # letter of acceptance
+    url(r'generate_letter_of_acceptance/(?P<order_id>[0-9]+)$', views.generate_letter_of_acceptance,
+        name='generate-letter'),
+    url(r'view_letter_of_acceptance/(?P<order_id>[0-9]+)$', views.acceptance_letter,
+        name='acceptance-letter'),
+
+    # certificate of warranty
+    url(r'generate_certificate_of_warranty/(?P<order_id>[0-9]+)$', views.generate_certificate,
+            name='generate-certificate'),
+    url(r'view_certificate/(?P<order_id>[0-9]+)$', views.certificate_of_warranty,
+        name='certificate'),
+
+    # pullouts
+    url(r'generate_pull_out_slip/(?P<order_id>[0-9]+)$', views.generate_pullout_slip,
+            name='pull-out'),
+    url(r'view_pullout/(?P<order_id>[0-9]+)$', views.pull_out_slip,
+        name='pull-out-slip'),
 
     # ajax add order line
     url(r'ajax/add_order_line$', views.add_order_line, name='add-order-line'),

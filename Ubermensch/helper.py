@@ -3,7 +3,7 @@ from datetime import datetime
 from collections import namedtuple
 from core.models import Profile
 from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt, \
-    DeliveryReceipt, ProgressReport
+    DeliveryReceipt, ProgressReport, AcceptanceLetter, CertificateOfWarranty, PullOutSlip
 from schedule.models import Schedule
 
 
@@ -158,6 +158,42 @@ def check_duplicate_numbers(number, report):
         if dup > 0:
             return True
 
+    elif report == "acceptance":
+
+        dup = 0
+        reports = AcceptanceLetter.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
+    elif report == "certificate":
+
+        dup = 0
+        reports = CertificateOfWarranty.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
+    elif report == "pullout":
+
+        dup = 0
+        reports = PullOutSlip.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
     return False
 
 
@@ -168,6 +204,8 @@ def get_payment_template(number):
         return "orders/purchase_order_phase.html"
     elif number == "2":
         return "orders/delivery.html"
+    elif number == "3":
+        return "orders/installation.html"
 
 
 # get billing statement item
@@ -180,6 +218,9 @@ def get_item_description(number, order_id):
 
     elif number == "2":
         return str(order.contract.second_percentage) + "% DOWN PAYMENT FOR PROJECT"
+
+    elif number == "3":
+        return str(order.contract.third_percentage) + "% DOWN PAYMENT FOR PROJECT"
 
 
 

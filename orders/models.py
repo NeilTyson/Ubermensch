@@ -36,6 +36,27 @@ class Order(models.Model):
     def __str__(self):
         return str(self.customer)
 
+    @property
+    def has_letter_of_acceptance(self):
+        try:
+            return self.acceptanceletter
+        except AcceptanceLetter.DoesNotExist:
+            return False
+
+    @property
+    def has_certificate(self):
+        try:
+            return self.certificateofwarranty
+        except CertificateOfWarranty.DoesNotExist:
+            return False
+
+    @property
+    def has_pullout(self):
+        try:
+            return self.pulloutslip
+        except CertificateOfWarranty.DoesNotExist:
+            return False
+
 
 class InspectorReport(models.Model):
     order = models.OneToOneField(Order)
@@ -120,6 +141,26 @@ class ProgressReport(models.Model):
         return str(self.date_created.date())
 
 
+class AcceptanceLetter(models.Model):
+
+    number = models.CharField(max_length=15)
+    order = models.OneToOneField(Order)
+    date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
+
+
+class CertificateOfWarranty(models.Model):
+    number = models.CharField(max_length=15)
+    order = models.OneToOneField(Order)
+    date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
+
+
+class PullOutSlip(models.Model):
+    number = models.CharField(max_length=15)
+    order = models.OneToOneField(Order)
+    date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
 
 
 

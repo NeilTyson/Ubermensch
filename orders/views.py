@@ -9,12 +9,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from Ubermensch import helper
 from core.models import Profile
 from orders.forms import OrderForm, ContractForm, ProgressReportForm, ExtendProjectForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt, \
-    DeliveryReceipt, ProgressReport
+    DeliveryReceipt, ProgressReport, AcceptanceLetter, CertificateOfWarranty, PullOutSlip
 from products.models import Product
 from schedule.forms import ScheduleForm, ScheduleEngineerForm, ScheduleDeliveryForm
 from schedule.models import Schedule
@@ -685,11 +685,14 @@ def view_project(request, order_id):
         for r in progress_reports:
             dates.append(r.date_created.date())
 
+        people = project.involved_people.all()
+
         context = {
             'order': order,
             'duration': duration,
             'progress_reports': progress_reports,
-            'dates': dates
+            'dates': dates,
+            'people': people
         }
 
         return render(request, 'orders/project.html', context)
@@ -724,24 +727,7 @@ def generate_progress_report(request, order_id):
 
             messages.success(request, 'Progress report generated')
 
-            duration = []
-            step = dtime.timedelta(days=1)
-            while project.start_date.date() <= project.end_date.date():
-                duration.append(project.start_date.date())
-                project.start_date += step
-
-            dates = []
-            for r in progress_reports:
-                dates.append(r.date_created.date())
-
-            context = {
-                'order': order,
-                'duration': duration,
-                'progress_reports': progress_reports,
-                'dates': dates
-            }
-
-            return render(request, 'orders/project.html', context)
+            return redirect('orders:view-project', order_id=order.id)
 
         context = {
             'form': form
@@ -814,6 +800,8 @@ def finish_project(request):
         order.has_finished_project = True
         order.save()
 
+        project.is_completed = True
+
         context = {
             'order': order,
             'project': project,
@@ -861,6 +849,132 @@ def extend_project(request, order_id):
     }
 
     return render(request, 'orders/extend_project.html', context)
+
+
+@login_required
+def generate_letter_of_acceptance(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        profile = Profile.objects.get(user=request.user)
+
+        number = random.randint(1, 999999)
+        letter = "AL-" + str(number)
+
+        while helper.check_duplicate_numbers(letter, "acceptance"):
+            number = random.randint(1, 999999)
+            letter = "AL-" + str(number)
+
+        AcceptanceLetter.objects.create(
+            order=order,
+            generated_by=profile,
+            number=letter
+        )
+
+        messages.success(request, 'Letter of Acceptance Generated')
+        return redirect('orders:installation', order_id=order.id)
+
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+
+@login_required
+def acceptance_letter(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'report': order.acceptanceletter
+        }
+
+        return render(request, 'orders/letter_of_acceptance.html', context)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def generate_certificate(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        profile = Profile.objects.get(user=request.user)
+
+        number = random.randint(1, 999999)
+        certificate = "CW-" + str(number)
+
+        while helper.check_duplicate_numbers(certificate, "certificate"):
+            number = random.randint(1, 999999)
+            certificate = "CW-" + str(number)
+
+        CertificateOfWarranty.objects.create(
+            order=order,
+            generated_by=profile,
+            number=certificate
+        )
+
+        messages.success(request, 'Certificate of Warranty generated!')
+        return redirect('orders:installation', order_id=order.id)
+
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def certificate_of_warranty(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'report': order.certificateofwarranty
+        }
+
+        return render(request, 'orders/certificate_of_warranty.html', context)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def generate_pullout_slip(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        profile = Profile.objects.get(user=request.user)
+
+        number = random.randint(1, 999999)
+        pos = "PS-" + str(number)
+
+        while helper.check_duplicate_numbers(pos, "pullout"):
+            number = random.randint(1, 999999)
+            pos = "PS-" + str(number)
+
+        PullOutSlip.objects.create(
+            order=order,
+            generated_by=profile,
+            number=pos
+        )
+
+        order.is_installed = True
+        order.status = "Maintenance"
+        order.save()
+
+        messages.success(request, 'Pullout slip generated!')
+        return redirect('orders:installation', order_id=order.id)
+
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def pull_out_slip(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'report': order.pulloutslip
+        }
+
+        return render(request, 'orders/pullout_slip.html', context)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
 
 
 # ajax
