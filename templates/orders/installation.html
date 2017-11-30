@@ -50,9 +50,15 @@
                     <!-- TODO make it dynamic -->
                     <tbody>
                     <tr>
-                        <td>Finish Project</td>
-                        <td><a href="{% url 'orders:view-project' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if order.has_finished_project %}
+                            <td>Finish Project</td>
+                            <td><a href="{% url 'orders:view-project' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% else %}
+                            <td>Finish Project</td>
+                            <td><a href="{% url 'orders:view-project' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
 
                     <tr>
@@ -68,7 +74,13 @@
                     </tr>
 
                     <tr>
-                        <td>Collect Remaining Payment</td>
+                        <td>Generate Billing Statement</td>
+                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Generate Official Receipt</td>
                         <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>

@@ -25,6 +25,12 @@ class Order(models.Model):
     has_scheduled_engineers = models.BooleanField(default=False)
     has_scheduled_delivery = models.BooleanField(default=False)
 
+    # project status
+    has_finished_project = models.BooleanField(default=False)
+
+    # kung advanced yung pagkatapos
+    has_finished_advance = models.BooleanField(default=False)
+
     status = models.CharField(max_length=100, default="Contract")
 
     def __str__(self):

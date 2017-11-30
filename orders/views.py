@@ -768,6 +768,46 @@ def view_progress_report(request, id):
         raise Http404('Progress report does not exist')
 
 
+@login_required
+def finish_project(request):
+    try:
+        order = Order.objects.get(id=request.POST['id'])
+        project = Schedule.objects.filter(order=order).get(name__contains="Installation")
+
+        start_date = project.start_date
+        end_date = project.end_date
+
+        duration = []
+        for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
+            duration.append(dt.date())
+
+        report_dates = []
+        progress_reports = ProgressReport.objects.filter(order=order)
+
+        for r in progress_reports:
+            report_dates.append(r.date_created.date())
+
+
+        if request.POST['advanced'] == "1":
+            order.has_finished_advance = True
+
+        order.has_finished_project = True
+        order.save()
+
+        context = {
+            'order': order,
+            'project': project,
+            'duration': duration,
+            'people': project.involved_people.all(),
+            'dates': report_dates,
+        }
+
+        render(request, 'orders/project.html', context)
+
+    except Order.DoesNotExist:
+        raise Http404("Order does not exist")
+
+
 # ajax
 def view_engineers(request):
 
