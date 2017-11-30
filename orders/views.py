@@ -2,6 +2,7 @@ import random
 import math
 import decimal
 from datetime import datetime
+import datetime
 import inflect as inflect
 from dateutil import rrule
 from django.contrib import messages
@@ -669,51 +670,37 @@ def view_delivery_receipt(request, id):
 @login_required
 def view_project(request, order_id):
 
-    order = Order.objects.get(id=order_id)
-    project = Schedule.objects.filter(order=order).get(name__contains="Installation")
-    progress_reports = ProgressReport.objects.filter(order=order)
+    try:
+        order = Order.objects.get(id=order_id)
+        project = Schedule.objects.filter(order=order).get(name__contains='Installation')
+        progress_reports = ProgressReport.objects.filter(order=order)
+        duration = []
 
-    start_date = project.start_date
-    end_date = project.end_date
+        step = datetime.timedelta(days=1)
+        while project.start_date.date() <= project.end_date.date():
+            duration.append(project.start_date.date())
+            project.start_date += step
 
-    duration = []
-    for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
-        duration.append(dt.date())
+        context = {
+            'order': order,
+            'duration': duration,
+            'progress_reports': progress_reports
+        }
 
-    report_dates = []
-
-    for r in progress_reports:
-        report_dates.append(r.date_created.date())
-
-    context = {
-        'order': order,
-        'project': project,
-        'duration': duration,
-        'people': project.involved_people.all(),
-        'dates': report_dates,
-    }
-
-    return render(request, 'orders/project.html', context)
+        return render(request, 'orders/project.html', context)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
 
 
 @login_required
 def generate_progress_report(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
+        project = Schedule.objects.filter(order=order).get(name__contains='Installation')
         profile = Profile.objects.get(user=request.user)
+        progress_reports = ProgressReport.objects.filter(order=order)
 
-        project = Schedule.objects.filter(order=order).get(name__contains="Installation")
-
-        start_date = project.start_date
-        end_date = project.end_date
-
-        duration = []
-        for dt in rrule.rrule(rrule.DAILY, dtstart=start_date, until=end_date):
-            duration.append(dt.date())
-
-        report_dates = []
-
-        form = ProgressReportForm(request.POST  )
+        form = ProgressReportForm(request.POST or None)
 
         if form.is_valid():
             progress = form.save(commit=False)
@@ -721,31 +708,36 @@ def generate_progress_report(request, order_id):
             number = random.randint(1, 999999)
             pr_no = "PR-" + str(number)
 
-            while helper.check_duplicate_numbers(pr_no, "progress"):
+            while helper.check_duplicate_numbers(pr_no, 'deliver'):
                 number = random.randint(1, 999999)
-                pr_no = "PR-" + str(number)
+                pr_no = "DR-" + str(number)
 
-            progress.order = order
             progress.number = pr_no
             progress.generated_by = profile
+            progress.order = order
             progress.save()
 
-            progress_reports = ProgressReport.objects.filter(order=order)
-            for r in progress_reports:
-                report_dates.append(r.date_created.date())
+            messages.success(request, 'Progress report generated')
+
+            duration = []
+            step = datetime.timedelta(days=1)
+            while project.start_date.date() <= project.end_date.date():
+                duration.append(project.start_date.date())
+                project.start_date += step
 
             context = {
                 'order': order,
-                'project': project,
                 'duration': duration,
-                'people': project.involved_people.all(),
-                'dates': report_dates,
+                'progress_reports': progress_reports
             }
-
-            messages.success(request, "Progress report generated!")
             return render(request, 'orders/project.html', context)
 
-        return render(request, 'orders/progress_report_form.html', {'form': form})
+        context = {
+            'form': form
+        }
+
+        return render(request, 'orders/progress_report_form.html', context)
+
 
     except Order.DoesNotExist:
         raise Http404("Order Does Not Exist")
@@ -825,27 +817,27 @@ def finish_project(request):
         raise Http404("Order does not exist")
 
 
-# @login_required
-# def extend_project(request):
-#     order = Order.objects.get(id=request.POST['id'])
-#     schedule = order.schedule_set.get(name__contains='Installation')
-#
-#     form = ExtendProjectForm(request.POST or None, instance=schedule)
-#
-#     if form.is_valid():
-#         extended = form.save(commit=False)
-#         form.save()
-#
-#         context = {
-#             'order': order
-#         }
-#         return render(request, 'orders/project.html', context)
-#
-#     context = {
-#         'form': form
-#     }
-#
-#     return render(request, 'orders/extend_project.html', context)
+@login_required
+def extend_project(request):
+    order = Order.objects.get(id=request.POST['id'])
+    schedule = order.schedule_set.get(name__contains='Installation')
+
+    form = ExtendProjectForm(request.POST or None)
+
+    if form.is_valid():
+        extended = form.save(commit=False)
+        form.save()
+
+        context = {
+            'order': order
+        }
+        return render(request, 'orders/project.html', context)
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'orders/extend_project.html', context)
 
 
 # ajax
