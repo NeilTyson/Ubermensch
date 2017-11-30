@@ -67,34 +67,18 @@
                     <tbody>
                     <!-- TODO make dynamic -->
                     {% for day in duration %}
-                        {% if day.weekday == 6 %}
-                            <tr>
-                                <td colspan="3">
-                                    <strong>
-                                        <p class="text-danger text-center">DAY-OFF SUNDAY!</p>
-                                    </strong>
-                                </td>
-                            </tr>
+                        {% if day.weekday != 6 %}
+                        <tr>
+                            <td>{{ day }}</td>
+                            <td>
+                                <a href="{% url 'orders:generate-progress' order.id %}"><button class="btn btn-success">Generate Progress Report</button></a>
+                            </td>
+                            <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        </tr>
                         {% else %}
-                            <tr>
-                                {% if day in dates %}
-                                    <td>{{ day }}</td>
-                                    <td>
-                                        <p class="text-success">Progress Report Generated</p>
-                                    </td>
-                                    <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                                {% else %}
-                                    <td>{{ day }}</td>
-                                    <td>
-                                        <form method="post" action="{% url 'orders:generate-progress' order.id %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" value="{{ day }}" name="date">
-                                            <button class="btn btn-primary" type="submit">Generate Progress Report</button>
-                                        </form>
-                                    </td>
-                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                                {% endif %}
-                            </tr>
+                        <tr>
+                            <td colspan="3" class="text-center text-danger"><b>SUNDAY DAY OFF</b></td>
+                        </tr>
                         {% endif %}
                     {% endfor %}
                     </tbody>
