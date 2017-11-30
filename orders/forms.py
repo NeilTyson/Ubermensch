@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, DateTimeField
 from django import forms
 from orders.models import Order, Contract, ProgressReport
 from schedule.models import Schedule
@@ -41,3 +41,8 @@ class ExtendProjectForm(ModelForm):
     class Meta:
         model = Schedule
         fields = ['end_date']
+
+    end_date = DateTimeField(input_formats=["%Y/%m/%d %H:%M"], widget=
+    forms.DateTimeInput(attrs={
+        'class': 'datetimepicker'
+    }))

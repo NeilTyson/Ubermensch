@@ -2,7 +2,7 @@ import random
 import math
 import decimal
 from datetime import datetime
-import datetime
+import datetime as dtime
 import inflect as inflect
 from dateutil import rrule
 from django.contrib import messages
@@ -676,15 +676,20 @@ def view_project(request, order_id):
         progress_reports = ProgressReport.objects.filter(order=order)
         duration = []
 
-        step = datetime.timedelta(days=1)
+        step = dtime.timedelta(days=1)
         while project.start_date.date() <= project.end_date.date():
             duration.append(project.start_date.date())
             project.start_date += step
 
+        dates = []
+        for r in progress_reports:
+            dates.append(r.date_created.date())
+
         context = {
             'order': order,
             'duration': duration,
-            'progress_reports': progress_reports
+            'progress_reports': progress_reports,
+            'dates': dates
         }
 
         return render(request, 'orders/project.html', context)
@@ -720,16 +725,22 @@ def generate_progress_report(request, order_id):
             messages.success(request, 'Progress report generated')
 
             duration = []
-            step = datetime.timedelta(days=1)
+            step = dtime.timedelta(days=1)
             while project.start_date.date() <= project.end_date.date():
                 duration.append(project.start_date.date())
                 project.start_date += step
 
+            dates = []
+            for r in progress_reports:
+                dates.append(r.date_created.date())
+
             context = {
                 'order': order,
                 'duration': duration,
-                'progress_reports': progress_reports
+                'progress_reports': progress_reports,
+                'dates': dates
             }
+
             return render(request, 'orders/project.html', context)
 
         context = {
@@ -818,15 +829,27 @@ def finish_project(request):
 
 
 @login_required
-def extend_project(request):
-    order = Order.objects.get(id=request.POST['id'])
+def extend_project(request, order_id):
+    order = Order.objects.get(id=order_id)
     schedule = order.schedule_set.get(name__contains='Installation')
 
-    form = ExtendProjectForm(request.POST or None)
+    form = ExtendProjectForm(request.POST or None, instance=schedule)
 
     if form.is_valid():
         extended = form.save(commit=False)
-        form.save()
+        start_date = schedule.start_date
+        end_date = datetime.strptime(request.POST['end_date'], '%Y/%m/%d %H:%M')
+
+        if end_date.date() < start_date.date():
+            context = {
+                'form': form,
+                'error': "End date cannot be before the start date"
+            }
+
+            return render(request, 'orders/extend_project.html', context)
+
+        extended.save()
+        messages.success(request, "Project extended!")
 
         context = {
             'order': order
