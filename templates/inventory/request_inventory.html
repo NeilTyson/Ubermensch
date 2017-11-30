@@ -14,6 +14,14 @@
             <div class="col-md-10">
                     <h1 class="display-10">Choose products to be requested from supplier</h1>
             </div>
+            <div class="form-group">
+                <select class="form-control" id="selectBox" onchange="changeFunc()">
+                    <option value='selectsupplier'>Select a supplier</option>
+                    {% for supplier in suppliers %}
+                        <option value='{{ supplier.name }}'>{{ supplier.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="input-group mt-3 mb-3">
@@ -22,14 +30,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="selectBox">Select Supplier:</label>
-                <select class="form-control" id="selectBox" onchange="changeFunc()">
-                    {% for supplier in suppliers %}
-                        <option value='{{ supplier.name }}'>{{ supplier.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+
 
             {% if messages  %}
                 <div class="alert alert-success">
@@ -38,10 +39,9 @@
                     {% endfor %}
                 </div>
             {% endif %}
-                    <table class="table table-inverse">
+                    <table class="table table-inverse" id="table">
                     <thead class="thead-dark">
                     <tr>
-                        <th><div class="checkbox"><input type="checkbox" value="" name="checkall"></div></th>
                         <th class="text-center">Name</th>
                         <th class="text-center">Description</th>
                         <th class="text-center">Category</th>
@@ -59,56 +59,13 @@
                     </table>
             <div class="row">
                 <div class="col-sm-4 mt-4">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal" id="btn_request">
                         Request Products
                     </button>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Purchase Orders</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-              <!-- TODO IMPLEMENT AJAX HERE FOR REPORT GENERATION -->
-              <table class="table table-inverse">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th class="text-center">P.O. Number</th>
-                        <th class="text-center">Supplier</th>
-                        <th class="text-center">View</th>
-                        <th class="text-center">Print</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th class="text-center">PO-00001</th>
-                            <td class="text-center">Rukus</td>
-                            <!-- TODO VIEW OF P.O. -->
-                            <td class="text-center"><button type="button" class="btn btn-primary">View</button></td>
-                            <!-- TODO PRINT OF P.O. -->
-                            <td class="text-center"><button type="button" class="btn btn-secondary">Print</button></td>
-                        </tr>
-                        <tr>
-                            <th class="text-center">PO-00002</th>
-                            <td class="text-center">HP</td>
-                            <td class="text-center"><button type="button" class="btn btn-primary">View</button></td>
-                            <td class="text-center"><button type="button" class="btn btn-secondary">Print</button></td>
-                        </tr>
-                    </tbody>
-              </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
+
     <!-- TODO IMPLEMENT AJAX HERE TO SHOW LIST OF PRODUCTS OF A SPECIFIC SUPPLIER -->
 </body>
 </html>

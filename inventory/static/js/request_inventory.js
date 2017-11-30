@@ -5,7 +5,20 @@ $(document).ready(function() {
 
             $("li.inventory").addClass("active");
 
+            $("#btn_request").click(function(){
+                var cart = [];
+                $('#context tr').each(function(){
+                    console.log($(this).find('#qtyneeded').val());
+                    var qty = $(this).find('#qtyneeded').val();
 
+                    if(qty!=0 && qty!="")
+                        cart.push({
+                            id : $(this).find('#productid').html(),
+                            qty : $(this).find('#qtyneeded').val()
+                        });
+                })
+                console.log(cart);
+            });
         });
 function getCookie(name) {
 
@@ -41,10 +54,11 @@ function getCookie(name) {
             }
         }
     });
+
 function changeFunc() {
                 var selectBox = document.getElementById("selectBox");
                 var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-                alert(selectedValue);
+                if(selectedValue!='selectsupplier'){
                 $.ajax({
                     url: "ajax/get_products_using_supplier",
                     type: "post",
@@ -53,20 +67,14 @@ function changeFunc() {
                     success: function (data) {
                         var json = JSON.parse(data.products);
                         for (var x in json){
-                            $("#context").append('<tr>');
-                            $("#context").append('<th><div class="checkbox"><input type="checkbox" value="" name=""></div></th>')
-                            $("#context").append('<td class="text-center">'+json[x].fields.name+'</td>');
-                            $("#context").append('<td class="text-center">'+json[x].fields.description+'</td>');
-                            $("#context").append('<td class="text-center">'+json[x].fields.category.name+'</td>');
-                            $("#context").append('<td class="text-center" id="qty_in_stock">'+json[x].fields.quantity_in_stock+'</td>');
-                            $("#context").append('<td class="text-right">'+json[x].fields.unit_cost+'</td>');
-                            $("#context").append('<td class="text-center"><input type="number" min="0"></td>');
-                            $("#context").append('</tr>')
+                            $("#context").append('<tr><td id="productid" style="display:none">'+json[x].pk+'</td><td class="text-center">'+json[x].fields.name+'</td><td class="text-center">'+json[x].fields.description+'</td><td class="text-center">'+json[x].fields.category.name+'</td><td class="text-center" id="qty_in_stock">'+json[x].fields.quantity_in_stock+'</td><td class="text-right">'+json[x].fields.unit_cost+'</td><td class="text-center"><input type="number" min="0" id="qtyneeded"></td></tr>');
 
                         }
+                        console.log(json);
                     },
                     error: function (data) {
                         console.log(data.responseText);
                     }
                 });
             }
+           }
