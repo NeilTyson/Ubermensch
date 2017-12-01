@@ -20,6 +20,7 @@ class Order(models.Model):
     is_delivered = models.BooleanField(default=False)
     is_installed = models.BooleanField(default=False)
     is_maintained = models.BooleanField(default=False)
+    date_finished = models.DateField(default=datetime.now)
 
     # schedules
     has_scheduled_engineers = models.BooleanField(default=False)
@@ -116,6 +117,7 @@ class Contract(models.Model):
     engineering_fee = models.DecimalField(decimal_places=0, max_digits=5)
     installation_fee = models.DecimalField(decimal_places=0, max_digits=5)
     form_of_payment = models.CharField(max_length=30, choices=FORM_OF_PAYMENT, default='Check')
+    warranty_expiration_date = models.DateField(default=datetime.now)
 
 
 class BillingStatement(models.Model):

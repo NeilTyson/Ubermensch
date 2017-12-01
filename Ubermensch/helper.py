@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, date
 from collections import namedtuple
 from core.models import Profile
 from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt, \
@@ -223,6 +223,18 @@ def get_item_description(number, order_id):
         return str(order.contract.third_percentage) + "% DOWN PAYMENT FOR PROJECT"
 
 
+# add year thanks to StackOverflow
+def add_years(d, years):
+    """Return a date that's `years` years after the date (or datetime)
+    object `d`. Return the same calendar date (month and day) in the
+    destination year, if it exists, otherwise use the following day
+    (thus changing February 29 to March 1).
+
+    """
+    try:
+        return d.replace(year = d.year + years)
+    except ValueError:
+        return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
 
 
 

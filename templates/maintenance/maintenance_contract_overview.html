@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order {{ order.id }} - Maintenance</title>
+
+    {% load static %}
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_orders.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+</head>
+<body>
+    <div class="container" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="display-4">Maintenance Contracts</h1>
+            </div>
+            <div class="col-md-2 mt-3">
+                <a href="{% url 'maintenance:overview' order.id %}"><button class="btn btn-secondary">Back to Maintenance</button></a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% include 'core/success_message.html' %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% if is_warranty_period %}
+                    <div class="alert alert-danger">
+                        <p>You cannot add a maintenance contract during warranty period</p>
+                        <p>Warranty expires at <strong>{{ expiration_date }}</strong></p>
+                    </div>
+                {% else %}
+                    <a href="{% url 'maintenance:add-contract' order.id %}">
+                        <button class="btn btn-primary">Add Maintenance Contract</button>
+                        <table class="table table-striped mt-3">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>Contract</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for contract in contracts %}
+                                <tr>
+                                    <td>{{ contract.number }}</td>
+                                    <td>
+                                        <a href="#">
+                                            <button class="btn btn-secondary">View</button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="row mt-2">
+        </div>
+
+    </div>
+</body>
+</html>

@@ -129,7 +129,7 @@ def maintenance(request, order_id):
             'order': order
         }
 
-        return render(request, 'orders/maintenance.html', context)
+        return render(request, 'orders/../templates/maintenance/maintenance.html', context)
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
@@ -223,6 +223,7 @@ def contract_form(request, order_id):
         if form.is_valid():
             contract = form.save(commit=False)
             contract.order = order
+            warranty = request.POST['warranty']
 
             # contract no
             number = random.randint(1, 999999)
@@ -408,7 +409,10 @@ def generate_official_receipt(request, order_id, percentage, template_no):
         # if delivery
         if template_no == "2":
             order.is_delivered = True
+            schedule = order.schedule_set.filter(name__contains='Deliver')[0]
             order.status = "Installation"
+            schedule.is_completed = True
+            schedule.save()
             order.save()
 
         return render(request, template, context)
@@ -798,9 +802,15 @@ def finish_project(request):
             order.has_finished_advance = True
 
         order.has_finished_project = True
+        order.date_finished = datetime.now().date()
         order.save()
 
+        date_finished = order.date_finished
+        order.contract.warranty_expiration_date = helper.add_years(date_finished, order.contract.warranty)
+        order.contract.save()
+
         project.is_completed = True
+        project.save()
 
         context = {
             'order': order,
@@ -832,6 +842,14 @@ def extend_project(request, order_id):
             context = {
                 'form': form,
                 'error': "End date cannot be before the start date"
+            }
+
+            return render(request, 'orders/extend_project.html', context)
+
+        if helper.check_overlaps(schedule.involved_people, start_date, end_date):
+            context = {
+                'form': form,
+                'error': "Can't extend project. Conflict/s within the engineer/s found"
             }
 
             return render(request, 'orders/extend_project.html', context)

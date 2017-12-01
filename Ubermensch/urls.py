@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^orders/', include('orders.urls')),
     url(r'^inventory/', include('inventory.urls')),
     url(r'^documents/', include('documents.urls')),
+    url(r'^maintenance/', include('maintenance.urls'))
 ]
