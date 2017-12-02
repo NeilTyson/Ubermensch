@@ -24,6 +24,7 @@
 
         <div class="row">
             <div class="col-md-12">
+                {% include 'core/success_message.html' %}
                 {% if order.is_installed %}
                     <div class="alert alert-success">
                         <strong>The products have already been installed</strong>
@@ -62,33 +63,87 @@
                     </tr>
 
                     <tr>
-                        <td>Generate Letter of Acceptance</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if not order.has_letter_of_acceptance %}
+                            {% if order.has_finished_project %}
+                                <td>Generate Letter of Acceptance</td>
+                                <td><a href="{% url 'orders:generate-letter' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td>Generate Letter of Acceptance</td>
+                                <td><a href="#"><button class="btn btn-primary btn-block disabled">Go to this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
+                        {% else %}
+                            <td>View Letter of Acceptance</td>
+                            <td><a href="{% url 'orders:acceptance-letter' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Letter of Acceptance</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
 
                     <tr>
-                        <td>Generate Certificate of Warranty</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if not order.has_certificate %}
+                            {% if order.has_letter_of_acceptance %}
+                                <td>Generate Certificate of Warranty</td>
+                                <td><a href="{% url 'orders:generate-certificate' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td>Generate Certificate of Warranty</td>
+                                <td><a href="#"><button class="btn btn-primary btn-block disabled">Go to this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
+                        {% else %}
+                            <td>View Certificate of Warranty</td>
+                            <td><a href="{% url 'orders:certificate' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Certificate of Warranty</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
 
                     <tr>
-                        <td>Generate Billing Statement</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        <td>Generate Billing Statement for Downpayment</td>
+                        {% if order.billingstatement_set.count == 2 %}
+                            {% if order.has_certificate  %}
+                                <td><a href="{% url 'orders:generate-bs' order.id order.contract.third_percentage 3 3  %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
+                        {% else %}
+                            <td><a href="{% url 'orders:bs-list' order.id %}"><button class="btn btn-primary btn-block">View Billing Statements</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
 
                     <tr>
-                        <td>Generate Official Receipt</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        <td>Generate Official Receipt for Downpayment</td>
+                        {% if order.officialreceipt_set.count == 2 %}
+                            {% if order.billingstatement_set.count > 2 %}
+                                <td><a href="{% url 'orders:generate-or' order.id order.contract.third_percentage 3 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
+                        {% else %}
+                            <td><a href="{% url 'orders:or-list' order.id %}"><button class="btn btn-primary btn-block">View Official Receipts</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
 
                     <tr>
                         <td>Generate Pull-out Slip</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if not order.has_pullout %}
+                            {% if order.officialreceipt_set.count > 2 %}
+                                <td><a href="{% url 'orders:pull-out' order.id %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
+                        {% else %}
+                            <td><a href="{% url 'orders:pull-out-slip' order.id %}" target="_blank"><button class="btn btn-primary btn-block">View Pull-out Slip</button></a></td>
+                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
 
                     </tbody>

@@ -69,11 +69,17 @@
                     {% for day in duration %}
                         {% if day.weekday != 6 %}
                         <tr>
+                            {% if not day in dates %}
                             <td>{{ day }}</td>
                             <td>
                                 <a href="{% url 'orders:generate-progress' order.id %}"><button class="btn btn-success">Generate Progress Report</button></a>
                             </td>
                             <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td>{{ day }}</td>
+                                <td class="text-success">Progress Report Generated</td>
+                                <td><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% endif %}
                         </tr>
                         {% else %}
                         <tr>
@@ -104,11 +110,9 @@
                         </form>
                     </a>
                     <a href="#">
-                        <form method="post" action="{% url 'orders:extend-project' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ order.id }}">
+                        <a href="{% url 'orders:extend-project' order.id %}">
                             <button class="btn btn-block btn-warning mb-2 mt-2">Extend Project</button>
-                        </form>
+                        </a>
                     </a>
                     <a href="#">
                         <form method="post" action="{% url 'orders:finish-project' %}">

@@ -20,6 +20,7 @@ class Order(models.Model):
     is_delivered = models.BooleanField(default=False)
     is_installed = models.BooleanField(default=False)
     is_maintained = models.BooleanField(default=False)
+    date_finished = models.DateField(default=datetime.now)
 
     # schedules
     has_scheduled_engineers = models.BooleanField(default=False)
@@ -35,6 +36,27 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.customer)
+
+    @property
+    def has_letter_of_acceptance(self):
+        try:
+            return self.acceptanceletter
+        except AcceptanceLetter.DoesNotExist:
+            return False
+
+    @property
+    def has_certificate(self):
+        try:
+            return self.certificateofwarranty
+        except CertificateOfWarranty.DoesNotExist:
+            return False
+
+    @property
+    def has_pullout(self):
+        try:
+            return self.pulloutslip
+        except CertificateOfWarranty.DoesNotExist:
+            return False
 
 
 class InspectorReport(models.Model):
@@ -95,6 +117,10 @@ class Contract(models.Model):
     engineering_fee = models.DecimalField(decimal_places=0, max_digits=5)
     installation_fee = models.DecimalField(decimal_places=0, max_digits=5)
     form_of_payment = models.CharField(max_length=30, choices=FORM_OF_PAYMENT, default='Check')
+    warranty_expiration_date = models.DateField(default=datetime.now)
+
+    def __str__(self):
+        return self.order.customer.company_name
 
 
 class BillingStatement(models.Model):
@@ -105,6 +131,9 @@ class BillingStatement(models.Model):
     percentage = models.DecimalField(max_digits=5, decimal_places=0, help_text="In percent")
     item = models.CharField(max_length=1000)
     generated_by = models.ForeignKey(Profile)
+
+    # for maintenance
+    price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
 
 
 class ProgressReport(models.Model):
@@ -120,6 +149,26 @@ class ProgressReport(models.Model):
         return str(self.date_created.date())
 
 
+class AcceptanceLetter(models.Model):
+
+    number = models.CharField(max_length=15)
+    order = models.OneToOneField(Order)
+    date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
+
+
+class CertificateOfWarranty(models.Model):
+    number = models.CharField(max_length=15)
+    order = models.OneToOneField(Order)
+    date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
+
+
+class PullOutSlip(models.Model):
+    number = models.CharField(max_length=15)
+    order = models.OneToOneField(Order)
+    date_created = models.DateTimeField(default=datetime.now)
+    generated_by = models.ForeignKey(Profile)
 
 
 

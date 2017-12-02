@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, date
+import datetime as dtime
 from collections import namedtuple
+import pendulum
 from core.models import Profile
 from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt, \
-    DeliveryReceipt, ProgressReport
+    DeliveryReceipt, ProgressReport, AcceptanceLetter, CertificateOfWarranty, PullOutSlip
 from schedule.models import Schedule
 
 
@@ -158,6 +160,42 @@ def check_duplicate_numbers(number, report):
         if dup > 0:
             return True
 
+    elif report == "acceptance":
+
+        dup = 0
+        reports = AcceptanceLetter.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
+    elif report == "certificate":
+
+        dup = 0
+        reports = CertificateOfWarranty.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
+    elif report == "pullout":
+
+        dup = 0
+        reports = PullOutSlip.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+
     return False
 
 
@@ -168,6 +206,8 @@ def get_payment_template(number):
         return "orders/purchase_order_phase.html"
     elif number == "2":
         return "orders/delivery.html"
+    elif number == "3":
+        return "orders/installation.html"
 
 
 # get billing statement item
@@ -181,8 +221,46 @@ def get_item_description(number, order_id):
     elif number == "2":
         return str(order.contract.second_percentage) + "% DOWN PAYMENT FOR PROJECT"
 
+    elif number == "3":
+        return str(order.contract.third_percentage) + "% DOWN PAYMENT FOR PROJECT"
 
 
+# add year thanks to StackOverflow
+def add_years(d, years):
+    """Return a date that's `years` years after the date (or datetime)
+    object `d`. Return the same calendar date (month and day) in the
+    destination year, if it exists, otherwise use the following day
+    (thus changing February 29 to March 1).
+
+    """
+    try:
+        return d.replace(year = d.year + years)
+    except ValueError:
+        return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
 
 
+# payment intervals thanks to StackOverflow
+def get_date_intervals(start_date, end_date, terms):
+    start_day = start_date.day
+    start_month = start_date.month
+    start_year = start_date.year
 
+    end_day = end_date.day
+    end_month = end_date.month
+    end_year = end_date.year
+
+    start = pendulum.Pendulum(start_year, start_month, start_day)
+    end = pendulum.Pendulum(end_year, end_month, end_day)
+    period = pendulum.period(start, end)
+
+    if terms == 'Monthly':
+        return [dt.format('%B %d, %Y') for dt in period.range('months')][1:]
+
+    elif terms == 'Quarterly':
+        return [dt.format('%B %d, %Y') for dt in period.range('months', 3)][1:]
+
+    elif terms == 'Semi-Annually':
+        return [dt.format('%B %d, %Y') for dt in period.range('months', 6)][1:]
+
+    elif terms == 'Annually':
+        return [dt.format('%B %d, %Y') for dt in period.range('months', 12)][1:]

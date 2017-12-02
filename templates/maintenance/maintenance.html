@@ -24,6 +24,7 @@
 
         <div class="row">
             <div class="col-md-12">
+                {% include 'core/success_message.html' %}
                 {% if order.is_maintained %}
                     <div class="alert alert-success">
                         <strong>This order is completed</strong>
@@ -42,7 +43,7 @@
 
             </div>
             <div class="col-md-5">
-                <a><button class="btn btn-primary">Maintenance Contracts</button></a>
+                <a href="{% url 'maintenance:contract-view' order.id %}"><button class="btn btn-primary">Maintenance Contracts</button></a>
                 <a><button class="btn btn-warning">Add Trouble Report</button></a>
             </div>
         </div>

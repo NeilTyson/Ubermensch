@@ -2,19 +2,19 @@ import random
 import math
 import decimal
 from datetime import datetime
-import datetime
+import datetime as dtime
 import inflect as inflect
 from dateutil import rrule
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from Ubermensch import helper
 from core.models import Profile
 from orders.forms import OrderForm, ContractForm, ProgressReportForm, ExtendProjectForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt, \
-    DeliveryReceipt, ProgressReport
+    DeliveryReceipt, ProgressReport, AcceptanceLetter, CertificateOfWarranty, PullOutSlip
 from products.models import Product
 from schedule.forms import ScheduleForm, ScheduleEngineerForm, ScheduleDeliveryForm
 from schedule.models import Schedule
@@ -129,7 +129,7 @@ def maintenance(request, order_id):
             'order': order
         }
 
-        return render(request, 'orders/maintenance.html', context)
+        return render(request, 'orders/../templates/maintenance/maintenance.html', context)
 
     except Order.DoesNotExist:
         raise Http404("Order does not exist")
@@ -223,6 +223,7 @@ def contract_form(request, order_id):
         if form.is_valid():
             contract = form.save(commit=False)
             contract.order = order
+            warranty = request.POST['warranty']
 
             # contract no
             number = random.randint(1, 999999)
@@ -408,7 +409,10 @@ def generate_official_receipt(request, order_id, percentage, template_no):
         # if delivery
         if template_no == "2":
             order.is_delivered = True
+            schedule = order.schedule_set.filter(name__contains='Deliver')[0]
             order.status = "Installation"
+            schedule.is_completed = True
+            schedule.save()
             order.save()
 
         return render(request, template, context)
@@ -676,15 +680,23 @@ def view_project(request, order_id):
         progress_reports = ProgressReport.objects.filter(order=order)
         duration = []
 
-        step = datetime.timedelta(days=1)
+        step = dtime.timedelta(days=1)
         while project.start_date.date() <= project.end_date.date():
             duration.append(project.start_date.date())
             project.start_date += step
 
+        dates = []
+        for r in progress_reports:
+            dates.append(r.date_created.date())
+
+        people = project.involved_people.all()
+
         context = {
             'order': order,
             'duration': duration,
-            'progress_reports': progress_reports
+            'progress_reports': progress_reports,
+            'dates': dates,
+            'people': people
         }
 
         return render(request, 'orders/project.html', context)
@@ -719,18 +731,7 @@ def generate_progress_report(request, order_id):
 
             messages.success(request, 'Progress report generated')
 
-            duration = []
-            step = datetime.timedelta(days=1)
-            while project.start_date.date() <= project.end_date.date():
-                duration.append(project.start_date.date())
-                project.start_date += step
-
-            context = {
-                'order': order,
-                'duration': duration,
-                'progress_reports': progress_reports
-            }
-            return render(request, 'orders/project.html', context)
+            return redirect('orders:view-project', order_id=order.id)
 
         context = {
             'form': form
@@ -801,7 +802,15 @@ def finish_project(request):
             order.has_finished_advance = True
 
         order.has_finished_project = True
+        order.date_finished = datetime.now().date()
         order.save()
+
+        date_finished = order.date_finished
+        order.contract.warranty_expiration_date = helper.add_years(date_finished, order.contract.warranty)
+        order.contract.save()
+
+        project.is_completed = True
+        project.save()
 
         context = {
             'order': order,
@@ -818,15 +827,35 @@ def finish_project(request):
 
 
 @login_required
-def extend_project(request):
-    order = Order.objects.get(id=request.POST['id'])
+def extend_project(request, order_id):
+    order = Order.objects.get(id=order_id)
     schedule = order.schedule_set.get(name__contains='Installation')
 
-    form = ExtendProjectForm(request.POST or None)
+    form = ExtendProjectForm(request.POST or None, instance=schedule)
 
     if form.is_valid():
         extended = form.save(commit=False)
-        form.save()
+        start_date = schedule.start_date
+        end_date = datetime.strptime(request.POST['end_date'], '%Y/%m/%d %H:%M')
+
+        if end_date.date() < start_date.date():
+            context = {
+                'form': form,
+                'error': "End date cannot be before the start date"
+            }
+
+            return render(request, 'orders/extend_project.html', context)
+
+        if helper.check_overlaps(schedule.involved_people, start_date, end_date):
+            context = {
+                'form': form,
+                'error': "Can't extend project. Conflict/s within the engineer/s found"
+            }
+
+            return render(request, 'orders/extend_project.html', context)
+
+        extended.save()
+        messages.success(request, "Project extended!")
 
         context = {
             'order': order
@@ -838,6 +867,132 @@ def extend_project(request):
     }
 
     return render(request, 'orders/extend_project.html', context)
+
+
+@login_required
+def generate_letter_of_acceptance(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        profile = Profile.objects.get(user=request.user)
+
+        number = random.randint(1, 999999)
+        letter = "AL-" + str(number)
+
+        while helper.check_duplicate_numbers(letter, "acceptance"):
+            number = random.randint(1, 999999)
+            letter = "AL-" + str(number)
+
+        AcceptanceLetter.objects.create(
+            order=order,
+            generated_by=profile,
+            number=letter
+        )
+
+        messages.success(request, 'Letter of Acceptance Generated')
+        return redirect('orders:installation', order_id=order.id)
+
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+
+@login_required
+def acceptance_letter(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'report': order.acceptanceletter
+        }
+
+        return render(request, 'orders/letter_of_acceptance.html', context)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def generate_certificate(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        profile = Profile.objects.get(user=request.user)
+
+        number = random.randint(1, 999999)
+        certificate = "CW-" + str(number)
+
+        while helper.check_duplicate_numbers(certificate, "certificate"):
+            number = random.randint(1, 999999)
+            certificate = "CW-" + str(number)
+
+        CertificateOfWarranty.objects.create(
+            order=order,
+            generated_by=profile,
+            number=certificate
+        )
+
+        messages.success(request, 'Certificate of Warranty generated!')
+        return redirect('orders:installation', order_id=order.id)
+
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def certificate_of_warranty(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'report': order.certificateofwarranty
+        }
+
+        return render(request, 'orders/certificate_of_warranty.html', context)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def generate_pullout_slip(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        profile = Profile.objects.get(user=request.user)
+
+        number = random.randint(1, 999999)
+        pos = "PS-" + str(number)
+
+        while helper.check_duplicate_numbers(pos, "pullout"):
+            number = random.randint(1, 999999)
+            pos = "PS-" + str(number)
+
+        PullOutSlip.objects.create(
+            order=order,
+            generated_by=profile,
+            number=pos
+        )
+
+        order.is_installed = True
+        order.status = "Maintenance"
+        order.save()
+
+        messages.success(request, 'Pullout slip generated!')
+        return redirect('orders:installation', order_id=order.id)
+
+
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+
+@login_required
+def pull_out_slip(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        context = {
+            'order': order,
+            'report': order.pulloutslip
+        }
+
+        return render(request, 'orders/pullout_slip.html', context)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
 
 
 # ajax

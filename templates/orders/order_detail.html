@@ -116,12 +116,12 @@
                         <td>Maintenance</td>
                         {% if order.is_maintained %}
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="{% url 'orders:maintenance' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            <td><a href="{% url 'maintenance:maintenance' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                         {% else %}
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
 
                             {% if order.is_installed %}
-                                <td><a href="{% url 'orders:maintenance' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                                <td><a href="{% url 'maintenance:overview' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                             {% else %}
                                 <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
                             {% endif %}
