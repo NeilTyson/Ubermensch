@@ -36,6 +36,10 @@
                         <p>Warranty expires at <strong>{{ expiration_date }}</strong></p>
                     </div>
                 {% else %}
+                    {% if order.maintenancecontract_set.count == 0  %}
+                        <p>There are no maintenance contracts. Add a maintenance contract
+                        <u><a href="{% url 'maintenance:add-contract' order.id %}">here</a></u></p>
+                    {% else %}
                     <a href="{% url 'maintenance:add-contract' order.id %}">
                         <button class="btn btn-primary">Add Maintenance Contract</button>
                         <table class="table table-striped mt-3">
@@ -59,6 +63,41 @@
                             </tbody>
                         </table>
                     </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col-md-6 mt-3">
+                {% if not is_warranty_period and current_contract is not None %}
+                    <ul class="list-group">
+                        <li class="list-group-item">Current maintenance contract:
+                            <span class="text-danger">
+                                <b>{{ current_contract.number }}</b>
+                            </span>
+                        </li>
+                        <li class="list-group-item">Expires at:
+                            <span class="text-danger">
+                                <b>{{ maintenance_expiration_date }}</b>
+                            </span>
+                        </li>
+                    </ul>
+
+                <h5 class="ml-1 mt-3">Payments</h5>
+                <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Due Date</th>
+                        <th>Billing Statement</th>
+                        <th>Official Receipt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for date in date_intervals %}
+                    <tr>
+                        <td>{{ date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
                 {% endif %}
             </div>
 

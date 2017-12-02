@@ -119,6 +119,9 @@ class Contract(models.Model):
     form_of_payment = models.CharField(max_length=30, choices=FORM_OF_PAYMENT, default='Check')
     warranty_expiration_date = models.DateField(default=datetime.now)
 
+    def __str__(self):
+        return self.order.customer.company_name
+
 
 class BillingStatement(models.Model):
 

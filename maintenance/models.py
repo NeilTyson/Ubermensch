@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 from core.models import Profile
@@ -31,6 +33,10 @@ class MaintenanceContract(models.Model):
     payment = models.CharField(max_length=40, choices=PAYMENT_OPTIONS)
     generated_by = models.ForeignKey(Profile)
     is_current = models.BooleanField(default=False)
+    date_generated = models.DateField(default=datetime.now)
+
+    def __str__(self):
+        return self.order.customer.company_name
 
 
 class TroubleReport(models.Model):

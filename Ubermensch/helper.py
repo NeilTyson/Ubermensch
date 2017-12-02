@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from datetime import datetime, date
+import datetime as dtime
 from collections import namedtuple
 from core.models import Profile
 from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt, \
@@ -237,5 +238,15 @@ def add_years(d, years):
         return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
 
 
+# payment intervals thanks to StackOverflow
+def get_date_intervals(start_date, end_date, terms):
 
+    if terms == 'Monthly':
+        dates = []
+        while start_date < end_date:
+            if start_date.day == 1:
+                dates.append(start_date)
+            start_date += dtime.timedelta(days=1)
+
+        return dates
 

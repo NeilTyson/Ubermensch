@@ -9,7 +9,7 @@ class MaintenanceContractForm(ModelForm):
     class Meta:
         model = MaintenanceContract
         fields = '__all__'
-        exclude = ['number', 'order', 'generated_by', 'is_current']
+        exclude = ['number', 'order', 'generated_by', 'is_current', 'date_generated']
 
         widgets = {
             'duration': forms.widgets.TextInput(attrs={
