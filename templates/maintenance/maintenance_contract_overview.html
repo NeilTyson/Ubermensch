@@ -86,14 +86,26 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>Due Date</th>
-                        <th>Billing Statement</th>
-                        <th>Official Receipt</th>
+                        <th colspan="2" class="text-center">Generate</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for date in date_intervals %}
                     <tr>
                         <td>{{ date }}</td>
+                        <td>
+                            <form action="{% url 'maintenance:generate-bs' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ current_contract.id }}">
+                                <input type="hidden" name="order" value="{{ order.id }}">
+                                <button class="btn btn-primary">Billing Statement</button>
+                            </form>
+                        </td>
+                        <td>
+                            <a>
+                                <button class="btn btn-secondary"> Official Receipt</button>
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

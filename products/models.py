@@ -9,6 +9,7 @@ class Supplier(models.Model):
     e_mail = models.EmailField()
     contact_person_first_name = models.CharField(max_length=50)
     contact_person_last_name = models.CharField(max_length=50)
+    address = models.CharField(max_length=1000, default='')
 
     def __str__(self):
         return self.name

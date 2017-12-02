@@ -132,6 +132,9 @@ class BillingStatement(models.Model):
     item = models.CharField(max_length=1000)
     generated_by = models.ForeignKey(Profile)
 
+    # for maintenance
+    price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+
 
 class ProgressReport(models.Model):
 

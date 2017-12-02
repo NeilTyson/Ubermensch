@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from datetime import datetime, date
 import datetime as dtime
 from collections import namedtuple
+import pendulum
 from core.models import Profile
 from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt, \
     DeliveryReceipt, ProgressReport, AcceptanceLetter, CertificateOfWarranty, PullOutSlip
@@ -240,13 +241,26 @@ def add_years(d, years):
 
 # payment intervals thanks to StackOverflow
 def get_date_intervals(start_date, end_date, terms):
+    start_day = start_date.day
+    start_month = start_date.month
+    start_year = start_date.year
+
+    end_day = end_date.day
+    end_month = end_date.month
+    end_year = end_date.year
+
+    start = pendulum.Pendulum(start_year, start_month, start_day)
+    end = pendulum.Pendulum(end_year, end_month, end_day)
+    period = pendulum.period(start, end)
 
     if terms == 'Monthly':
-        dates = []
-        while start_date < end_date:
-            if start_date.day == 1:
-                dates.append(start_date)
-            start_date += dtime.timedelta(days=1)
+        return [dt.format('%B %d, %Y') for dt in period.range('months')][1:]
 
-        return dates
+    elif terms == 'Quarterly':
+        return [dt.format('%B %d, %Y') for dt in period.range('months', 3)][1:]
 
+    elif terms == 'Semi-Annually':
+        return [dt.format('%B %d, %Y') for dt in period.range('months', 6)][1:]
+
+    elif terms == 'Annually':
+        return [dt.format('%B %d, %Y') for dt in period.range('months', 12)][1:]

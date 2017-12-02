@@ -11,7 +11,7 @@ from Ubermensch import helper
 from core.models import Profile
 from maintenance.forms import MaintenanceContractForm
 from maintenance.models import MaintenanceContract
-from orders.models import Order
+from orders.models import Order, BillingStatement
 
 
 @login_required
@@ -58,7 +58,7 @@ def maintenance_contract_view(request, order_id):
                 current_contract.date_generated,
                 maintenance_expiration_date,
                 # terms of payment
-                current_contract.duration
+                current_contract.payment
             )
         }
 
@@ -102,3 +102,43 @@ def add_maintenance_contract(request, order_id):
         return render(request, 'maintenance/maintenance_form.html', context)
     except Order.DoesNotExist:
         raise Http404('Order does not exist')
+
+
+@login_required
+def generate_billing_statement(request):
+    maintenance_id = request.POST['id']
+    order_id = request.POST['order']
+    order = Order.objects.get(id=order_id)
+    maintenance_contract = MaintenanceContract.objects.get(id=maintenance_id)
+    profile = Profile.objects.get(user=request.user)
+    maintenance_expiration_date = helper.add_years(
+                maintenance_contract.date_generated,
+                maintenance_contract.duration
+            )
+
+    number = random.randint(1, 999999)
+    bs_no = "BS-" + str(number)
+
+    while helper.check_duplicate_numbers(bs_no, 'billing'):
+        number = random.randint(1, 999999)
+        bs_no = "BS-" + str(number)
+
+    percentage = len(helper.get_date_intervals(maintenance_contract.date_generated, maintenance_expiration_date,
+                              maintenance_contract.payment))
+
+    item = str(percentage) + '% DOWN PAYMENT FOR MAINTENANCE SERVICE'
+
+    BillingStatement.objects.create(
+        order=order,
+        number=bs_no,
+        item=item,
+        percentage=percentage,
+        generated_by=profile,
+        price=maintenance_contract.price
+    )
+
+    messages.success(request, 'Billing Statement Generated')
+    return redirect('maintenance:contract-view', order_id=order.id)
+
+
+
