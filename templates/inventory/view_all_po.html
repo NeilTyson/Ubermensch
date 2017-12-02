@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory</title>
+    {% load static %}
+
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+
+    <script src="{% static 'js/base_inventory.js' %}"></script>
+</head>
+<body>
+    <div class="container" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-sm-5">
+                <h1 class="mt-3">Purchase Orders</h1>
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-sm-12">
+                    <div class="input-group mt-3 mb-3">
+                      <span class="input-group-addon" id="basic-addon1">Search</span>
+                      <input type="text" class="form-control" placeholder="Search for anything related to products" aria-label="Search" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+        </div>
+                  <table class="table table-inverse">
+                        <thead class="thead-dark">
+                            <tr><th>Purchase Order</th>
+                                <th>Date Created</th>
+                            <th>Supplier</th>
+                            <th>View</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                        {% for purchase_order in purchase_orders %}
+                            <tr>
+                                <td>{{ purchase_order.number }}</td>
+                                <th>{{ purchase_order.date_created }}</th>
+                                <td>{{ purchase_order.supplier.name }}</td>
+                                <td><a href="{% url 'inventory:view-po' purchase_order.id %}" target="_blank"><button type="button" class="btn btn-primary" id="view_po">View Purchase Order</button></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                  </table>
+
+    </div>
+    <script>
+        $(document).ready(function() {
+            $(".navbar-mine").children("li").each(function() {
+                $(this).removeClass("active");
+            });
+
+            $("li.inventory").addClass("active");
+        });
+    </script>
+</body>
+
+</html>

@@ -11,13 +11,20 @@
     <script src="{% static 'js/base_inventory.js' %}"></script>
 </head>
 <body>
-    <div class="container-fluid" style="margin-top: 100px;">
+    <div class="container" style="margin-top: 100px;">
         <div class="row">
-            <div class="col-sm-9">
-                <h1 class="mt3">Inventory</h1>
+            <div class="col-sm-3">
+                <h1 class="mt-3">Inventory</h1>
             </div>
+
                 <div class="col-sm-3 mt-4">
                     <button class="btn btn-primary"><a href="{% url 'inventory:request-inventory' %}">Request Inventory from Supplier</a></button>
+                </div>
+                <div class="col-sm-3 mt-4">
+                    <button type="button" class="btn btn-secondary"><a href="{% url 'inventory:view-all-po' %}">View All Purchase Order</a></button>
+                </div>
+                <div class="col-sm-3 mt-4">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Confirm Product Retrieval</button>
                 </div>
         </div>
         {% if not products %}
@@ -63,6 +70,42 @@
                 </tbody>
                 </table>
         {% endif %}
+          <!-- Modal -->
+          <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Purchase Orders</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-inverse">
+                        <thead class="thead-dark">
+                            <tr><th>Purchase Order</th>
+                            <th>Supplier</th>
+                            <th>View</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                        {% for purchase_order in purchase_orders %}
+                            <tr>
+                                <td>{{ purchase_order.number }}</td>
+                                <td>{{ purchase_order.supplier.name }}</td>
+                                <td><a href="{% url 'inventory:view-po' purchase_order.id %}"><button type="button" class="btn btn-primary" id="view_po">View</button></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
     </div>
     <script>
         $(document).ready(function() {

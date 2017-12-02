@@ -14,10 +14,34 @@ $(document).ready(function() {
                     if(qty!=0 && qty!="")
                         cart.push({
                             id : $(this).find('#productid').html(),
-                            qty : $(this).find('#qtyneeded').val()
+                            qty : parseInt($(this).find('#qtyneeded').val())
                         });
-                })
+                    })
                 console.log(cart);
+                if (typeof cart !== 'undefined' && cart.length > 0) {
+                    var selectBox = document.getElementById("selectBox");
+                    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+                    console.log(JSON.stringify({supplier_id: selectedValue,
+                               po_cart: cart
+                                }))
+                    $.ajax({
+                        url: "ajax/generate_po",
+                        type: "post",
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify({supplier_id: selectedValue,
+                               po_cart: cart
+                                }),
+                         success: function(data){
+                            console.log(data);
+
+                         },
+
+                         error: function (data) {
+                             console.log(data.responseText);
+                         }
+                    });
+                }
             });
         });
 function getCookie(name) {
@@ -58,12 +82,13 @@ function getCookie(name) {
 function changeFunc() {
                 var selectBox = document.getElementById("selectBox");
                 var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+                $("#context").html("");
                 if(selectedValue!='selectsupplier'){
                 $.ajax({
                     url: "ajax/get_products_using_supplier",
                     type: "post",
                     dataType: "json",
-                    data: {supplier_name: selectedValue},
+                    data: {supplier_id: selectedValue},
                     success: function (data) {
                         var json = JSON.parse(data.products);
                         for (var x in json){

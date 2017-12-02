@@ -7,6 +7,7 @@ from core.models import Profile
 from orders.models import OrderLine, InspectorReport, Contract, BillingStatement, Order, OfficialReceipt, \
     DeliveryReceipt, ProgressReport, AcceptanceLetter, CertificateOfWarranty, PullOutSlip
 from schedule.models import Schedule
+from inventory.models import PurchaseOrder
 
 
 # This file contains functions that you may call throughout the system
@@ -152,6 +153,28 @@ def check_duplicate_numbers(number, report):
 
         dup = 0
         reports = ProgressReport.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+    elif report == "purchase":
+
+        dup = 0
+        reports = PurchaseOrder.objects.all()
+
+        for x in reports:
+            if number == x.number:
+                dup = 1
+
+        if dup > 0:
+            return True
+    elif report == "purchase":
+
+        dup = 0
+        reports = PurchaseOrder.objects.all()
 
         for x in reports:
             if number == x.number:

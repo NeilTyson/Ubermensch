@@ -6,6 +6,7 @@ from django.db import models
 
 class PurchaseOrder(models.Model):
     supplier = models.ForeignKey(Supplier)
+    number = models.CharField(max_length=15, default="")
     date_created = models.DateField(auto_now_add=True)
     is_done = models.BooleanField(default=False)
     generated_by = models.ForeignKey(Profile)
@@ -17,4 +18,6 @@ class PurchaseOrderLine(models.Model):
     product = models.ForeignKey(Product)
     quantity = models.DecimalField(decimal_places=0, max_digits=10)
 
-
+    @property
+    def getsubtotal(self):
+        return self.product.unit_cost * self.quantity
