@@ -135,6 +135,8 @@ class BillingStatement(models.Model):
     # for maintenance
     price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
 
+    def __str__(self):
+        return self.order.customer.company_name + ' ' + str(self.date_created.date())
 
 class ProgressReport(models.Model):
 

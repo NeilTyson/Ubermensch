@@ -9,9 +9,10 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from Ubermensch import helper
 from core.models import Profile
-from maintenance.forms import MaintenanceContractForm
+from maintenance.forms import MaintenanceContractForm, ScheduleMaintenanceForm
 from maintenance.models import MaintenanceContract
 from orders.models import Order, BillingStatement
+from schedule.models import Schedule
 
 
 @login_required
@@ -47,20 +48,31 @@ def maintenance_contract_view(request, order_id):
                 current_contract.duration
             )
 
-        context = {
-            'order': order,
-            'expiration_date': expiration_date,
-            'is_warranty_period': expiration_date > datetime.now().date(),
-            'contracts': contracts,
-            'current_contract': current_contract,
-            'maintenance_expiration_date': maintenance_expiration_date,
-            'date_intervals': helper.get_date_intervals(
-                current_contract.date_generated,
-                maintenance_expiration_date,
-                # terms of payment
-                current_contract.payment
-            )
-        }
+        if current_contract is not None:
+
+            context = {
+                'order': order,
+                'expiration_date': expiration_date,
+                'is_warranty_period': expiration_date > datetime.now().date(),
+                'contracts': contracts,
+                'current_contract': current_contract,
+                'maintenance_expiration_date': maintenance_expiration_date,
+                'date_intervals': helper.get_date_intervals(
+                    current_contract.date_generated,
+                    maintenance_expiration_date,
+                    # terms of payment
+                    current_contract.payment
+                )
+            }
+
+        else:
+            context = {
+                'order': order,
+                'expiration_date': expiration_date,
+                'is_warranty_period': expiration_date > datetime.now().date(),
+                'contracts': contracts,
+                'current_contract': current_contract,
+            }
 
         return render(request, 'maintenance/maintenance_contract_overview.html', context)
 
@@ -134,11 +146,39 @@ def generate_billing_statement(request):
         item=item,
         percentage=percentage,
         generated_by=profile,
-        price=maintenance_contract.price
+        price=maintenance_contract.price/percentage
     )
 
     messages.success(request, 'Billing Statement Generated')
     return redirect('maintenance:contract-view', order_id=order.id)
+
+
+@login_required
+def schedule_maintenance(request):
+    date = request.GET['date']
+    order_id = request.GET['order']
+    order = Order.objects.get(id=order_id)
+
+    form = ScheduleMaintenanceForm(request.POST or None, initial={
+        'name': 'Conduct Maintenance for ' + order.customer.company_name,
+        'start_date': date + ' 8:30 am',
+        'end_date': date + ' 5:30 pm'
+    })
+
+    if form.is_valid():
+        schedule = form.save(commit=False)
+        schedule.order = order
+
+        schedule.save()
+
+        messages.success(request, 'Schedule added!')
+        return redirect('maintenance:overview', order_id=order.id)
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'maintenance/schedule_maintenance.html', context)
 
 
 
