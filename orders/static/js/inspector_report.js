@@ -90,13 +90,11 @@ $(document).ready(function(){
     $(".confirm-btn").click(function(){
 
         var manpower = $("input#manpower").val();
-        var duration = $("input#duration").val();
 
         console.log(cart.length > 0);
-        console.log(duration);
         console.log(manpower);
 
-        if (cart.length > 0 && duration > 0 && manpower > 0) {
+        if (cart.length > 0 && manpower > 0) {
 
             for (var x in cart) {
 
@@ -107,8 +105,7 @@ $(document).ready(function(){
                         order: order,
                         product: cart[x].id,
                         quantity: cart[x].quantity,
-                        manpower: manpower,
-                        duration: duration
+                        manpower: manpower
                     },
                     success: function() {
                         console.log("added");
@@ -120,7 +117,7 @@ $(document).ready(function(){
             });
 
             setInterval(function() {
-                setClass("alert alert-success", feedback);
+                // setClass("alert alert-success", feedback);
                 feedback.children().children().html("Products finalized!");
                 feedback.css('display', 'initial');
 

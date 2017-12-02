@@ -127,7 +127,7 @@ def add_customer(request):
         }
 
         messages.success(request, "Customer added successfully!")
-        return render(request, 'orders/add_order.html', context)
+        return redirect('orders:add_order')
 
     context = {'form': form}
     return render(request, 'core/add_customer.html', context)

@@ -68,62 +68,75 @@
             </div>
             <div class="col-md-8 mt-3">
                 {% if not is_warranty_period and current_contract is not None %}
-                    <ul class="list-group">
-                        <li class="list-group-item">Current maintenance contract:
-                            <span class="text-danger">
-                                <b>{{ current_contract.number }}</b>
-                            </span>
-                        </li>
-                        <li class="list-group-item">Expires at:
-                            <span class="text-danger">
-                                <b>{{ maintenance_expiration_date }}</b>
-                            </span>
-                        </li>
-                        <li class="list-group-item">
-                            <button class="btn btn-success">Renew Maintenance Contract</button> or
-                            <button class="btn btn-success">Finish Order</button>
-                        </li>
-                    </ul>
+                        <ul class="list-group">
+                            <li class="list-group-item">Current maintenance contract:
+                                <span class="text-danger">
+                                    <b>{{ current_contract.number }}</b>
+                                </span>
+                            </li>
+                            <li class="list-group-item">Expires at:
+                                <span class="text-danger">
+                                    <b>{{ maintenance_expiration_date }}</b>
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <button class="btn btn-success">Renew Maintenance Contract</button> or
+                                <button class="btn btn-success">Finish Order</button>
+                            </li>
+                        </ul>
 
-                <h5 class="ml-1 mt-3">Payments and Scheduled Dates of Maintenance</h5>
-                <table class="table table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Due Date</th>
-                        <th colspan="3" class="text-center">Generate</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for date in date_intervals %}
+                    <h5 class="ml-1 mt-3">Payments and Scheduled Dates of Maintenance</h5>
+                    <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Due Date</th>
+                            <th colspan="3" class="text-center">Generate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for date in date_intervals %}
 
-                    <tr>
+                        <tr>
 
-                        <td>{{ date }}</td>
-                        <td>
-                            <form action="{% url 'maintenance:schedule-maintenance' %}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ date }}" name="date">
-                                <input type="hidden" value="{{ order.id }}" name="order">
-                                <button class="btn btn-secondary">Schedule</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form action="{% url 'maintenance:generate-bs' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="id" value="{{ current_contract.id }}">
-                                <input type="hidden" name="order" value="{{ order.id }}">
-                                <button class="btn btn-primary">Billing Statement</button>
-                            </form>
-                        </td>
-                        <td>
-                            <a>
-                                <button class="btn btn-secondary"> Official Receipt</button>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                </table>
+                            <td>{{ date }}</td>
+                            <td>
+                                {% if not date in schedules %}
+                                <form action="{% url 'maintenance:schedule-maintenance' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ date }}" name="date">
+                                    <input type="hidden" value="{{ order.id }}" name="order">
+                                    <button class="btn btn-secondary">Schedule</button>
+                                </form>
+                                {% else %}
+                                    <p class="text-success">Schedule placed</p>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not date in billing_statements %}
+                                <form action="{% url 'maintenance:generate-bs' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ current_contract.id }}">
+                                    <input type="hidden" name="order" value="{{ order.id }}">
+                                    <button class="btn btn-primary">Billing Statement</button>
+                                </form>
+                                {% else %}
+                                    <a href="{% url 'orders:bs-list' order.id %}">
+                                        <button class="btn btn-primary">View Billing Statements</button>
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{% url 'maintenance:generate-or' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ current_contract.id }}">
+                                    <input type="hidden" name="order" value="{{ order.id }}">
+                                    <button class="btn btn-primary">Official Receipt</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
                 {% endif %}
             </div>
 
