@@ -459,18 +459,41 @@ def view_official_receipt(request, id):
         fraction = fraction * 100
 
         i = inflect.engine()
-        whole_number = i.number_to_words(int(whole))
-        decimal_part = i.number_to_words(int(fraction))
 
-        context = {
-            'amount': round(total, 2),
-            'order': order,
-            'official_receipt': official_receipt,
-            'vat': round(vat, 2),
-            'total': round(total - vat, 2),
-            'pesos': whole_number,
-            'centavos': decimal_part
-        }
+        if official_receipt.state == 1:
+
+            whole_number = i.number_to_words(int(whole))
+            decimal_part = i.number_to_words(int(fraction))
+
+            context = {
+                'amount': round(total, 2),
+                'order': order,
+                'official_receipt': official_receipt,
+                'vat': round(vat, 2),
+                'total': round(total - vat, 2),
+                'pesos': whole_number,
+                'centavos': decimal_part
+            }
+
+        else:
+            total = official_receipt.price
+
+            fraction, whole = math.modf(round(total, 2))
+            fraction = fraction * 100
+
+            whole_number = i.number_to_words(int(whole))
+            decimal_part = i.number_to_words(int(fraction))
+            vat = total * decimal.Decimal(0.12)
+
+            context = {
+                'order': order,
+                'official_receipt': official_receipt,
+                'pesos': whole_number,
+                'centavos': decimal_part,
+                'vat': round(vat, 2),
+                'amount': round(total, 2),
+                'total': round(total - vat, 2)
+            }
 
         return render(request, 'orders/official_receipt.html', context)
 

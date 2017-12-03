@@ -23,16 +23,7 @@
             </div>
         </div>
 
-        {% if order.is_pending %}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="alert alert-warning">
-                        <strong>This order is not yet final</strong>
-                    </div>
-                </div>
-            </div>
-
-        {% endif %}
+        {% include 'core/success_message.html' %}
 
         <div class="row">
             <div class="col-md-7">
@@ -116,7 +107,7 @@
                         <td>Maintenance</td>
                         {% if order.is_maintained %}
                             <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="{% url 'maintenance:maintenance' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            <td><a href="{% url 'maintenance:overview' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                         {% else %}
                             <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
 

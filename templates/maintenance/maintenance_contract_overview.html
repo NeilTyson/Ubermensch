@@ -81,15 +81,21 @@
                             </li>
                             <li class="list-group-item">
                                 <a href="{% url 'orders:bs-list' order.id %}">
-                                    <button class="btn btn-secondary">Billing Statements</button>
+                                    <button class="btn btn-secondary">View Billing Statements</button>
                                 </a>
                                 <a href="{% url 'orders:or-list' order.id %}">
-                                    <button class="btn btn-secondary">Official Receipts</button>
+                                    <button class="btn btn-secondary">View Official Receipts</button>
                                 </a>
                             </li>
                             <li class="list-group-item">
-                                <button class="btn btn-success">Renew Maintenance Contract</button> or
-                                <button class="btn btn-success">Finish Order</button>
+                                <button class="btn btn-success">Renew Maintenance Contract</button>
+                            </li>
+                            <li class="list-group-item">
+                                <form action="{% url 'maintenance:finish-order' %}" method="post">
+                                    {% csrf_token %}
+                                    <input name="id" type="hidden" value="{{ order.id }}">
+                                    <button class="btn btn-success">Finish Order</button>
+                                </form>
                             </li>
                         </ul>
 

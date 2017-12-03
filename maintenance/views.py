@@ -38,57 +38,63 @@ def maintenance_contract_view(request, order_id):
         maintenance_expiration_date = ''
         expiration_date = order.contract.warranty_expiration_date
 
-        if MaintenanceContract.objects.filter(order=order).count() == 0:
-            current_contract = None
-        else:
-            current_contract = MaintenanceContract.objects.filter(order=order, is_current=True)[0]
-
-        if current_contract is not None:
-            maintenance_expiration_date = helper.add_years(
-                current_contract.date_generated,
-                current_contract.duration
-            )
-
-            schedules = Schedule.objects.filter(order=order).filter(name__contains='Maintenance')
-            maintenance_dates = []
-            for s in schedules:
-                maintenance_dates.append(s.start_date.date().strftime('%B %d, %Y'))
-
-            b_statements = BillingStatement.objects.filter(order=order).filter(item__contains='Maintenance')
-            bs_list = []
-            for bs in b_statements:
-                bs_list.append(bs.date_created.date().strftime('%B %d, %Y'))
-
-            official_receipts = OfficialReceipt.objects.filter(order=order).filter(state=2)
-            or_list = []
-            for receipt in official_receipts:
-                or_list.append(receipt.date_created.strftime('%B %d, %Y'))
-
+        if order.is_maintained:
             context = {
-                'order': order,
-                'expiration_date': expiration_date,
-                'is_warranty_period': expiration_date > datetime.now().date(),
-                'contracts': contracts,
-                'current_contract': current_contract,
-                'maintenance_expiration_date': maintenance_expiration_date,
-                'date_intervals': helper.get_date_intervals(
+                'order': order
+            }
+        else:
+
+            if MaintenanceContract.objects.filter(order=order).count() == 0:
+                current_contract = None
+            else:
+                current_contract = MaintenanceContract.objects.filter(order=order, is_current=True)[0]
+
+            if current_contract is not None:
+                maintenance_expiration_date = helper.add_years(
                     current_contract.date_generated,
-                    maintenance_expiration_date,
-                    # terms of payment
-                    current_contract.payment
-                ),
-                'schedules': maintenance_dates,
-                'billing_statements': bs_list,
-                'official_receipts': or_list
-            }
+                    current_contract.duration
+                )
 
-        else:
-            context = {
-                'order': order,
-                'expiration_date': expiration_date,
-                'is_warranty_period': expiration_date > datetime.now().date(),
-                'contracts': contracts,
-            }
+                schedules = Schedule.objects.filter(order=order).filter(name__contains='Maintenance')
+                maintenance_dates = []
+                for s in schedules:
+                    maintenance_dates.append(s.start_date.date().strftime('%B %d, %Y'))
+
+                b_statements = BillingStatement.objects.filter(order=order).filter(item__contains='Maintenance')
+                bs_list = []
+                for bs in b_statements:
+                    bs_list.append(bs.date_created.date().strftime('%B %d, %Y'))
+
+                official_receipts = OfficialReceipt.objects.filter(order=order).filter(state=2)
+                or_list = []
+                for receipt in official_receipts:
+                    or_list.append(receipt.date_created.strftime('%B %d, %Y'))
+
+                context = {
+                    'order': order,
+                    'expiration_date': expiration_date,
+                    'is_warranty_period': expiration_date > datetime.now().date(),
+                    'contracts': contracts,
+                    'current_contract': current_contract,
+                    'maintenance_expiration_date': maintenance_expiration_date,
+                    'date_intervals': helper.get_date_intervals(
+                        current_contract.date_generated,
+                        maintenance_expiration_date,
+                        # terms of payment
+                        current_contract.payment
+                    ),
+                    'schedules': maintenance_dates,
+                    'billing_statements': bs_list,
+                    'official_receipts': or_list
+                }
+
+            else:
+                context = {
+                    'order': order,
+                    'expiration_date': expiration_date,
+                    'is_warranty_period': expiration_date > datetime.now().date(),
+                    'contracts': contracts,
+                }
 
         return render(request, 'maintenance/maintenance_contract_overview.html', context)
 
@@ -253,3 +259,20 @@ def generate_official_receipt(request):
 
     messages.success(request, 'Official Receipt Generated')
     return redirect('maintenance:contract-view', order_id=order.id)
+
+
+@login_required
+def finish_order(request):
+    order = Order.objects.get(id=request.POST['id'])
+
+    contracts = MaintenanceContract.objects.filter(order=order)
+    for contract in contracts:
+        contract.is_current = False
+        contract.save()
+
+    order.is_maintained = True
+    order.status = 'Done'
+    order.save()
+
+    messages.success(request, 'Order completed')
+    return redirect('orders:order-details', order_id=order.id)

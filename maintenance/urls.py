@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'generate_billing_statement', views.generate_billing_statement, name='generate-bs'),
     url(r'generate_official_receipt', views.generate_official_receipt, name='generate-or'),
     url(r'schedule_maintenance', views.schedule_maintenance, name='schedule-maintenance'),
+    url(r'finish_order', views.finish_order, name='finish-order'),
 ]
