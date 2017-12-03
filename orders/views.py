@@ -12,6 +12,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from Ubermensch import helper
 from core.models import Profile
+from maintenance.models import MaintenanceContract
 from orders.forms import OrderForm, ContractForm, ProgressReportForm, ExtendProjectForm
 from orders.models import Order, OrderLine, InspectorReport, Contract, BillingStatement, OfficialReceipt, \
     DeliveryReceipt, ProgressReport, AcceptanceLetter, CertificateOfWarranty, PullOutSlip
@@ -157,7 +158,6 @@ def add_order_line(request):
     order = Order.objects.get(id=request.POST['order'])
     product = Product.objects.get(id=request.POST['product'])
     quantity = request.POST['quantity']
-    duration = request.POST['duration']
     manpower = request.POST['manpower']
 
     OrderLine.objects.create(
@@ -180,7 +180,6 @@ def add_order_line(request):
     InspectorReport.objects.create(
         order=order,
         inspector_report_no=inspector_no,
-        duration=duration,
         manpower=manpower,
         generated_by=profile
     )
@@ -330,7 +329,8 @@ def generate_billing_statement(request, order_id, percentage, code, template_no)
             number=bs_no,
             item=item,
             percentage=int(percentage),
-            generated_by=user
+            generated_by=user,
+            state=1
         )
 
         context = {
@@ -367,11 +367,20 @@ def view_billing_statement(request, id):
         billing_statement = BillingStatement.objects.get(id=id)
         order = Order.objects.filter(billingstatement=billing_statement)[0]
 
-        context = {
-            "billing_statement": billing_statement,
-            "order": order,
-            "price": round(helper.get_grand_total_price(order) * (billing_statement.percentage/ 100), 2)
-        }
+        if billing_statement.state == 1:
+            context = {
+                "billing_statement": billing_statement,
+                "order": order,
+                "price": round(helper.get_grand_total_price(order) * (billing_statement.percentage/ 100), 2)
+            }
+
+        else:
+
+            context = {
+                "billing_statement": billing_statement,
+                "order": order,
+                "price": round(billing_statement.price, 2)
+            }
 
         return render(request, "orders/billing_statement.html", context)
     except BillingStatement.DoesNotExist:
@@ -396,7 +405,8 @@ def generate_official_receipt(request, order_id, percentage, template_no):
             order=order,
             number=or_no,
             percentage=int(percentage),
-            generated_by=user
+            generated_by=user,
+            state=1
         )
 
         context = {
@@ -449,18 +459,41 @@ def view_official_receipt(request, id):
         fraction = fraction * 100
 
         i = inflect.engine()
-        whole_number = i.number_to_words(int(whole))
-        decimal_part = i.number_to_words(int(fraction))
 
-        context = {
-            'amount': round(total, 2),
-            'order': order,
-            'official_receipt': official_receipt,
-            'vat': round(vat, 2),
-            'total': round(total - vat, 2),
-            'pesos': whole_number,
-            'centavos': decimal_part
-        }
+        if official_receipt.state == 1:
+
+            whole_number = i.number_to_words(int(whole))
+            decimal_part = i.number_to_words(int(fraction))
+
+            context = {
+                'amount': round(total, 2),
+                'order': order,
+                'official_receipt': official_receipt,
+                'vat': round(vat, 2),
+                'total': round(total - vat, 2),
+                'pesos': whole_number,
+                'centavos': decimal_part
+            }
+
+        else:
+            total = official_receipt.price
+
+            fraction, whole = math.modf(round(total, 2))
+            fraction = fraction * 100
+
+            whole_number = i.number_to_words(int(whole))
+            decimal_part = i.number_to_words(int(fraction))
+            vat = total * decimal.Decimal(0.12)
+
+            context = {
+                'order': order,
+                'official_receipt': official_receipt,
+                'pesos': whole_number,
+                'centavos': decimal_part,
+                'vat': round(vat, 2),
+                'amount': round(total, 2),
+                'total': round(total - vat, 2)
+            }
 
         return render(request, 'orders/official_receipt.html', context)
 

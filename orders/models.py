@@ -62,7 +62,6 @@ class Order(models.Model):
 class InspectorReport(models.Model):
     order = models.OneToOneField(Order)
     inspector_report_no = models.CharField(max_length=15, default='na')
-    duration = models.DecimalField(decimal_places=0, max_digits=5, default='0')
     manpower = models.DecimalField(decimal_places=0, max_digits=5, default='0')
     date_created = models.DateTimeField(default=datetime.now)
     generated_by = models.OneToOneField(Profile)
@@ -80,6 +79,11 @@ class OfficialReceipt(models.Model):
     percentage = models.DecimalField(max_digits=5, decimal_places=2)
     number = models.CharField(max_length=15)
     generated_by = models.ForeignKey(Profile)
+    state = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+
+    def __str__(self):
+        return str(self.id) + ' ' + str(self.date_created)
 
 class DeliveryReceipt(models.Model):
     order = models.ForeignKey(Order)
@@ -131,10 +135,13 @@ class BillingStatement(models.Model):
     percentage = models.DecimalField(max_digits=5, decimal_places=0, help_text="In percent")
     item = models.CharField(max_length=1000)
     generated_by = models.ForeignKey(Profile)
+    state = models.PositiveIntegerField(default=1)
 
     # for maintenance
     price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
 
+    def __str__(self):
+        return self.order.customer.company_name + ' ' + str(self.date_created.date()) +' '+ str(self.id)
 
 class ProgressReport(models.Model):
 
