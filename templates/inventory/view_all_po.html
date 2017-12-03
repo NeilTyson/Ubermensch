@@ -8,6 +8,7 @@
     {% include 'bootstrap.html' %}
     {% include 'core/navbar.html' %}
 
+    <script src="{% static 'js/bootstrap-confirmation.min.js' %}"></script>
     <script src="{% static 'js/base_inventory.js' %}"></script>
 </head>
 <body>
@@ -30,7 +31,8 @@
                             <tr><th>Purchase Order</th>
                                 <th>Date Created</th>
                             <th>Supplier</th>
-                            <th>View</th>
+                            <th class="text-center">View</th>
+                                <th class="text-center">Confirm</th>
                             </tr>
 
                         </thead>
@@ -40,22 +42,23 @@
                                 <td>{{ purchase_order.number }}</td>
                                 <th>{{ purchase_order.date_created }}</th>
                                 <td>{{ purchase_order.supplier.name }}</td>
-                                <td><a href="{% url 'inventory:view-po' purchase_order.id %}" target="_blank"><button type="button" class="btn btn-primary" id="view_po">View Purchase Order</button></a></td>
+                                <td class="text-center"><a href="{% url 'inventory:view-po' purchase_order.id %}" target="_blank"><button type="button" class="btn btn-primary" id="view_po">View Purchase Order</button></a></td>
+                                <td class="text-center">{% if purchase_order.is_done == False %}
+                                    <button type="button" class="btn btn-success"><a href="{% url 'inventory:confirm-product-retrieval' purchase_order.id %}">Confirm Product Retrieval</a></button>
+                                    </td>
+                                    {% else %}
+                                    <p>Retrieved<p>
+                                    {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>
                   </table>
-
     </div>
     <script>
-        $(document).ready(function() {
-            $(".navbar-mine").children("li").each(function() {
-                $(this).removeClass("active");
-            });
 
-            $("li.inventory").addClass("active");
-        });
+
     </script>
+
 </body>
 
 </html>

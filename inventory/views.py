@@ -114,4 +114,9 @@ def view_po(request, po_id):
         'purchase_orderline': orderLine,
         'total': total,
     }
-    return render (request, 'inventory/purchase_order.html', context)
+    return render(request, 'inventory/purchase_order.html', context)
+
+
+def confirm_product_retrieval(request, po_id):
+    po_details = PurchaseOrder.objects.get(id=po_id)
+    return HttpResponse("Success")
