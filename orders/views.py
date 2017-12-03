@@ -122,21 +122,6 @@ def installation(request, order_id):
 
 
 @login_required
-def maintenance(request, order_id):
-    try:
-        order = Order.objects.get(id=order_id)
-
-        context = {
-            'order': order
-        }
-
-        return render(request, 'orders/../templates/maintenance/maintenance.html', context)
-
-    except Order.DoesNotExist:
-        raise Http404("Order does not exist")
-
-
-@login_required
 def inspector_report(request, order_id):
     try:
         order = Order.objects.get(id=order_id)

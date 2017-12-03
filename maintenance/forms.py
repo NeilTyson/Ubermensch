@@ -1,8 +1,8 @@
-from django.forms import ModelForm, widgets
+from django.forms import ModelForm, widgets, DateTimeField
 from django import forms
 
 from core.models import Profile
-from maintenance.models import MaintenanceContract
+from maintenance.models import MaintenanceContract, TroubleTicket
 from schedule.models import Schedule
 
 
@@ -44,3 +44,43 @@ class ScheduleMaintenanceForm(ModelForm):
         queryset = Profile.objects.filter(user_type="Engineer")
         involved_people.queryset = queryset
 
+
+class TroubleTicketForm(ModelForm):
+
+    class Meta:
+        model = TroubleTicket
+        fields = "__all__"
+        exclude = ['order', 'date_created', 'status', 'generated_by']
+        widgets = {
+            'subject': forms.widgets.TextInput()
+        }
+
+
+class ScheduleTroubleForm(forms.ModelForm):
+    start_date = DateTimeField(input_formats=["%Y/%m/%d %H:%M"], widget=
+    forms.DateTimeInput(attrs={
+        'class': 'datetimepicker'
+    }))
+
+    end_date = DateTimeField(input_formats=["%Y/%m/%d %H:%M"], widget=
+    forms.DateTimeInput(attrs={
+        'class': 'datetimepicker'
+    }))
+
+    name = forms.CharField(disabled=True)
+
+    class Meta:
+        model = Schedule
+        fields = '__all__'
+        exclude = ('is_completed', 'order')
+        widgets = {
+            'description': forms.Textarea(),
+            'involved_people': forms.CheckboxSelectMultiple()
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ScheduleTroubleForm, self).__init__(*args, **kwargs)
+
+        involved_people = self.fields['involved_people']
+        queryset = Profile.objects.filter(user_type="Engineer")
+        involved_people.queryset = queryset

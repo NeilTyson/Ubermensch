@@ -41,7 +41,10 @@
                         <u><a href="{% url 'maintenance:add-contract' order.id %}">here</a></u></p>
                     {% else %}
                     <a href="{% url 'maintenance:add-contract' order.id %}">
+
+                        {% if order.maintenancecontract_set.count == 0 %}
                         <button class="btn btn-primary mt-3 btn-block">Add Maintenance Contract</button>
+                        {% endif %}
                         <table class="table table-striped mt-3">
                             <thead class="thead-dark">
                             <tr>
@@ -54,9 +57,12 @@
                                 <tr>
                                     <td>{{ contract.number }}</td>
                                     <td>
-                                        <a href="#">
+                                        <form action="{% url 'maintenance:view-contract' %}" target="_blank">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id" value="{{ order.id }}">
+                                            <input type="hidden" name="contract" value="{{ contract.id }}">
                                             <button class="btn btn-secondary">View</button>
-                                        </a>
+                                        </form>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -88,7 +94,11 @@
                                 </a>
                             </li>
                             <li class="list-group-item">
-                                <button class="btn btn-success">Renew Maintenance Contract</button>
+                                <form action="{% url 'maintenance:renew-contract' %}">
+                                    {% csrf_token %}
+                                    <input name="id" type="hidden" value="{{ order.id }}">
+                                    <button class="btn btn-success">Renew Maintenance Contract</button>
+                                </form>
                             </li>
                             <li class="list-group-item">
                                 <form action="{% url 'maintenance:finish-order' %}" method="post">
@@ -98,7 +108,6 @@
                                 </form>
                             </li>
                         </ul>
-
                     <h5 class="ml-1 mt-3">Payments and Scheduled Dates of Maintenance</h5>
                     <table class="table table-striped">
                     <thead class="thead-dark">
@@ -152,6 +161,40 @@
                         </tr>
                     {% endfor %}
                     </tbody>
+                    </table>
+                {% endif %}
+                {% if order.is_maintained %}
+                    <ul class="list-group">
+                        <li class="list-group-item">Current maintenance contract:
+                            <strong class="text-success">None (Order Fulfilled)</strong>
+                        </li>
+                        <li class="list-group-item">
+                            View billing statements <a href="{% url 'orders:bs-list' order.id %}"><u>here</u></a>
+                        </li>
+                        <li class="list-group-item">
+                            View official receipts <a href="{% url 'orders:or-list' order.id %}"><u>here</u></a>
+                        </li>
+                    </ul>
+                    <h5 class="mt-4">Maintenance Conducted</h5>
+                    <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Schedule</th>
+                    </tr>
+                    <tbody>
+                        {% for sched in schedules %}
+                            <tr>
+                                <td>{{ sched.start_date }}</td>
+                                <td>
+                                    <a href="{% url 'schedule:details' sched.id %}">
+                                        <button class="btn btn-success">View</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </thead>
                     </table>
                 {% endif %}
             </div>

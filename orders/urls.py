@@ -44,7 +44,6 @@ urlpatterns = [
     url(r'product_retrieval/(?P<order_id>[0-9]+)$', views.product_retrieval_phase, name='product_retrieval'),
     url(r'delivery/(?P<order_id>[0-9]+)$', views.delivery, name='delivery'),
     url(r'installation/(?P<order_id>[0-9]+)$', views.installation, name='installation'),
-    url(r'maintenance/(?P<order_id>[0-9]+)$', views.maintenance, name='maintenance'),
 
 
     # project

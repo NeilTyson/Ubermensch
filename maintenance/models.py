@@ -50,3 +50,20 @@ class TroubleReport(models.Model):
     complaint = models.TextField(max_length=1500)
     findings = models.TextField(max_length=1500)
 
+
+class TroubleTicket(models.Model):
+    order = models.ForeignKey(Order)
+    subject = models.TextField()
+    date_created = models.DateTimeField(default=datetime.now)
+
+    PRIORITIES = (
+        ('Very High', 'Very High'),
+        ('High', 'High'),
+        ('Normal', 'Normal'),
+        ('Low', 'Low'),
+    )
+
+    status = models.CharField(max_length=50, default='Pending')
+    priority = models.CharField(max_length=50, choices=PRIORITIES)
+    generated_by = models.ForeignKey(Profile)
+

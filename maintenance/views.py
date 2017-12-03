@@ -10,8 +10,8 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from Ubermensch import helper
 from core.models import Profile
-from maintenance.forms import MaintenanceContractForm, ScheduleMaintenanceForm
-from maintenance.models import MaintenanceContract
+from maintenance.forms import MaintenanceContractForm, ScheduleMaintenanceForm, TroubleTicketForm, ScheduleTroubleForm
+from maintenance.models import MaintenanceContract, TroubleTicket
 from orders.models import Order, BillingStatement, OfficialReceipt
 from schedule.models import Schedule
 
@@ -20,8 +20,10 @@ from schedule.models import Schedule
 def maintenance_overview(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
+        tickets = TroubleTicket.objects.all()
         context = {
-            'order': order
+            'order': order,
+            'tickets': tickets
         }
 
         return render(request, 'maintenance/maintenance.html', context)
@@ -40,7 +42,10 @@ def maintenance_contract_view(request, order_id):
 
         if order.is_maintained:
             context = {
-                'order': order
+                'order': order,
+                'contracts': contracts,
+                'schedules': Schedule.objects.filter(order=order, name__contains='Maintenance'),
+
             }
         else:
 
@@ -276,3 +281,105 @@ def finish_order(request):
 
     messages.success(request, 'Order completed')
     return redirect('orders:order-details', order_id=order.id)
+
+
+@login_required
+def renew_contract(request):
+    order = Order.objects.get(id=request.GET['id'])
+
+    form = MaintenanceContractForm(request.POST or None)
+
+    context = {
+        'form': form
+    }
+
+    if form.is_valid():
+        contract = form.save(commit=False)
+        contract.order = order
+
+        number = random.randint(1, 999999)
+        mc_no = "MC-" + str(number)
+
+        while helper.check_duplicate_numbers(mc_no, 'maintenance'):
+            number = random.randint(1, 999999)
+            mc_no = "MC-" + str(number)
+
+        profile = Profile.objects.get(user=request.user)
+        contract.number = mc_no
+        contract.generated_by = profile
+
+        for mc in MaintenanceContract.objects.filter(order=order):
+            mc.is_current = False
+            mc.save()
+
+        contract.is_current = True
+        contract.save()
+
+        messages.success(request, 'Maintenance contract added!')
+        return redirect('maintenance:overview', order_id=order.id)
+
+    return render(request, 'maintenance/maintenance_form.html', context)
+
+
+@login_required
+def view_maintenance_contract(request):
+    order = Order.objects.get(id=request.GET['id'])
+    contract = MaintenanceContract.objects.get(id=request.GET['contract'])
+
+    context = {
+        'order': order,
+        'contract': contract
+    }
+
+    return render(request, 'maintenance/maintenance_contract.html', context)
+
+
+@login_required
+def create_ticket(request):
+    id = request.GET['id']
+    order = Order.objects.get(id=id)
+    profile = Profile.objects.get(user=request.user)
+
+    form = TroubleTicketForm(request.POST or None)
+
+    context = {
+        'form': form,
+        'order': order
+    }
+
+    if form.is_valid():
+        ticket = form.save(commit=False)
+        ticket.order = order
+        ticket.generated_by = profile
+        ticket.save()
+
+        messages.success(request, 'Trouble ticket created!')
+        return redirect('maintenance:overview', order_id=order.id)
+
+    return render(request, 'create_ticket.html', context)
+
+
+@login_required
+def ticket_details(request):
+    order = Order.objects.get(id=request.GET['id'])
+    ticket = TroubleTicket.objects.get(id=request.GET['ticket'])
+
+    context = {
+        'ticket': ticket,
+        'order': order
+    }
+
+    return render(request, 'maintenance/ticket_detail.html', context)
+
+
+@login_required
+def schedule_trouble(request):
+    order = Order.objects.get(id=request.GET['id'])
+
+    form = ScheduleTroubleForm(request.POST or None)
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'maintenance/schedule_trouble.html', context)

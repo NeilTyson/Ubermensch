@@ -10,6 +10,12 @@
 
     <script src="{% static 'js/base_orders.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+
+    <style>
+        .ticket {
+            padding: 20px;
+        }
+</style>
 </head>
 <body>
     <div class="container" style="margin-top: 100px;">
@@ -38,65 +44,120 @@
         </div>
 
         <div class="row">
-            <div class="col-md-7">
-                <h4>Trouble Reports</h4>
-
-            </div>
-            <div class="col-md-5">
+            <div class="col-md-12 text-right">
                 <a href="{% url 'maintenance:contract-view' order.id %}"><button class="btn btn-primary">Maintenance Contracts</button></a>
-                <a><button class="btn btn-warning">Add Trouble Report</button></a>
+                <form action="{% url 'maintenance:create-ticket' %}" style="display: inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ order.id }}">
+                    <button class="btn btn-warning">Add Trouble Ticket</button>
+                </form>
             </div>
         </div>
 
         <div class="row mt-2">
-            <div class="col-md-12">
-{#                <table class="table table-striped">#}
-{#                    <thead class="thead-dark">#}
-{#                    <tr>#}
-{#                        <th>Task</th>#}
-{#                        <th class="text-center">Action</th>#}
-{#                        <th class="text-center">Status</th>#}
-{#                    </tr>#}
-{#                    </thead>#}
-{#                    <!-- TODO make it dynamic -->#}
-{#                    <tbody>#}
-{#                    <tr>#}
-{#                        <td>Finish Project</td>#}
-{#                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>#}
-{#                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>#}
-{#                    </tr>#}
-{##}
-{#                    <tr>#}
-{#                        <td>Generate Letter of Acceptance</td>#}
-{#                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>#}
-{#                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>#}
-{#                    </tr>#}
-{##}
-{#                    <tr>#}
-{#                        <td>Generate Certificate of Warranty</td>#}
-{#                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>#}
-{#                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>#}
-{#                    </tr>#}
-{##}
-{#                    <tr>#}
-{#                        <td>Collect Remaining Payment</td>#}
-{#                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>#}
-{#                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>#}
-{#                    </tr>#}
-{##}
-{#                    <tr>#}
-{#                        <td>Generate Pull-out Slip</td>#}
-{#                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>#}
-{#                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>#}
-{#                    </tr>#}
-{##}
-{#                    </tbody>#}
-{#                    <tr>#}
-{#                        <td colspan="3"><a><button class="btn btn-success btn-block">Done </button></a></td>#}
-{#                    </tr>#}
-{#                </table>#}
+            <div class="col-md-12 mt-4">
+                {% if not tickets %}
+                <h5>Trouble Tickets</h5>
+                <p>There are no trouble tickets yet</p>
+                {% else %}
+                    <div class="mt-3 text-center">
+            <div class="legend">
+                <div class="shape" style="background-color: #8c1717"></div> Very High
+            </div>
+            <div class="legend">
+                <div class="shape" style="background-color: #f72e2e"></div> High
+            </div>
+            <div class="legend">
+                <div class="shape" style="background-color: #ff7c7c"></div> Normal
+            </div>
+            <div class="legend">
+                <div class="shape" style="background-color: #ffcece"></div> Low
+            </div>
 
-                <p>There are no trouble reports yet</p>
+        </div>
+                    <h5>Trouble Tickets</h5>
+                    <table class="table" style="border: none">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Customer</th>
+                        <th>Subject</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Date Created</th>
+                        <th>Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in tickets %}
+                        {% if ticket.priority == 'Low' %}
+                        <tr style="background-color: #ffcece" class="ticket">
+                            <td>{{ ticket.order.customer.company_name }}</td>
+                            <td>{{ ticket.subject }}</td>
+                            <td>{{ ticket.priority }}</td>
+                            <td>{{ ticket.status }}</td>
+                            <td>{{ ticket.date_created }}</td>
+                            <td>
+                                <form action="{% url 'maintenance:view-ticket' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ order.id }}">
+                                    <input type="hidden" name="ticket" value="{{ ticket.id }}">
+                                    <input type="submit" value="View">
+                                </form>
+                            </td>
+                        </tr>
+                        {% elif ticket.priority == 'Normal' %}
+                        <tr style="background-color: #ff7c7c" class="ticket">
+                            <td>{{ ticket.order.customer.company_name }}</td>
+                            <td>{{ ticket.subject }}</td>
+                            <td>{{ ticket.priority }}</td>
+                            <td>{{ ticket.status }}</td>
+                            <td>{{ ticket.date_created }}</td>
+                            <td>
+                                <form action="{% url 'maintenance:view-ticket' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ order.id }}">
+                                    <input type="hidden" name="ticket" value="{{ ticket.id }}">
+                                    <input type="submit" value="View">
+                                </form>
+                            </td>
+                        </tr>
+                        {% elif ticket.priority == 'High' %}
+                        <tr style="background-color: #f72e2e; color: white" class="ticket">
+                            <td>{{ ticket.order.customer.company_name }}</td>
+                            <td>{{ ticket.subject }}</td>
+                            <td>{{ ticket.priority }}</td>
+                            <td>{{ ticket.status }}</td>
+                            <td>{{ ticket.date_created }}</td>
+                            <td>
+                                <form action="{% url 'maintenance:view-ticket' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ order.id }}">
+                                    <input type="hidden" name="ticket" value="{{ ticket.id }}">
+                                    <input type="submit" value="View">
+                                </form>
+                            </td>
+                        </tr>
+                        {% elif ticket.priority == 'Very High' %}
+                        <tr style="background-color: #8c1717; color: white" class="ticket">
+                            <td>{{ ticket.order.customer.company_name }}</td>
+                            <td>{{ ticket.subject }}</td>
+                            <td>{{ ticket.priority }}</td>
+                            <td>{{ ticket.status }}</td>
+                            <td>{{ ticket.date_created }}</td>
+                            <td>
+                                <form action="{% url 'maintenance:view-ticket' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ order.id }}">
+                                    <input type="hidden" name="ticket" value="{{ ticket.id }}">
+                                    <input type="submit" value="View">
+                                </form>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
 
