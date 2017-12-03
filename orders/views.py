@@ -379,7 +379,7 @@ def view_billing_statement(request, id):
             context = {
                 "billing_statement": billing_statement,
                 "order": order,
-                "price": round(helper.get_grand_total_price(order) * (billing_statement.percentage / 100), 2)
+                "price": round(billing_statement.price, 2)
             }
 
         return render(request, "orders/billing_statement.html", context)

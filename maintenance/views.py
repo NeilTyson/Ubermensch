@@ -156,7 +156,7 @@ def generate_billing_statement(request):
         item=item,
         percentage=percentage,
         generated_by=profile,
-        price=maintenance_contract.price/decimal.Decimal(percentage),
+        price=maintenance_contract.price * (decimal.Decimal(percentage) / 100),
         state=2
     )
 
