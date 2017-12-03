@@ -59,6 +59,11 @@ def maintenance_contract_view(request, order_id):
             for bs in b_statements:
                 bs_list.append(bs.date_created.date().strftime('%B %d, %Y'))
 
+            official_receipts = OfficialReceipt.objects.filter(order=order).filter(state=2)
+            or_list = []
+            for receipt in official_receipts:
+                or_list.append(receipt.date_created.strftime('%B %d, %Y'))
+
             context = {
                 'order': order,
                 'expiration_date': expiration_date,
@@ -73,7 +78,8 @@ def maintenance_contract_view(request, order_id):
                     current_contract.payment
                 ),
                 'schedules': maintenance_dates,
-                'billing_statements': bs_list
+                'billing_statements': bs_list,
+                'official_receipts': or_list
             }
 
         else:
@@ -224,7 +230,7 @@ def generate_official_receipt(request):
         number = random.randint(1, 999999)
         pr_no = "OR-" + str(number)
 
-    percentage = len(helper.get_date_intervals(maintenance_contract.date_generated, maintenance_expiration_date,
+    percentage = 100 / len(helper.get_date_intervals(maintenance_contract.date_generated, maintenance_expiration_date,
                               maintenance_contract.payment))
 
     item = str(percentage) + '% DOWN PAYMENT FOR MAINTENANCE SERVICE'
@@ -234,7 +240,8 @@ def generate_official_receipt(request):
         number=or_no,
         percentage=percentage,
         generated_by=profile,
-        state=2
+        state=2,
+        price=maintenance_contract.price * (decimal.Decimal(percentage)/100)
     )
 
     official = OfficialReceipt.objects.latest('id')

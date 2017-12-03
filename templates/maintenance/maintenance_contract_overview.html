@@ -80,6 +80,14 @@
                                 </span>
                             </li>
                             <li class="list-group-item">
+                                <a href="{% url 'orders:bs-list' order.id %}">
+                                    <button class="btn btn-secondary">Billing Statements</button>
+                                </a>
+                                <a href="{% url 'orders:or-list' order.id %}">
+                                    <button class="btn btn-secondary">Official Receipts</button>
+                                </a>
+                            </li>
+                            <li class="list-group-item">
                                 <button class="btn btn-success">Renew Maintenance Contract</button> or
                                 <button class="btn btn-success">Finish Order</button>
                             </li>
@@ -120,18 +128,20 @@
                                     <button class="btn btn-primary">Billing Statement</button>
                                 </form>
                                 {% else %}
-                                    <a href="{% url 'orders:bs-list' order.id %}">
-                                        <button class="btn btn-primary">View Billing Statements</button>
-                                    </a>
+                                    <p class='text-success'>Billing Statement Generated</p>
                                 {% endif %}
                             </td>
                             <td>
+                                {% if not date in official_receipts %}
                                 <form action="{% url 'maintenance:generate-or' %}" method="POST">
                                     {% csrf_token %}
                                     <input type="hidden" name="id" value="{{ current_contract.id }}">
                                     <input type="hidden" name="order" value="{{ order.id }}">
                                     <button class="btn btn-primary">Official Receipt</button>
                                 </form>
+                                {% else %}
+                                    <p class="text-success">OR generated</p>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
