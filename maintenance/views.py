@@ -366,7 +366,8 @@ def ticket_details(request):
 
     context = {
         'ticket': ticket,
-        'order': order
+        'order': order,
+        'is_warranty_period': order.contract.warranty_expiration_date > datetime.now().date()
     }
 
     return render(request, 'maintenance/ticket_detail.html', context)
@@ -375,11 +376,57 @@ def ticket_details(request):
 @login_required
 def schedule_trouble(request):
     order = Order.objects.get(id=request.GET['id'])
+    ticket = TroubleTicket.objects.get(id=request.GET['ticket'])
 
-    form = ScheduleTroubleForm(request.POST or None)
+    form = ScheduleTroubleForm(request.POST or None, initial={
+        'name': 'Re: ' + ticket.subject
+    })
 
     context = {
         'form': form
     }
+
+    if form.is_valid():
+        schedule = form.save(commit=False)
+
+        people = request.POST.getlist('involved_people')
+
+        start_date = datetime.strptime(request.POST['start_date'], '%Y/%m/%d %H:%M')
+        end_date = datetime.strptime(request.POST['end_date'], '%Y/%m/%d %H:%M')
+
+        if end_date < start_date:
+
+            context = {
+                'form': form,
+                'error': "End date cannot be before the start date"
+            }
+
+            return render(request, 'schedule/create_schedule.html', context)
+
+        if start_date < datetime.now() or end_date < datetime.now():
+            context = {
+                'form': form,
+                'error': "Start dates and end dates cannot be past the current date"
+            }
+
+            return render(request, 'schedule/create_schedule.html', context)
+
+        if helper.check_overlaps(people, start_date, end_date):
+
+            context = {
+                'form': form,
+                'error': "Failed to add schedule. Overlap/s or conflict/s found"
+            }
+
+            return render(request, 'schedule/create_schedule.html', context)
+
+        schedule.order = order
+        schedule.save()
+
+        for p in people:
+            schedule.involved_people.add(p)
+
+        messages.success(request, 'Schedule added')
+        return redirect('maintenance:overview')
 
     return render(request, 'maintenance/schedule_trouble.html', context)

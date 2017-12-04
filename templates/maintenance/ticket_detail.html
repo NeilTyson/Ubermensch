@@ -72,12 +72,24 @@
                             {% csrf_token %}
                             <input type="hidden" name="id" value="{{ order.id }}">
                             <input type="hidden" name="ticket" value="{{ ticket.id }}">
-                            <button class="btn btn-secondary">Schedule Inspection</button>
+                            <button class="btn btn-secondary btn-block">Schedule Inspection</button>
                         </form>
                     </li>
+                    {% if not is_warranty_period %}
+                        <li class="list-group-item">
+                            <form>
+                                <button class="btn btn-primary btn-block">Generate Billing Statement</button>
+                            </form>
+                        </li>
+                        <li class="list-group-item">
+                            <form>
+                                <button class="btn btn-primary btn-block">Generate Official Receipt</button>
+                            </form>
+                        </li>
+                    {% endif %}
                     <li class="list-group-item">
                         <form>
-                            <button class="btn btn-success">Problem Solved</button>
+                            <button class="btn btn-success btn-block">Mark as Solved</button>
                         </form>
                     </li>
                 </ul>
