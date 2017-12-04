@@ -119,4 +119,12 @@ def view_po(request, po_id):
 
 def confirm_product_retrieval(request, po_id):
     po_details = PurchaseOrder.objects.get(id=po_id)
+    orderLine = PurchaseOrderLine.objects.filter(purchase_order=po_details)
+    for line in orderLine:
+        product_reference = line.product
+        product = Product.objects.get(id=product_reference.pk)
+        product.quantity_in_stock += line.quantity
+        product.save()
+    po_details.is_done = True
+    po_details.save()
     return HttpResponse("Success")
