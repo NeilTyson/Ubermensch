@@ -21,11 +21,9 @@
                     <button class="btn btn-primary"><a href="{% url 'inventory:request-inventory' %}">Request Inventory from Supplier</a></button>
                 </div>
                 <div class="col-sm-3 mt-4">
-                    <button type="button" class="btn btn-secondary"><a href="{% url 'inventory:view-all-po' %}">View All Purchase Order</a></button>
+                    <button type="button" class="btn btn-secondary"><a href="{% url 'inventory:view-all-po' %}">View Purchase Orders / Confirm Product Retrieval</a></button>
                 </div>
-                <div class="col-sm-3 mt-4">
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Confirm Product Retrieval</button>
-                </div>
+
         </div>
         {% if not products %}
                 <p>There are no products yet</p>
