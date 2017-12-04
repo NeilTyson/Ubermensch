@@ -20,4 +20,7 @@ urlpatterns = [
     url(r'create_ticket', views.create_ticket, name='create-ticket'),
     url(r'view_ticket', views.ticket_details, name='view-ticket'),
     url(r'schedule_inspection', views.schedule_trouble, name='schedule-trouble'),
+    url(r'trouble_billing_statement', views.trouble_billing_statement, name='trouble-bs'),
+    url(r'trouble_official_receipt', views.trouble_official_receipt, name='trouble-or'),
+    url(r'solve_problem', views.solve_problem, name='solve-problem'),
 ]

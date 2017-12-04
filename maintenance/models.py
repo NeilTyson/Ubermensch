@@ -66,4 +66,6 @@ class TroubleTicket(models.Model):
     status = models.CharField(max_length=50, default='Pending')
     priority = models.CharField(max_length=50, choices=PRIORITIES)
     generated_by = models.ForeignKey(Profile)
+    has_billing_statement = models.BooleanField(default=False)
+    has_official_receipt = models.BooleanField(default=False)
 

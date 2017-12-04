@@ -10,7 +10,8 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from Ubermensch import helper
 from core.models import Profile
-from maintenance.forms import MaintenanceContractForm, ScheduleMaintenanceForm, TroubleTicketForm, ScheduleTroubleForm
+from maintenance.forms import MaintenanceContractForm, ScheduleMaintenanceForm, TroubleTicketForm, ScheduleTroubleForm, \
+    TroubleBillingStatementForm
 from maintenance.models import MaintenanceContract, TroubleTicket
 from orders.models import Order, BillingStatement, OfficialReceipt
 from schedule.models import Schedule
@@ -239,7 +240,7 @@ def generate_official_receipt(request):
 
     while helper.check_duplicate_numbers(or_no, 'official'):
         number = random.randint(1, 999999)
-        pr_no = "OR-" + str(number)
+        or_no = "OR-" + str(number)
 
     percentage = 100 / len(helper.get_date_intervals(maintenance_contract.date_generated, maintenance_expiration_date,
                               maintenance_contract.payment))
@@ -430,3 +431,87 @@ def schedule_trouble(request):
         return redirect('maintenance:overview')
 
     return render(request, 'maintenance/schedule_trouble.html', context)
+
+
+@login_required
+def trouble_billing_statement(request):
+    order = Order.objects.get(id=request.GET['id'])
+    ticket = TroubleTicket.objects.get(id=request.GET['ticket'])
+
+    form = TroubleBillingStatementForm(request.POST or None, initial={
+        'item': 'PAYMENT FOR SERVICE; Re: ' + ticket.subject
+    })
+
+    context = {
+        'form': form
+    }
+
+    if form.is_valid():
+        billing_statement = form.save(commit=False)
+
+        number = random.randint(1, 999999)
+        bs_no = "BS-" + str(number)
+
+        while helper.check_duplicate_numbers(bs_no, 'billing'):
+            number = random.randint(1, 999999)
+            bs_no = "BS-" + str(number)
+
+        profile = Profile.objects.get(user=request.user)
+
+        billing_statement.order = order
+        billing_statement.number = bs_no
+        billing_statement.generated_by = profile
+        billing_statement.state = 2
+        billing_statement.percentage = 0
+        billing_statement.save()
+
+        ticket.has_billing_statement = True
+        ticket.save()
+
+        messages.success(request, 'Billing statement generated!')
+
+        return redirect('maintenance:overview', order_id=order.id)
+
+
+    return render(request, 'maintenance/trouble_bs.html', context)
+
+
+@login_required
+def trouble_official_receipt(request):
+    order = Order.objects.get(id=request.GET['id'])
+    ticket = TroubleTicket.objects.get(id=request.GET['ticket'])
+    billing_statement = BillingStatement.objects.filter(order=order).get(item__contains=ticket.subject)
+    profile = Profile.objects.get(user=request.user)
+
+    number = random.randint(1, 999999)
+    or_no = "OR-" + str(number)
+
+    while helper.check_duplicate_numbers(or_no, 'official'):
+        number = random.randint(1, 999999)
+        or_no = "OR-" + str(number)
+
+    OfficialReceipt.objects.create(
+        order=order,
+        percentage=0,
+        number=or_no,
+        generated_by=profile,
+        price=billing_statement.price,
+        state=2
+    )
+
+    ticket.has_official_receipt = True
+    ticket.save()
+
+    messages.success(request, 'Official receipt generated!')
+
+    return redirect('maintenance:overview', order_id=order.id)
+
+
+@login_required
+def solve_problem(request):
+    ticket = TroubleTicket.objects.get(id=request.POST['ticket'])
+    ticket.status = 'Solved'
+    ticket.save()
+
+    messages.success(request, 'Ticket solved!')
+    return redirect('maintenance:overview', order_id=ticket.order.id)

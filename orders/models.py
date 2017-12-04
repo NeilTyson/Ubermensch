@@ -138,7 +138,7 @@ class BillingStatement(models.Model):
     state = models.PositiveIntegerField(default=1)
 
     # for maintenance
-    price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return self.order.customer.company_name + ' ' + str(self.date_created.date()) +' '+ str(self.id)

@@ -76,22 +76,48 @@
                         </form>
                     </li>
                     {% if not is_warranty_period %}
+                        {% if not ticket.has_billing_statement %}
                         <li class="list-group-item">
-                            <form>
+                            <form action="{% url 'maintenance:trouble-bs' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ order.id }}">
+                                <input type="hidden" name="ticket" value="{{ ticket.id }}">
                                 <button class="btn btn-primary btn-block">Generate Billing Statement</button>
                             </form>
                         </li>
+                        {% else %}
+                        <li class="list-group-item text-success">
+                            Billing Statement Generated
+                        </li>
+                        {% endif %}
+                        {% if not ticket.has_official_receipt %}
                         <li class="list-group-item">
-                            <form>
+                            <form action="{% url 'maintenance:trouble-or' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ order.id }}">
+                                <input type="hidden" name="ticket" value="{{ ticket.id }}">
                                 <button class="btn btn-primary btn-block">Generate Official Receipt</button>
                             </form>
                         </li>
+                        {% else %}
+                        <li class="list-group-item text-success">
+                            Official Receipt Generated
+                        </li>
+                        {% endif %}
                     {% endif %}
+                    {% if ticket.status != 'Solved' %}
                     <li class="list-group-item">
-                        <form>
+                        <form method="post" action="{% url 'maintenance:solve-problem' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="ticket" value="{{ ticket.id }}">
                             <button class="btn btn-success btn-block">Mark as Solved</button>
                         </form>
                     </li>
+                    {% else %}
+                        <li class="list-group-item text-success">
+                            Ticket solved
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

@@ -3,6 +3,7 @@ from django import forms
 
 from core.models import Profile
 from maintenance.models import MaintenanceContract, TroubleTicket
+from orders.models import BillingStatement
 from schedule.models import Schedule
 
 
@@ -84,3 +85,10 @@ class ScheduleTroubleForm(forms.ModelForm):
         involved_people = self.fields['involved_people']
         queryset = Profile.objects.filter(user_type="Engineer")
         involved_people.queryset = queryset
+
+
+class TroubleBillingStatementForm(ModelForm):
+
+    class Meta:
+        model = BillingStatement
+        fields = ['item', 'price']
