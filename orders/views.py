@@ -315,7 +315,8 @@ def generate_billing_statement(request, order_id, percentage, code, template_no)
             item=item,
             percentage=int(percentage),
             generated_by=user,
-            state=1
+            state=1,
+            price=0
         )
 
         context = {
