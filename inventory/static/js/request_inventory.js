@@ -33,7 +33,7 @@ $(document).ready(function() {
                                po_cart: cart
                                 }),
                          success: function(data){
-                            console.log(data);
+                            console.log("success");
 
                          },
 

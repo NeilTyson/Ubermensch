@@ -46,7 +46,7 @@
             </div>
             <div class="col-md-4">
                 {% if user_type == 'INVENTORY' or user_type == 'Inventory' %}
-                <a><button class="btn btn-danger mb-2">Click this if there are defective products</button></a>
+                <a href="{% url 'inventory:request-inventory' %}"><button class="btn btn-danger mb-2">Click this if there are defective products</button></a>
                 {% endif %}
             </div>
                 <table class="table table-striped">
@@ -60,64 +60,124 @@
                     <!-- TODO make it dynamic -->
                     <tbody>
                     <tr>
-                        {% if not order.has_scheduled_delivery %}
-                            <td>Schedule Delivery</td>
-                            <td><a href="{% url 'orders:schedule-delivery' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if user_type == 'INVENTORY' or user_type == 'Inventory' %}
+                            {% if not order.has_scheduled_delivery %}
+                                <td>Schedule Delivery</td>
+                                <td><a href="{% url 'orders:schedule-delivery' order.id %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td>Schedule Delivery</td>
+                                <td><a href="#"><button class="btn btn-primary btn-block" id="view-dp" data-target="#exampleModal" data-toggle="modal">View Scheduled People</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% endif %}
                         {% else %}
-                            <td>Schedule Delivery</td>
-                            <td><a href="#"><button class="btn btn-primary btn-block" id="view-dp" data-target="#exampleModal" data-toggle="modal">View Scheduled People</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% if not order.has_scheduled_delivery %}
+                                <td>Schedule Delivery</td>
+                                <td class="text-danger">You are not authorized to access this module</td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% else %}
+                                <td>Schedule Delivery</td>
+                                <td class="text-danger">You are not authorized to access this module</td>
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% endif %}
                         {% endif %}
                     </tr>
 
                     <tr>
-                        {% if order.deliveryreceipt_set.count == 0 %}
-                            {% if order.has_scheduled_delivery %}
-                                <td>Generate Delivery Receipt</td>
-                                <td><a href="{% url 'orders:generate-dr' order.id 2 %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if user_type == 'INVENTORY' or user_type == 'Inventory' %}
+                            {% if order.deliveryreceipt_set.count == 0 %}
+                                {% if order.has_scheduled_delivery %}
+                                    <td>Generate Delivery Receipt</td>
+                                    <td><a href="{% url 'orders:generate-dr' order.id 2 %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% else %}
+                                    <td>Generate Delivery Receipt</td>
+                                    <td><a><button class="btn btn-primary btn-block disabled">Go to this Task</button></a></td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% endif %}
                             {% else %}
-                                <td>Generate Delivery Receipt</td>
-                                <td><a><button class="btn btn-primary btn-block disabled">Go to this Task</button></a></td>
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                    <td>Generate Delivery Receipt</td>
+                                    <td><a href="{% url 'orders:dr-list' order.id %}"><button class="btn btn-primary btn-block">View Delivery Receipts</button></a></td>
+                                    <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                             {% endif %}
                         {% else %}
-                                <td>Generate Delivery Receipt</td>
-                                <td><a href="{% url 'orders:dr-list' order.id %}"><button class="btn btn-primary btn-block">View Delivery Receipts</button></a></td>
-                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% if order.deliveryreceipt_set.count == 0 %}
+                                {% if order.has_scheduled_delivery %}
+                                    <td>Generate Delivery Receipt</td>
+                                    <td class="text-danger">You are not authorized to access this task</td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% else %}
+                                    <td>Generate Delivery Receipt</td>
+                                    <td class="text-danger">You are not authorized to access this task</td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% endif %}
+                            {% else %}
+                                    <td>Generate Delivery Receipt</td>
+                                    <td class="text-danger">You are not authorized to access this task</td>
+                                    <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% endif %}
                         {% endif %}
                     </tr>
 
                     <tr>
                         <td>Generate Billing Statement for Downpayment</td>
-                        {% if order.billingstatement_set.count == 1 %}
-                            {% if order.deliveryreceipt_set.count > 0  %}
-                                <td><a href="{% url 'orders:generate-bs' order.id order.contract.second_percentage 2 2 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if user_type == 'ACCOUNTING' or user_type == 'Accounting' %}
+                            {% if order.billingstatement_set.count == 1 %}
+                                {% if order.deliveryreceipt_set.count > 0  %}
+                                    <td><a href="{% url 'orders:generate-bs' order.id order.contract.second_percentage 2 2 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% else %}
+                                    <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></a></td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% endif %}
                             {% else %}
-                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></a></td>
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                <td><a href="{% url 'orders:bs-list' order.id %}"><button class="btn btn-primary btn-block">View Billing Statements</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                             {% endif %}
                         {% else %}
-                            <td><a href="{% url 'orders:bs-list' order.id %}"><button class="btn btn-primary btn-block">View Billing Statements</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% if order.billingstatement_set.count == 1 %}
+                                {% if order.deliveryreceipt_set.count > 0  %}
+                                    <td class="text-danger">You are not authorized to access this task</td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% else %}
+                                    <td class="text-danger">You are not authorized to access this task</td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% endif %}
+                            {% else %}
+                                <td class="text-danger">You are not authorized to access this task</td>
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% endif %}
                         {% endif %}
                     </tr>
 
                     <tr>
                         <td>Generate Official Receipt for Downpayment</td>
-                        {% if order.officialreceipt_set.count == 1 %}
-                            {% if order.billingstatement_set.count > 1 %}
-                                <td><a href="{% url 'orders:generate-or' order.id order.contract.second_percentage 2 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% if user_type == 'ACCOUNTING' or user_type == 'Accounting' %}
+                            {% if order.officialreceipt_set.count == 1 %}
+                                {% if order.billingstatement_set.count > 1 %}
+                                    <td><a href="{% url 'orders:generate-or' order.id order.contract.second_percentage 2 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% else %}
+                                    <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></a></td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% endif %}
                             {% else %}
-                                <td><a><button class="btn btn-primary btn-block disabled">Accomplish this Task</button></></td>
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                <td><a href="{% url 'orders:or-list' order.id %}"><button class="btn btn-primary btn-block">View Official Receipts</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                             {% endif %}
                         {% else %}
-                            <td><a href="{% url 'orders:or-list' order.id %}"><button class="btn btn-primary btn-block">View Official Receipts</button></a></td>
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% if order.officialreceipt_set.count == 1 %}
+                                {% if order.billingstatement_set.count > 1 %}
+                                    <td class="text-danger">You are not authorized to access this task</td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% else %}
+                                    <td class="text-danger">You are not authorized to access this task</td>
+                                    <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                {% endif %}
+                            {% else %}
+                                <td class="text-danger">You are not authorized to access this task</td>
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% endif %}
                         {% endif %}
                     </tr>
 

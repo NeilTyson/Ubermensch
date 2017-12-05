@@ -101,7 +101,16 @@ def generate_po(request):
                 product=Product.objects.get(id=item['id']),
                 quantity=item['qty']
             )
-    return HttpResponse("success")
+
+    products = Product.objects.all()
+    all_po = PurchaseOrder.objects.all()
+
+    context = {
+        'products': products,
+        'purchase_orders': all_po,
+        'messages': 'Purchase order generated!'
+    }
+    return render(request, 'inventory/index.html', context)
 
 
 def view_po(request, po_id):
@@ -128,7 +137,9 @@ def confirm_product_retrieval(request, po_id):
         product.save()
     po_details.is_done = True
     po_details.save()
-    return HttpResponse("Success")
+
+    messages.success(request, 'Inventory replenished!')
+    return redirect('inventory:index')
 
 
 

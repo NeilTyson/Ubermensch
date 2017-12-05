@@ -23,8 +23,13 @@
                 <div class="col-sm-3 mt-4">
                     <button type="button" class="btn btn-secondary"><a href="{% url 'inventory:view-all-po' %}">View Purchase Orders / Confirm Product Retrieval</a></button>
                 </div>
-
         </div>
+        {% include 'core/success_message.html' %}
+        {% if messages %}
+            <div class="alert alert-success">
+                <strong>{{ messages }}</strong>
+            </div>
+        {% endif %}
         {% if not products %}
                 <p>There are no products yet</p>
             {% else %}

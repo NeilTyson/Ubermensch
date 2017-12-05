@@ -33,21 +33,24 @@
             <li class="nav-item schedules">
                 <a class="nav-link" href="{% url 'schedule:index' %}">Schedules</a>
             </li>
+            {% if user_type == 'INVENTORY' or user_type == 'PROCUREMENT' %}
             <li class="nav-item products">
                 <a class="nav-link" href="{% url 'products:index' %}">Products</a>
             </li>
+            {% endif %}
+            {% if user_type == 'INVENTORY' or user_type == 'PROCUREMENT' %}
             <li class="nav-item inventory ">
                 <a class="nav-link" href="{% url 'inventory:index' %}">Inventory</a>
             </li>
+            {% endif %}
             <li class="nav-item orders">
                 <a class="nav-link" href="{% url 'orders:index' %}">Orders</a>
             </li>
-            <li class="nav-item documents">
-                <a class="nav-link" href="{% url 'documents:index' %}">Documents</a>
-            </li>
+            {% if user_type == 'ADMIN' or user_type == 'Admin' %}
             <li class="nav-item users">
                 <a class="nav-link" href="#">Users</a>
             </li>
+            {% endif %}
         </ul>
         <span class="navbar-text navbar-right" id="today" style="color: white">
 
