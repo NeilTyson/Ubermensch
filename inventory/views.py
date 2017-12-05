@@ -11,6 +11,7 @@ from core.models import Profile
 from Ubermensch import helper
 import random
 import json
+from collections import Counter
 
 
 @login_required
@@ -128,3 +129,23 @@ def confirm_product_retrieval(request, po_id):
     po_details.is_done = True
     po_details.save()
     return HttpResponse("Success")
+
+
+
+@login_required
+def request_products(request):
+    orders = Order.objects.filter(has_contract_done=True, has_retrieved_supplies=False)
+
+    supplies = []
+
+    for order in orders:
+        for line in order.orderline_set.all():
+            supply = {
+                'product': line.product.id,
+                'quantity': line.quantity
+            }
+
+            supplies.append(supply)
+
+
+    return HttpResponse(supplies)

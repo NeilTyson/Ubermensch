@@ -1,5 +1,23 @@
 {% load static %}
 
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "ajax/get_today",
+            type: "get",
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+
+                $("#today").html(data);
+            },
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        });
+    });
+</script>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top ">
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,8 +48,10 @@
             <li class="nav-item users">
                 <a class="nav-link" href="#">Users</a>
             </li>
+        </ul>
+        <span class="navbar-text navbar-right" id="today" style="color: white">
 
-    </ul>
+        </span>
         <ul class="navbar-nav ml-auto  mt-lg-0 navbar-mine my-nav-right">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -51,6 +71,8 @@
            </li>
         </ul>
     </div>
+
+
 </nav>
 
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
