@@ -45,7 +45,9 @@
                 <h4>Tasks Involved for this Phase </h4>
             </div>
             <div class="col-md-4">
+                {% if user_type == 'INVENTORY' or user_type == 'Inventory' %}
                 <a><button class="btn btn-danger mb-2">Click this if there are defective products</button></a>
+                {% endif %}
             </div>
                 <table class="table table-striped">
                     <thead class="thead-dark">

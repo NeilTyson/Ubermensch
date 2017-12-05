@@ -7,7 +7,7 @@ def get_user_type(request):
         user_type = Profile.objects.get(user=request.user)
 
         return {
-            'user_type': user_type.user_type
+            'user_type': user_type.user_type.upper()
         }
     else:
         return {

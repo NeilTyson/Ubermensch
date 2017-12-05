@@ -49,7 +49,7 @@
 {#                        {% endif %}#}
 {#                    </tr>#}
                     <tr>
-                        {% if user_type == 'Sales' and user_type == 'Technical' and user_type == 'Engineer' %}
+                        {% if user_type == 'SALES' or user_type == 'TECHNICAL' or user_type == 'Technical' or user_type == 'ENGINEER' or user_type == 'Accounting' %}
                             <td>Purchase Order / Contract</td>
                             {% if order.has_contract_done %}
                                 <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
@@ -63,38 +63,68 @@
                             {% if order.has_contract_done %}
                                 <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                             {% else %}
-                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}"></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                             {% endif %}
                             <td class="text-danger">You are not authorized to access this module</td>
                         {% endif %}
                     </tr>
                     <tr>
                         <td>Product Retrieval from Suppliers</td>
-                        {% if order.has_retrieved_supplies %}
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="{% url 'orders:product_retrieval' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
-                        {% else %}
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-
-                            {% if order.has_contract_done %}
+                        {% if user_type == 'Procurement' or user_type == 'PROCUREMENT' %}
+                            {% if order.has_retrieved_supplies %}
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                                 <td><a href="{% url 'orders:product_retrieval' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                             {% else %}
-                                <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+
+                                {% if order.has_contract_done %}
+                                    <td><a href="{% url 'orders:product_retrieval' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                                {% else %}
+                                    <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if order.has_retrieved_supplies %}
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                                <td class="text-danger">Unauthorized access</td>
+                            {% else %}
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+
+                                {% if order.has_contract_done %}
+                                    <td class="text-danger">Unauthorized access</td>
+                                {% else %}
+                                    <td class="text-danger">Unauthorized access</td>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </tr>
                     <tr>
                         <td>Delivery</td>
-                        {% if order.is_delivered %}
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="{% url 'orders:delivery' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
-                        {% else %}
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-
-                            {% if order.has_retrieved_supplies %}
+                        {% if user_type == 'Accounting' or user_type == 'ACCOUNTING' or user_type == 'INVENTORY' or user_type == 'INVENTORY' %}
+                            {% if order.is_delivered %}
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
                                 <td><a href="{% url 'orders:delivery' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
                             {% else %}
-                                <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+
+                                {% if order.has_retrieved_supplies %}
+                                    <td><a href="{% url 'orders:delivery' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                                {% else %}
+                                    <td><a href="#"><button class="btn btn-primary" disabled>Go to this phase</button></a></td>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if order.is_delivered %}
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                                <td class="text-danger">You are not authorized to access this module</td>
+                            {% else %}
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+
+                                {% if order.has_retrieved_supplies %}
+                                    <td class="text-danger">You are not authorized to access this module</td>
+                                {% else %}
+                                    <td class="text-danger">You are not authorized to access this module</td>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </tr>

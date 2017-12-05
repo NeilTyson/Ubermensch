@@ -20,7 +20,7 @@
             <div class="col-sm-4 mt-4">
                 <button class="btn btn-success"><a href="{% url 'products:suppliers' %}">Suppliers</a></button>
                 <button class="btn btn-secondary"><a href="{% url 'products:categories' %}">Categories</a></button>
-                {% if user_type == 'Inventory' %}
+                {% if user_type == 'INVENTORY' %}
                 <button class="btn btn-primary"><a href="{% url 'products:add-product' %}">Add a Product</a></button>
                 {% endif %}
             </div>

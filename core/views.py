@@ -150,7 +150,7 @@ def users_index(request):
 # ajax
 def get_current_datetime(request):
 
-    today = datetime.now().strftime('%B %d, %Y %H:%M %p')
+    today = datetime.now().strftime('%B %d, %Y %I:%M %p')
     return JsonResponse(today, safe=False)
 
 
