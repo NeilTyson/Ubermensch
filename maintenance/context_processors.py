@@ -1,5 +1,14 @@
 from core.models import Profile
 
 
-def profile_processor(request):
-    return Profile.objects.get(user=request.user)
+def get_user_type(request):
+    if request.user.is_authenticated():
+        user_type = Profile.objects.get(user=request.user)
+
+        return {
+            'user_type': user_type.user_type
+        }
+    else:
+        return {
+
+        }

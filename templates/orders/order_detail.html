@@ -49,13 +49,23 @@
 {#                        {% endif %}#}
 {#                    </tr>#}
                     <tr>
-                        <td>Purchase Order / Contract</td>
-                        {% if order.has_contract_done %}
-                            <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            <td><a href="{% url 'orders:contract' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                        {% if user_type == 'Sales' and user_type == 'Technical' and user_type == 'Engineer' %}
+                            <td>Purchase Order / Contract</td>
+                            {% if order.has_contract_done %}
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                                <td><a href="{% url 'orders:contract' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            {% else %}
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                                <td><a href="{% url 'orders:contract' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            {% endif %}
                         {% else %}
-                            <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                            <td><a href="{% url 'orders:contract' order.id %}"><button class="btn btn-primary">Go to this phase</button></a></td>
+                            <td>Purchase Order / Contract</td>
+                            {% if order.has_contract_done %}
+                                <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% else %}
+                                <td class="text-center"><img src="{% static 'images/red-cross.svg' %}"></td>
+                            {% endif %}
+                            <td class="text-danger">You are not authorized to access this module</td>
                         {% endif %}
                     </tr>
                     <tr>

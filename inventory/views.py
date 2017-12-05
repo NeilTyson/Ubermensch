@@ -2,8 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.http import Http404
-from django.shortcuts import render
-from inventory.models import Product, Supplier, Category, Order, OrderLine
+from django.shortcuts import render, redirect
+from inventory.models import Product, Supplier, Category, Order, OrderLine, RequestedSupply
 from inventory.models import PurchaseOrder, PurchaseOrderLine
 from django.core import serializers
 from django.http import JsonResponse, Http404, HttpResponse
@@ -134,6 +134,8 @@ def confirm_product_retrieval(request, po_id):
 
 @login_required
 def request_products(request):
+
+    current_order = Order.objects.get(id=request.GET['order'])
     orders = Order.objects.filter(has_contract_done=True, has_retrieved_supplies=False)
 
     supplies = []
@@ -141,11 +143,35 @@ def request_products(request):
     for order in orders:
         for line in order.orderline_set.all():
             supply = {
-                'product': line.product.id,
+                'id': line.product.id,
                 'quantity': line.quantity
             }
 
             supplies.append(supply)
+        order.has_requested_products = True
+        order.save()
 
+    supplies = helper.merge_list(supplies)
 
-    return HttpResponse(supplies)
+    for req in supplies:
+        product = Product.objects.get(id=req['id'])
+        RequestedSupply.objects.create(
+            product=product,
+            quantity=req['quantity']
+        )
+
+    # supplier_list = []
+    #
+    # for supplier in Supplier.objects.all():
+    #     requested_supplies = []
+    #     supplier_list.append( {"supplier" : supplier, "requested_supplies" : requested_supplies})
+    #
+    #     for product in supplier.product_set.all():
+    #         for requested_supply in product.requestedsupply_set.all():
+    #             requested_supplies.append(requested_supply)
+
+    for supplier in Supplier.objects.all():
+        pass
+
+    messages.success(request, 'Supplies requested')
+    return redirect('orders:product_retrieval', order_id=current_order.id)

@@ -71,13 +71,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'core.context_processors.profile_processor',
-                'documents.context_processors.profile_processor',
-                'inventory.context_processors.profile_processor',
-                'maintenance.context_processors.profile_processor',
-                'orders.context_processors.profile_processor',
-                'products.context_processors.profile_processor'
-                'schedule.context_processors.profile_processor'
+                'core.context_processors.get_user_type',
+                'documents.context_processors.get_user_type',
+                'inventory.context_processors.get_user_type',
+                'maintenance.context_processors.get_user_type',
+                'orders.context_processors.get_user_type',
+                'products.context_processors.get_user_type',
+                'schedule.context_processors.get_user_type'
             ],
         },
     },

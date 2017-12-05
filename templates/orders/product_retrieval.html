@@ -24,6 +24,7 @@
 
         <div class="row">
             <div class="col-md-12">
+                {% include 'core/success_message.html' %}
                 {% if order.has_retrieved_supplies %}
                     <div class="alert alert-success">
                         <strong>The products have already been retrieved from the supplier/s</strong>
@@ -51,7 +52,13 @@
                     <tbody>
                     <tr>
                         <td>Request from Suppliers</td>
-                        <td><a href="{% url 'inventory:request-supplies' %}"><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
+                        <td>
+                            <form action="{% url 'inventory:request-supplies' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="order" value="{{ order.id }}">
+                                <button class="btn btn-primary btn-block">Go to this Task</button>
+                            </form>
+                        </td>
                         <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
                     </tr>
                     <tr>

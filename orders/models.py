@@ -21,6 +21,7 @@ class Order(models.Model):
     is_installed = models.BooleanField(default=False)
     is_maintained = models.BooleanField(default=False)
     date_finished = models.DateField(default=datetime.now)
+    has_requested_products = models.BooleanField(default=False)
 
     # schedules
     has_scheduled_engineers = models.BooleanField(default=False)

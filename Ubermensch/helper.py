@@ -287,3 +287,21 @@ def get_date_intervals(start_date, end_date, terms):
 
     elif terms == 'Annually':
         return [dt.format('%B %d, %Y') for dt in period.range('months', 12)][1:]
+
+
+def merge_list(list):
+    new_dict = {}
+
+    for item in list:
+        id = item['id']
+
+        if not id in new_dict:
+            new_dict[id] = item['quantity']
+        else:
+            new_dict[id] += item['quantity']
+
+    new_list = []
+    for id, quantity in new_dict.items():
+        new_list.append({'id': id, 'quantity': quantity})
+
+    return new_list

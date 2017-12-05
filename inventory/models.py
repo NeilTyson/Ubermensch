@@ -24,4 +24,8 @@ class PurchaseOrderLine(models.Model):
 
 
 class RequestedSupply(models.Model):
-    pass
+    product = models.ForeignKey(Product)
+    quantity = models.DecimalField(decimal_places=0, max_digits=10)
+
+    def __str__(self):
+        return self.product.name + ' ' + str(self.quantity)

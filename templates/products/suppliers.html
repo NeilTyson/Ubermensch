@@ -18,7 +18,9 @@
                 <h1 class="mt3">Suppliers</h1>
             </div>
             <div class="col-sm-4 mt-4">
+                {% if user_type == 'Inventory' and  user_type == 'Procurement' %}
                 <button class="btn btn-success"><a href="{% url 'products:add-supplier' %}">Add a Supplier</a></button>
+                {% endif %}
                 <button class="btn btn-secondary"><a href="{% url 'products:categories' %}">Categories</a></button>
                 <button class="btn btn-primary"><a href="{% url 'products:index' %}">Back to Products</a></button>
             </div>
