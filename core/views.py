@@ -54,7 +54,7 @@ def add_user(request):
                 user_type=request.POST['user_type']
             )
 
-            return HttpResponse('worked')
+            return redirect('core:index')
 
         else:
 
