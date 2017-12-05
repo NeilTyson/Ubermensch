@@ -95,7 +95,6 @@
                     <tbody>
                     {% for line in purchase_orderline %}
                     <tr>
-                        <!--TODO -->
                         <td>{{ line.quantity }}</td>
                         <td>{{ line.product.name }}</td>
                         <td class="text-right">{{ line.getsubtotal }}</td>
