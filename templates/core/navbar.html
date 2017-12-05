@@ -43,9 +43,11 @@
                 <a class="nav-link" href="{% url 'inventory:index' %}">Inventory</a>
             </li>
             {% endif %}
+            {% if user_type != 'ADMIN' %}
             <li class="nav-item orders">
                 <a class="nav-link" href="{% url 'orders:index' %}">Orders</a>
             </li>
+            {% endif %}
             {% if user_type == 'ADMIN' or user_type == 'Admin' %}
             <li class="nav-item users">
                 <a class="nav-link" href="#">Users</a>
