@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.http import Http404
 from django.shortcuts import render, redirect
-from inventory.models import Product, Supplier, Category, Order, OrderLine, RequestedSupply
+from inventory.models import Product, Supplier, Category, Order, OrderLine
 from inventory.models import PurchaseOrder, PurchaseOrderLine
 from django.core import serializers
 from django.http import JsonResponse, Http404, HttpResponse
@@ -153,12 +153,8 @@ def request_products(request):
 
     supplies = helper.merge_list(supplies)
 
-    for req in supplies:
-        product = Product.objects.get(id=req['id'])
-        RequestedSupply.objects.create(
-            product=product,
-            quantity=req['quantity']
-        )
+    profile = Profile.objects.get(user=request.user)
+
 
     # supplier_list = []
     #
@@ -170,8 +166,58 @@ def request_products(request):
     #         for requested_supply in product.requestedsupply_set.all():
     #             requested_supplies.append(requested_supply)
 
-    for supplier in Supplier.objects.all():
-        pass
+    temp_suppliers = []
+    for x in supplies:
+        product = Product.objects.get(id=x['id'])
+        supplier = product.supplier.all()[0]
+
+        if supplier not in temp_suppliers:
+            temp_suppliers.append(supplier)
+
+    for x in temp_suppliers:
+
+        number = random.randint(1, 999999)
+        po_no = "PO-" + str(number)
+
+        while helper.check_duplicate_numbers(po_no, 'purchase'):
+            number = random.randint(1, 999999)
+            po_no = "PO-" + str(number)
+
+        PurchaseOrder.objects.create(
+            number=po_no,
+            generated_by=profile,
+            supplier=x
+        )
+
+        po = PurchaseOrder.objects.latest('id')
+
+        for a in supplies:
+            product = Product.objects.get(id=a['id'])
+
+            if product.supplier.all()[0] == po.supplier:
+
+                PurchaseOrderLine.objects.create(
+                    purchase_order=po,
+                    product=product,
+                    quantity=a['quantity']
+                )
+
+        for order in orders:
+            order.has_retrieved_supplies = True
+            order.status = 'Delivery'
+            order.save()
+
 
     messages.success(request, 'Supplies requested')
     return redirect('orders:product_retrieval', order_id=current_order.id)
+
+
+@login_required
+def po_list(request):
+    purchase_orders = PurchaseOrder.objects.all()
+
+    context = {
+        'purchase_orders': purchase_orders
+    }
+
+    return render(request, 'inventory/po-list.html', context)

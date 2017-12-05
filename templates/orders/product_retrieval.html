@@ -52,6 +52,7 @@
                     <tbody>
                     <tr>
                         <td>Request from Suppliers</td>
+                        {% if not order.has_retrieved_supplies %}
                         <td>
                             <form action="{% url 'inventory:request-supplies' %}">
                                 {% csrf_token %}
@@ -59,12 +60,14 @@
                                 <button class="btn btn-primary btn-block">Go to this Task</button>
                             </form>
                         </td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                    </tr>
-                    <tr>
-                        <td>Receive Products</td>
-                        <td><a><button class="btn btn-primary btn-block">Go to this Task</button></a></td>
-                        <td class="text-center"><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                        {% else %}
+                            <td class="text-center">
+                            <a href="{% url 'inventory:view-pos' %}">
+                                <button class="btn btn-primary">View Purchase Orders</button>
+                            </a>
+                            </td>
+                        <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                        {% endif %}
                     </tr>
 
                     </tbody>
