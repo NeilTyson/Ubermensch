@@ -13,4 +13,6 @@ urlpatterns = [
     url(r'^confirm-product-retrieval(?P<po_id>[0-9]+)', views.confirm_product_retrieval, name='confirm-product-retrieval'),
     url(r'^ajax/get_products_using_supplier', views.get_products_using_supplier, name='get_products_using_supplier'),
     url(r'^ajax/generate_po', views.generate_po, name='generate_po'),
+
+    url(r'request_supplies', views.request_products, name='request-supplies')
 ]

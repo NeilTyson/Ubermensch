@@ -51,7 +51,7 @@ class TroubleTicketForm(ModelForm):
     class Meta:
         model = TroubleTicket
         fields = "__all__"
-        exclude = ['order', 'date_created', 'status', 'generated_by']
+        exclude = ['order', 'date_created', 'status', 'generated_by', 'has_official_receipt', 'has_billing_statement']
         widgets = {
             'subject': forms.widgets.TextInput()
         }

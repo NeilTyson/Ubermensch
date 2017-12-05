@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View, generic
 from Ubermensch import helper
@@ -143,6 +145,13 @@ def users_index(request):
     }
 
     return render(request, 'core/users.html', context)
+
+
+# ajax
+def get_current_datetime(request):
+
+    today = datetime.now().strftime('%B %d, %Y %H:%M %p')
+    return JsonResponse(today, safe=False)
 
 
 

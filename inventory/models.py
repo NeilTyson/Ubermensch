@@ -21,3 +21,7 @@ class PurchaseOrderLine(models.Model):
     @property
     def getsubtotal(self):
         return self.product.unit_cost * self.quantity
+
+
+class RequestedSupply(models.Model):
+    pass
