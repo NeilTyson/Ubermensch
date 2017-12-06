@@ -1,3 +1,5 @@
+from datetime import datetime
+from django.utils import timezone
 
 from django.db import models
 
@@ -18,3 +20,9 @@ class Schedule(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_past_today(self):
+        naive = self.start_date.replace(tzinfo=None)
+
+        return naive < datetime.now()

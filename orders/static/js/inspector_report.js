@@ -123,7 +123,7 @@ $(document).ready(function(){
 
                 setInterval(function(){
                     window.location = "/orders/contract/" + order;
-                }, 2000);
+                }, 450);
             }, 0);
 
         }

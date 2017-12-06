@@ -12,6 +12,7 @@ from Ubermensch import helper
 from core.forms import UserForm, CustomerForm
 from core.models import Profile, Customer
 from orders.forms import OrderForm
+from schedule.models import Schedule
 
 
 class IndexView(LoginRequiredMixin, generic.ListView):
@@ -103,7 +104,20 @@ def home(request):
     if request.user.is_authenticated:
         user_profile = Profile.objects.get(user=request.user)
 
-        return render(request, 'core/home.html', {'user': user_profile})
+        if user_profile.user_type != 'ADMIN':
+            return redirect('core:home-dashboard')
+
+
+@login_required
+def home_dashboard(request):
+
+    my_schedules = Schedule.objects.filter(involved_people__user=request.user)
+
+    context = {
+        'my_schedules': my_schedules
+    }
+
+    return render(request, 'dashboards/dashboard.html', context)
 
 
 @login_required

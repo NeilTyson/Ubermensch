@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+
+    {% load static %}
+    {% include 'bootstrap.html' %}
+    {% include 'core/navbar.html' %}
+</head>
+<body>
+    <div class="container" style="margin-top: 100px">
+        <div class="row">
+            <div class="col-md-10">
+                <h3>My schedules</h3>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success btn-block">Orders</button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+            {% if not my_schedules %}
+                <p class="text-danger">You have no schedules</p>
+            {% else %}
+                <div class="alert alert-danger alert-dismissible fade show m-2" role="alert">
+                Schedule rows that are colored in <strong>red </strong> are schedules past the current date
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>View</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for schedule in my_schedules %}
+                    {% if schedule.is_past_today %}
+                        <tr class="table-danger">
+                            <td>{{ schedule.name }}</td>
+                            <td>{{ schedule.start_date }}</td>
+                            <td>{{ schedule.end_date }}</td>
+                            {% if schedule.is_completed %}
+                                <td><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% else %}
+                                <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
+                            <td>
+                                <a href="{% url 'schedule:details' schedule.id %}">
+                                    <button class="btn btn-primary">View</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>{{ schedule.name }}</td>
+                            <td>{{ schedule.start_date }}</td>
+                            <td>{{ schedule.end_date }}</td>
+                            {% if schedule.is_completed %}
+                                <td><img src="{% static 'images/green-check.png' %}" height="20px"></td>
+                            {% else %}
+                                <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
+                            {% endif %}
+                            <td>
+                                <a href="{% url 'schedule:details' schedule.id %}">
+                                    <button class="btn btn-primary">View</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+                </table>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
