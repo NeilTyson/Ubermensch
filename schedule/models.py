@@ -23,6 +23,19 @@ class Schedule(models.Model):
 
     @property
     def is_past_today(self):
-        naive = self.start_date.replace(tzinfo=None)
+        naive = self.end_date.replace(tzinfo=None)
 
         return naive < datetime.now()
+
+    @property
+    def is_on_going(self):
+        start_date = self.start_date.replace(tzinfo=None)
+        end_date = self.end_date.replace(tzinfo=None)
+
+        return start_date <= datetime.now() <= end_date
+
+    @property
+    def is_coming_up(self):
+        start_date = self.start_date.replace(tzinfo=None)
+
+        return start_date > datetime.now()

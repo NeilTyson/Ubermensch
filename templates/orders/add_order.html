@@ -31,7 +31,11 @@
                     {% include 'core/success_message.html' %}
                     <h1 class="mt-3">Add Order</h1>
 
-                    <a href="{% url 'core:add-customer' %}"><p><em>Click this to add a new customer</em></p></a>
+                    <a href="{% url 'core:add-customer' %}">
+                        <button class="btn btn-primary mt-3 mb-4">
+                             <em>Click this to add a new customer</em>
+                        </button>
+                    </a>
                         <form method="post">
                             {% csrf_token %}
 

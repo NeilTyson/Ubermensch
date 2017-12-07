@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -111,10 +111,18 @@ def home(request):
 @login_required
 def home_dashboard(request):
 
-    my_schedules = Schedule.objects.filter(involved_people__user=request.user)
+    profile = Profile.objects.get(user=request.user)
+    my_schedules = Schedule.objects.filter(involved_people=profile)
+
+    on_going = len([x for x in my_schedules if x.is_on_going])
+    coming_up = len([x for x in my_schedules if x.is_coming_up])
+    past_schedules = len([x for x in my_schedules if x.is_past_today])
 
     context = {
-        'my_schedules': my_schedules
+        'my_schedules': my_schedules,
+        'on_going': on_going,
+        'coming_up': coming_up,
+        'past_schedules': past_schedules
     }
 
     return render(request, 'dashboards/dashboard.html', context)

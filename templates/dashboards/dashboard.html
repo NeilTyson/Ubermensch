@@ -12,72 +12,111 @@
     <div class="container" style="margin-top: 100px">
         <div class="row">
             <div class="col-md-10">
-                <h3>My schedules</h3>
+                <h3>Home - My schedules</h3>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-success btn-block">Orders</button>
+                {% if user_type != 'ADMIN' %}
+                <a href="{% url 'orders:index' %}">
+                   <button class="btn btn-success btn-block">Orders</button>
+                </a>
+                {% endif %}
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-md-12">
-            {% if not my_schedules %}
-                <p class="text-danger">You have no schedules</p>
-            {% else %}
-                <div class="alert alert-danger alert-dismissible fade show m-2" role="alert">
-                Schedule rows that are colored in <strong>red </strong> are schedules past the current date
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <table class="table">
-                <thead class="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Status</th>
-                    <th>View</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for schedule in my_schedules %}
-                    {% if schedule.is_past_today %}
-                        <tr class="table-danger">
-                            <td>{{ schedule.name }}</td>
-                            <td>{{ schedule.start_date }}</td>
-                            <td>{{ schedule.end_date }}</td>
-                            {% if schedule.is_completed %}
-                                <td><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            {% else %}
-                                <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                            {% endif %}
-                            <td>
-                                <a href="{% url 'schedule:details' schedule.id %}">
-                                    <button class="btn btn-primary">View</button>
-                                </a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td>{{ schedule.name }}</td>
-                            <td>{{ schedule.start_date }}</td>
-                            <td>{{ schedule.end_date }}</td>
-                            {% if schedule.is_completed %}
-                                <td><img src="{% static 'images/green-check.png' %}" height="20px"></td>
-                            {% else %}
-                                <td><img src="{% static 'images/red-cross.svg' %}" height="20px"></td>
-                            {% endif %}
-                            <td>
-                                <a href="{% url 'schedule:details' schedule.id %}">
-                                    <button class="btn btn-primary">View</button>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-                </tbody>
-                </table>
-            {% endif %}
+            <div class="col-md-4">
+                <h5>On going</h5>
+                {% if on_going == 0 %}
+                    <p class="text-dark">You do not have schedules that are on-going as of the moment</p>
+                {% else %}
+                    <ul class="list-group mt-4">
+                    {% for schedule in my_schedules %}
+                        {% if schedule.is_on_going %}
+                        <li class="list-group-item">
+                            <div>
+                                <strong>{{ schedule.name }}</strong>
+                            </div>
+                            <div>
+                                Start date: {{ schedule.start_date }}
+                            </div>
+                            <div>
+                                End date: {{ schedule.end_date }}
+                            </div>
+                            <div>
+                                {% if schedule.is_completed %}
+                                    <strong class="text-success"><em>Completed!</em></strong>
+                                {% else %}
+                                    <strong class="text-danger"><em>Not completed!</em></strong>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <h5>Coming up</h5>
+                {% if coming_up == 0 %}
+                    <em class="text-dark mt-4">You do not have schedules that are coming-up as of the moment</em>
+                {% else %}
+                    <ul class="list-group mt-4">
+                    {% for schedule in my_schedules %}
+                        {% if schedule.is_coming_up %}
+                        <li class="list-group-item">
+                            <div>
+                                <strong>{{ schedule.name }}</strong>
+                            </div>
+                            <div>
+                                Start date: {{ schedule.start_date }}
+                            </div>
+                            <div>
+                                End date: {{ schedule.end_date }}
+                            </div>
+                            <div>
+                                {% if schedule.is_completed %}
+                                    <strong class="text-success"><em>Completed!</em></strong>
+                                {% else %}
+                                    <strong class="text-danger"><em>Not completed!</em></strong>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <h5>Past schedules</h5>
+                {% if on_going == 0 %}
+                    <p class="text-dark">You do not have past schedules</p>
+                {% else %}
+                    <ul class="list-group mt-4">
+                    {% for schedule in my_schedules %}
+                        {% if schedule.is_on_going %}
+                        <li class="list-group-item">
+                            <div>
+                                <strong>{{ schedule.name }}</strong>
+                            </div>
+                            <div>
+                                Start date: {{ schedule.start_date }}
+                            </div>
+                            <div>
+                                End date: {{ schedule.end_date }}
+                            </div>
+                            <div>
+                                {% if schedule.is_completed %}
+                                    <strong class="text-success"><em>Completed!</em></strong>
+                                {% else %}
+                                    <strong class="text-danger"><em>Not completed!</em></strong>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
         </div>
     </div>
