@@ -55,11 +55,13 @@ def add_user(request):
                 user_type=request.POST['user_type']
             )
 
+            messages.success(request, 'User added!')
             return redirect('core:index')
 
         else:
 
-            return HttpResponse('username is taken')
+            messages.add_message(request, messages.ERROR, 'Username is already taken')
+            return redirect('core:add_user')
 
     context = {'form': form}
     return render(request, 'core/add_user.html', context)
@@ -104,8 +106,10 @@ def home(request):
     if request.user.is_authenticated:
         user_profile = Profile.objects.get(user=request.user)
 
-        if user_profile.user_type != 'ADMIN':
-            return redirect('core:home-dashboard')
+        # if user_profile.user_type != 'ADMIN':
+        #     return redirect('core:home-dashboard')
+
+        return render(request, 'core/home.html', None)
 
 
 @login_required
@@ -174,6 +178,4 @@ def get_current_datetime(request):
 
     today = datetime.now().strftime('%B %d, %Y %I:%M %p')
     return JsonResponse(today, safe=False)
-
-
 

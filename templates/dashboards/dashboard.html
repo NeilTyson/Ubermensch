@@ -22,11 +22,12 @@
                 {% endif %}
             </div>
         </div>
+        {% include 'core/success_message.html' %}
         <div class="row mt-4">
             <div class="col-md-4">
                 <h5>On going</h5>
                 {% if on_going == 0 %}
-                    <p class="text-dark">You do not have schedules that are on-going as of the moment</p>
+                    <em class="text-dark">You do not have schedules that are on-going as of the moment</em>
                 {% else %}
                     <ul class="list-group mt-4">
                     {% for schedule in my_schedules %}
@@ -90,7 +91,7 @@
             <div class="col-md-4">
                 <h5>Past schedules</h5>
                 {% if on_going == 0 %}
-                    <p class="text-dark">You do not have past schedules</p>
+                    <em class="text-dark">You do not have past schedules</em>
                 {% else %}
                     <ul class="list-group mt-4">
                     {% for schedule in my_schedules %}

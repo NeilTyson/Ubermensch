@@ -50,7 +50,7 @@
             {% endif %}
             {% if user_type == 'ADMIN' or user_type == 'Admin' %}
             <li class="nav-item users">
-                <a class="nav-link" href="#">Users</a>
+                <a class="nav-link" href="{% url 'core:add_user' %}">Add User</a>
             </li>
             {% endif %}
         </ul>

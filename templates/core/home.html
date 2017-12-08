@@ -22,11 +22,13 @@
             </div>
         </a>
         {% endif %}
+        {% if user_type == 'ADMIN' %}
         <a href="{% url 'core:add_user' %}">
             <div class="main-menu">
                 <p>Users</p>
             </div>
         </a>
+        {% endif %}
         {% if user_type == 'INVENTORY' or user_type == 'PROCUREMENT' %}
         <a href="{% url 'products:index' %}">
             <div class="main-menu">
