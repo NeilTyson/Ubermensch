@@ -106,10 +106,8 @@ def home(request):
     if request.user.is_authenticated:
         user_profile = Profile.objects.get(user=request.user)
 
-        # if user_profile.user_type != 'ADMIN':
-        #     return redirect('core:home-dashboard')
-
-        return render(request, 'core/home.html', None)
+        if user_profile.user_type != 'ADMIN':
+            return redirect('core:home-dashboard')
 
 
 @login_required

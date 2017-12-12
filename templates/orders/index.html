@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Orders</title>
+    <title>Projects</title>
 
     {% load static %}
     {% include 'bootstrap.html' %}
@@ -11,11 +11,72 @@
     <script src="{% static 'js/base_orders.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
 </head>
+<style>
+        .legend {
+            cursor: pointer;
+        }
+</style>
 <body>
+    <script>
+        $(document).ready(function() {
+
+            function show(phase) {
+
+                $(".projects").children().each(function() {
+                    $(this).hide();
+                });
+
+
+                $(".projects").children().each(function() {
+
+                    var idName = $(this).attr('id')+"";
+                    var current = $(this);
+
+                    if (phase == idName) {
+                        current.show();
+                    }
+                    else {
+                        console.log("Why");
+                    }
+                });
+
+            }
+
+
+            $(".legend").click(function() {
+                var className = $(this).attr('class') + "";
+
+                if (className.indexOf("contract-filter") !== -1) {
+                    show("contract");
+                }
+                else if (className.indexOf("retrieval-filter") !== -1) {
+                    show("retrieval");
+                }
+                else if (className.indexOf("delivery-filter") !== -1) {
+                    show("delivery");
+                }
+                else if (className.indexOf("installation-filter") !== -1) {
+                    show("installation");
+                }
+                else if (className.indexOf("maintenance-filter") !== -1) {
+                    show("maintenance");
+                }
+                else {
+                    show("done");
+                }
+            });
+
+            $("#all").click(function() {
+                $(".projects").each(function() {
+                    $(this).children().show();
+                });
+            });
+        });
+    </script>
     <div class="container" style="margin-top: 100px;">
         <div class="row">
             <div class="col-sm-10">
-                <h1 class="mt3">Orders</h1>
+                <h1 class="mt3">Projects</h1>
             </div>
             <div class="col-sm-2 mt-4">
                 {% if user_type == 'SALES' %}
@@ -26,23 +87,26 @@
             </div>
         </div>
         <div class="mt-3 text-center">
-            <div class="legend">
+            <button class="btn btn-small btn-primary" id="all">All</button>
+            <div class="legend contract-filter">
                 <div class="shape" style="background-color: rgb(255, 255, 153)"></div> Contract
             </div>
-            <div class="legend">
+            <div class="legend retrieval-filter">
                 <div class="shape" style="background-color: rgb(255, 179, 209)"></div> Product Retrieval
             </div>
-            <div class="legend">
+            <div class="legend delivery-filter">
                 <div class="shape" style="background-color: rgb(255, 204, 102)"></div> Delivery
             </div>
-            <div class="legend">
+            <div class="legend installation-filter">
                 <div class="shape" style="background-color: rgb(153, 153, 255)"></div> Installation
-            </div><div class="legend">
+            </div>
+            <div class="legend maintenance-filter">
                 <div class="shape" style="background-color: rgb(191, 191, 191)"></div> Maintenance
             </div>
-            <div class="legend">
+            <div class="legend done-filter">
                 <div class="shape" style="background-color: rgb(128, 255, 128)"></div> Done
             </div>
+
 
         </div>
         <div class="row">
@@ -66,62 +130,62 @@
         {% if not orders %}
             <p>There are no orders yet.</p>
         {% else %}
-            <div class="list-group">
+            <div class="list-group projects">
                 {% for order in orders %}
                     {% if order.status == "Project Requirements" %}
-                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action"
+                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action project "
                         style="background-color: rgb(179, 224, 255)">
                             <div>
                                 <h4>{{ order.customer.company_name }}</h4>
-                                <p><em>This order was placed on <strong>{{ order.date_created }}</strong></em></p>
+                                <p><em>This project was placed on <strong>{{ order.date_created }}</strong></em></p>
                             </div>
                         </a>
                     {% elif order.status == "Contract" %}
-                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action"
+                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action project contract" id="contract"
                         style="background-color: rgb(255, 255, 153)">
                             <div>
                                 <h4>{{ order.customer.company_name }}</h4>
-                                <p><em>This order was placed on <strong>{{ order.date_created }}</strong></em></p>
+                                <p><em>This project was placed on <strong>{{ order.date_created }}</strong></em></p>
                             </div>
                         </a>
                     {% elif order.status == "Product Retrieval" %}
-                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action"
+                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action project retrieval" id="retrieval"
                         style="background-color: rgb(255, 179, 209)">
                             <div>
                                 <h4>{{ order.customer.company_name }}</h4>
-                                <p><em>This order was placed on <strong>{{ order.date_created }}</strong></em></p>
+                                <p><em>This project was placed on <strong>{{ order.date_created }}</strong></em></p>
                             </div>
                         </a>
                     {% elif order.status == "Delivery" %}
-                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action"
+                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action project delivery" id="delivery"
                         style="background-color: rgb(255, 204, 102)">
                             <div>
                                 <h4>{{ order.customer.company_name }}</h4>
-                                <p><em>This order was placed on <strong>{{ order.date_created }}</strong></em></p>
+                                <p><em>This project was placed on <strong>{{ order.date_created }}</strong></em></p>
                             </div>
                         </a>
                     {% elif order.status == "Installation" %}
-                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action"
+                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action project installation" id="installation"
                         style="background-color: rgb(153, 153, 255)">
                             <div>
                                 <h4>{{ order.customer.company_name }}</h4>
-                                <p><em>This order was placed on <strong>{{ order.date_created }}</strong></em></p>
+                                <p><em>This project was placed on <strong>{{ order.date_created }}</strong></em></p>
                             </div>
                         </a>
                     {% elif order.status == "Maintenance" %}
-                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action"
+                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action project maintenance" id="maintenance"
                         style="background-color: rgb(191, 191, 191)">
                             <div>
                                 <h4>{{ order.customer.company_name }}</h4>
-                                <p><em>This order was placed on <strong>{{ order.date_created }}</strong></em></p>
+                                <p><em>This project was placed on <strong>{{ order.date_created }}</strong></em></p>
                             </div>
                         </a>
                     {% elif order.status == "Done" %}
-                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action"
+                        <a href="{% url 'orders:order-details' order.id %}" class="list-group-item list-group-action project done" id="done"
                         style="background-color: rgb(128, 255, 128)">
                             <div>
                                 <h4>{{ order.customer.company_name }}</h4>
-                                <p><em>This order was placed on <strong>{{ order.date_created }}</strong></em></p>
+                                <p><em>This project was placed on <strong>{{ order.date_created }}</strong></em></p>
                             </div>
                         </a>
                     {% endif %}

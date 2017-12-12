@@ -21,7 +21,7 @@ from schedule.models import Schedule
 def maintenance_overview(request, order_id):
     try:
         order = Order.objects.get(id=order_id)
-        tickets = TroubleTicket.objects.all()
+        tickets = TroubleTicket.objects.filter(order=order)
         context = {
             'order': order,
             'tickets': tickets

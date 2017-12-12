@@ -865,14 +865,6 @@ def extend_project(request, order_id):
 
             return render(request, 'orders/extend_project.html', context)
 
-        if helper.check_overlaps(schedule.involved_people, start_date, end_date):
-            context = {
-                'form': form,
-                'error': "Can't extend project. Conflict/s within the engineer/s found"
-            }
-
-            return render(request, 'orders/extend_project.html', context)
-
         extended.save()
         messages.success(request, "Project extended!")
 
