@@ -11,5 +11,5 @@ def get_user_type(request):
         }
     else:
         return {
-            
+
         }

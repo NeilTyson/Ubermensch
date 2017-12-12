@@ -49,7 +49,7 @@
 {#                        {% endif %}#}
 {#                    </tr>#}
                     <tr>
-                        {% if user_type == 'SALES' or user_type == 'TECHNICAL' or user_type == 'Technical' or user_type == 'Accounting' %}
+                        {% if user_type == 'SALES' or user_type == 'TECHNICAL' or user_type == 'Technical' or user_type == 'Accounting' or user_type == 'ACCOUNTING' %}
                             <td>Purchase Order / Contract</td>
                             {% if order.has_contract_done %}
                                 <td class="text-center"><img src="{% static 'images/green-check.png' %}" height="20px"></td>

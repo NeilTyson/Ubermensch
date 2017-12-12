@@ -121,7 +121,7 @@
                     </tr>
                     <tr>
                         <td>Generate Billing Statement for Downpayment</td>
-                        {% if user_type == 'Accounting' %}
+                        {% if user_type == 'Accounting' or user_type == 'ACCOUNTING' %}
                             {% if order.billingstatement_set.count == 0 %}
                                 {% if order.has_contract %}
                                     <td><a href="{% url 'orders:generate-bs' order.id order.contract.first_percentage 1 1 %}"><button class="btn btn-primary btn-block">Accomplish this Task</button></a></td>
@@ -152,7 +152,7 @@
                     </tr>
                     <tr>
                         <td>Generate Official Receipt for Downpayment</td>
-                        {% if not user_type == 'Accounting' %}
+                        {% if not user_type == 'Accounting' and not user_type == 'ACCOUNTING' %}
                             {% if order.officialreceipt_set.count == 0 %}
                                 {% if order.billingstatement_set.count > 0 %}
                                     <td class="text-center text-danger">You are not authorized to access this task</td>
